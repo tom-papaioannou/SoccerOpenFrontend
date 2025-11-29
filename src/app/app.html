@@ -7,9 +7,7 @@
         <nav class="menu">
           <a routerLink="" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
           <a routerLink="team" routerLinkActive="active">Team</a>
-          <a routerLink="about" routerLinkActive="active">League</a>
-          <a routerLink="about" routerLinkActive="active">Cups</a>
-          <a routerLink="about" routerLinkActive="active">Continental</a>
+          <a routerLink="competitions" routerLinkActive="active">Competitions</a>
           <a routerLink="about" routerLinkActive="active">Transfers</a>
           <a routerLink="contact" routerLinkActive="active">MATCH DAY</a>
         </nav>
@@ -17,7 +15,7 @@
       @else if(role === "Host"){
         <nav class="menu">
           <a routerLink="" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Dashboard</a>
-          <a routerLink="tournaments" routerLinkActive="active">Tournaments</a>
+          <a routerLink="competitions-management" routerLinkActive="active">Competitions</a>
           <a routerLink="about" routerLinkActive="active">Teams</a>
         </nav>
       }
