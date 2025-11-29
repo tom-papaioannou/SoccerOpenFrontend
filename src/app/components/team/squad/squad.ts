@@ -19,5 +19,14 @@ export class Squad {
     { name: 'Alice Johnson', age: 25, position: "CF" },
     { name: 'Bob Brown', age: 32, position: "CD" },
     { name: 'Charlie Core', age: 28, position: "GK" },
+    { name: 'Dennis Dalton', age: 25, position: "CF" },
+    { name: 'Roy Rience', age: 32, position: "CD" },
+    { name: 'Charlie Charles', age: 28, position: "GK" },
+    { name: 'Tom Petersen', age: 25, position: "ML" },
+    { name: 'Andy Andrew', age: 32, position: "CD" },
+    { name: 'John Jonnes', age: 28, position: "DL" },
+    { name: 'Owen John', age: 25, position: "DR" },
+    { name: 'Jack Jacky', age: 32, position: "DM" },
+    { name: 'Nick Brown', age: 21, position: "MC" }
   ];
 }

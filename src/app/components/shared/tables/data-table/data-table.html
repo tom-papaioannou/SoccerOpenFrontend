@@ -1,4 +1,4 @@
-<div class="rounded-xl border-4 tableBorder">
+<div class="rounded-xl border-1 p-3 tableBorder">
   <table mat-table [dataSource]="renderedData" [class]="tableClass" matSort (matSortChange)="onSort($event)">
 
     @for (col of columns; track col.key) {

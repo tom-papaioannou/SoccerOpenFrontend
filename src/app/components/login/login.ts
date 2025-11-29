@@ -41,8 +41,11 @@ export class Login{
   }
 
   login(){
+    //just for testing purposes
     let result = {
-      role: "Host"
+      //role: "Admin"
+      //role: "Host"
+      role: "User"
     };
     this.authService.afterSuccessfullLogin(result);
     this.role = this.authService.role;
