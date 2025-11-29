@@ -58,3 +58,11 @@ body {
   padding: 0.25rem 0;
   transition: background 0.3s ease;
 }
+
+.dt-header-center .mat-sort-header-container {
+  justify-content: center !important;
+}
+
+.dt-header-right .mat-sort-header-container {
+  justify-content: flex-end !important;
+}

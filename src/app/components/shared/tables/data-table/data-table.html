@@ -4,13 +4,19 @@
     @for (col of columns; track col.key) {
       <ng-container [matColumnDef]="col.key">
         <th mat-header-cell *matHeaderCellDef mat-sort-header
+          [class.dt-header-center]="col.align === 'center'"
+          [class.dt-header-right]="col.align === 'right'"
           [disabled]="col.sortable !== true"
           [style.width]="col.width"
           [ngClass]="col.headerClass">
           {{ col.header }}
         </th>
 
-        <td mat-cell *matCellDef="let row" [ngClass]="col.cellClass">
+        <td mat-cell *matCellDef="let row"
+          [class.dt-align-left]="col.align === 'left'"
+          [class.dt-align-center]="col.align === 'center'"
+          [class.dt-align-right]="col.align === 'right'"
+          [ngClass]="col.cellClass">
           @if (!col.cellTemplate) {
             {{ $any(row)[col.key] }}
           }

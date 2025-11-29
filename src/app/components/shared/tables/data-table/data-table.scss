@@ -36,3 +36,7 @@
   background: var(--dt-data-bg, rgba(0,0,0,0.5));
   height: var(--dt-data-bg, 100%);
 }
+
+.dt-align-left   { text-align: left; }
+.dt-align-center { text-align: center; }
+.dt-align-right  { text-align: right; }

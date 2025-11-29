@@ -82,7 +82,7 @@ export interface ColumnDef<T = any> {
   key: string;
   header: string;
   width?: string;
-  align?: 'start'|'center'|'end';
+  align?: 'left'|'center'|'right';
   sticky?: boolean;
   headerClass?: string;
   cellClass?: string;
