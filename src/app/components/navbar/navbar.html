@@ -2,13 +2,30 @@
   <span class="brand">Football Open Game</span>
 
   <span class="spacer"></span>
-  @if(loggedIn){
+  @if(loggedIn && isMobile){
     <button mat-button [matMenuTriggerFor]="menu">
       More
       <mat-icon>expand_more</mat-icon>
     </button>
 
     <mat-menu #menu="matMenu">
+      @if(role === "User"){
+        <button mat-menu-item routerLink="">Home</button>
+        <button mat-menu-item routerLink="team">Team</button>
+        <button mat-menu-item routerLink="competitions">Competitions</button>
+        <button mat-menu-item routerLink="about">Transfers</button>
+      }
+      @else if(role === "Host"){
+        <button mat-menu-item routerLink="">Dashboard</button>
+        <button mat-menu-item routerLink="competitions-management">Competitions</button>
+        <button mat-menu-item routerLink="about">Teams</button>
+      }
+      @else if(role === "Admin"){
+        <button mat-menu-item routerLink="">Home</button>
+        <button mat-menu-item routerLink="about">Users</button>
+        <button mat-menu-item routerLink="about">Servers</button>
+        <button mat-menu-item routerLink="about">Logs</button>
+      }
       <button mat-menu-item routerLink="contact">Account</button>
       <button mat-menu-item routerLink="contact">Contact</button>
       <button mat-menu-item routerLink="help">Help</button>

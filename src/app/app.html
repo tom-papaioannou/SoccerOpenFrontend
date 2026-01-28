@@ -1,31 +1,28 @@
-<app-navbar></app-navbar>
+<app-navbar [isMobile]="isMobile"></app-navbar>
 
 <div class="app-layout">
-  @if(signedIn) {
+  @if(signedIn && !isMobile) {
     <aside class="sidebar">
-      @if(role === "User"){
-        <nav class="menu">
+      <nav class="menu">
+        @if(role === "User"){
           <a routerLink="" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
           <a routerLink="team" routerLinkActive="active">Team</a>
           <a routerLink="competitions" routerLinkActive="active">Competitions</a>
           <a routerLink="about" routerLinkActive="active">Transfers</a>
-        </nav>
-      }
-      @else if(role === "Host"){
-        <nav class="menu">
+        }
+        @else if(role === "Host"){
           <a routerLink="" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Dashboard</a>
           <a routerLink="competitions-management" routerLinkActive="active">Competitions</a>
           <a routerLink="about" routerLinkActive="active">Teams</a>
-        </nav>
-      }
-      @else if(role === "Admin"){
-        <nav class="menu">
+        }
+        @else if(role === "Admin"){
           <a routerLink="" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
           <a routerLink="about" routerLinkActive="active">Users</a>
           <a routerLink="about" routerLinkActive="active">Servers</a>
           <a routerLink="about" routerLinkActive="active">Logs</a>
-        </nav>
-      }
+        }
+        <a (click)="logOut()" class="cursor-pointer">Sign Out</a>
+      </nav>
     </aside>
   }
   <main class="page overlay flex-1 w-full">

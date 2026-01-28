@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, signal } from '@angular/core';
-import { RouterModule, RouterOutlet } from '@angular/router';
+import { Router, RouterModule, RouterOutlet } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
@@ -7,6 +7,8 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { NavbarComponent } from './components/navbar/navbar';
 import { AuthService } from './services/auth.service';
+import { Subject, takeUntil } from 'rxjs';
+import { DeviceService } from './services/device.service';
 
 @Component({
   selector: 'app-root',
@@ -26,14 +28,24 @@ import { AuthService } from './services/auth.service';
 })
 export class App {
   protected readonly title = signal('FootballOpenFrontend');
-
+  isMobile = false;
+  private destroy$ = new Subject<void>();
   role = localStorage.getItem("role");
   signedIn = localStorage.getItem("token") != null ? true : false;
 
   constructor(
     private readonly authService: AuthService,
+    private deviceService: DeviceService,
+    private router: Router,
     private readonly cdr: ChangeDetectorRef
   ) {
+    this.deviceService.isMobile$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(v => {
+        this.isMobile = v;
+        this.cdr.markForCheck();
+      });
+
     this.signedIn = this.role ? true : false;
 
     this.authService.authenticationChange?.subscribe({
@@ -43,5 +55,10 @@ export class App {
         this.cdr.detectChanges();
       }
     });
+  }
+
+  logOut(){
+    this.authService.logOut();
+    this.router.navigate(['/login']);
   }
 }
