@@ -25,6 +25,10 @@ export class AuthService {
     return this.http.post<{ token: string }>(`${environment.apiUrl}/api/auth/login`, data);
   }
 
+  register(data: any): Observable<any>{
+    return this.http.post<{ token: string }>(`${environment.apiUrl}/api/auth/register`, data);
+  }
+
   emitChange(){
     this.authenticationChange.emit();
   }
