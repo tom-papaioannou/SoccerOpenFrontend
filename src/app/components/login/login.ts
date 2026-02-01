@@ -41,28 +41,24 @@ export class Login{
   }
 
   login(){
-    //just for testing purposes
-    let result = {
-      //role: "Admin"
-      //role: "Host"
-      role: "User"
-    };
-    this.authService.afterSuccessfullLogin(result);
-    this.role = this.authService.role;
-    this.router.navigate(['/home']);
-    // let data = {
-    //   username: this.loginForm.value.username,
-    //   password: this.loginForm.value.password
+    // //just for testing purposes
+    // let result = {
+    //   //role: "Admin"
+    //   //role: "Host"
+    //   role: "User"
     // };
-    // this.authService.login(data).subscribe({
-    //   next: (result) => {
-    //     this.authService.afterSuccessfullLogin(result);
-    //     this.role = this.authService.role;
-    //     this.router.navigate(['/home']);
-    //   },
-    //   error: (error) => {
-    //     console.error(error);
-    //   }
-    // });
+    // this.authService.afterSuccessfullLogin(result);
+    // this.role = this.authService.role;
+    // this.router.navigate(['/home']);
+    this.authService.login(this.loginForm.value.username, this.loginForm.value.password).subscribe({
+      next: (result) => {
+        this.authService.afterSuccessfullLogin(result);
+        this.role = this.authService.role;
+        this.router.navigate(['/home']);
+      },
+      error: (error) => {
+        console.error(error);
+      }
+    });
   }
 }

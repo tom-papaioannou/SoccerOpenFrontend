@@ -9,11 +9,12 @@ import { Fixtures } from './components/team/fixtures/fixtures';
 import { Competitions } from './components/competitions/competitions';
 import { CompetitionsManagement } from './components/competitions-management/competitions-management';
 import { Register } from './components/register/register';
+import { guestsGuard } from './guards/guests-guard';
 
 export const routes: Routes = [
     { path: 'home', canActivate: [authenticationGuard], component: Home },
     // { path: 'error', component: Home },
-    { path: 'login', component: Login },
+    { path: 'login', canActivate: [guestsGuard], component: Login },
     { path: 'register', component: Register },
     { path: 'competitions-management', component: CompetitionsManagement },
     { path: 'competitions', component: Competitions },

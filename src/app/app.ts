@@ -30,8 +30,8 @@ export class App {
   protected readonly title = signal('FootballOpenFrontend');
   isMobile = false;
   private destroy$ = new Subject<void>();
-  role = localStorage.getItem("role");
-  signedIn = localStorage.getItem("token") != null ? true : false;
+  role: string | null | undefined;
+  signedIn = false;
 
   constructor(
     private readonly authService: AuthService,
@@ -58,7 +58,13 @@ export class App {
   }
 
   logOut(){
-    this.authService.logOut();
-    this.router.navigate(['/login']);
+    this.authService.logOut().subscribe({
+      next: (result) => {
+        this.router.navigate(['/login']);
+      },
+      error: (error) => {
+
+      }
+    });
   }
 }

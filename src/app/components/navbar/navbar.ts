@@ -52,7 +52,13 @@ export class NavbarComponent {
   }
 
   logOut(){
-    this.authService.logOut();
-    this.router.navigate(['/login']);
+    this.authService.logOut().subscribe({
+      next: (result) => {
+        this.router.navigate(['/login']);
+      },
+      error: (error) => {
+
+      }
+    });
   }
 }

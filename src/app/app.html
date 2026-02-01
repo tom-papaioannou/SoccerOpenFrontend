@@ -1,4 +1,6 @@
-<app-navbar [isMobile]="isMobile"></app-navbar>
+@if (signedIn) {
+  <app-navbar [isMobile]="isMobile"></app-navbar>
+}
 
 <div class="app-layout">
   @if(signedIn && !isMobile) {
