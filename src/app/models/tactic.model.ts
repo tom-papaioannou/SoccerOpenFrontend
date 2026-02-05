@@ -5,9 +5,8 @@
 export interface Tactic {
   TacticID?: string;
   TeamID: string;
-  Name?: string;
-  Formation?: string;
-  Description?: string;
+  Name: string;
+  isMain: boolean;
 }
 
 /**
@@ -16,9 +15,8 @@ export interface Tactic {
  */
 export interface CreateTacticRequest {
   TeamID: string;
-  Name?: string;
-  Formation?: string;
-  Description?: string;
+  Name: string;
+  isMain: boolean;
 }
 
 /**

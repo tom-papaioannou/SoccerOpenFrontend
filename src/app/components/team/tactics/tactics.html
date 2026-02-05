@@ -34,24 +34,16 @@
         <form [formGroup]="tacticForm" class="space-y-4 mt-4">
           <app-form-textfield
             [labelText]="'Name'"
-            [placeHolderText]="'Enter tactic name'"
+            [placeHolderText]="'Enter tactic name (1-100 characters)'"
             [type]="'text'"
             formControlName="Name">
           </app-form-textfield>
 
-          <app-form-textfield
-            [labelText]="'Formation'"
-            [placeHolderText]="'e.g., 4-4-2, 4-3-3'"
-            [type]="'text'"
-            formControlName="Formation">
-          </app-form-textfield>
-
-          <app-form-textfield
-            [labelText]="'Description'"
-            [placeHolderText]="'Enter tactic description'"
-            [type]="'text'"
-            formControlName="Description">
-          </app-form-textfield>
+          <div class="flex items-center">
+            <mat-checkbox formControlName="isMain" color="primary">
+              Set as main tactic
+            </mat-checkbox>
+          </div>
 
           <div class="flex gap-2 mt-4">
             <button

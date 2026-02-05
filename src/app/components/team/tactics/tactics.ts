@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { MatCard, MatCardHeader, MatCardTitle, MatCardContent } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { DataTable, ColumnDef } from '../../shared/tables/data-table/data-table';
 import { FormTextfield } from '../../shared/textfields/form-textfield/form-textfield';
 import { TacticsService } from '../../../services/tactics.service';
@@ -21,6 +22,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     MatCardContent,
     MatButtonModule,
     MatIconModule,
+    MatCheckboxModule,
     DataTable,
     FormTextfield
   ],
@@ -46,9 +48,8 @@ export class Tactics implements OnInit {
 
   // Table columns - updated to match backend property names
   displayedColumns: ColumnDef<Tactic>[] = [
-    { key: 'Name', header: 'Name', width: '30%', sortable: true },
-    { key: 'Formation', header: 'Formation', width: '25%', sortable: true },
-    { key: 'Description', header: 'Description', width: '45%' }
+    { key: 'Name', header: 'Name', width: '60%', sortable: true },
+    { key: 'isMain', header: 'Main Tactic', width: '40%', sortable: true }
   ];
 
   constructor(
@@ -57,9 +58,8 @@ export class Tactics implements OnInit {
     private readonly cdr: ChangeDetectorRef
   ) {
     this.tacticForm = this.fb.group({
-      Name: ['', [Validators.required, Validators.minLength(3)]],
-      Formation: [''],
-      Description: ['']
+      Name: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(100)]],
+      isMain: [false]
     });
   }
 
@@ -89,7 +89,7 @@ export class Tactics implements OnInit {
 
   createNew(): void {
     this.createMode.set(true);
-    this.tacticForm.reset();
+    this.tacticForm.reset({ isMain: false });
     this.cdr.markForCheck();
   }
 
@@ -106,8 +106,7 @@ export class Tactics implements OnInit {
     const createRequest: CreateTacticRequest = {
       TeamID: this.teamId,
       Name: formValue.Name,
-      Formation: formValue.Formation,
-      Description: formValue.Description
+      isMain: formValue.isMain ?? false
     };
 
     this.tacticsService.createTeamTactic(createRequest)
@@ -115,7 +114,7 @@ export class Tactics implements OnInit {
       .subscribe({
         next: () => {
           this.createMode.set(false);
-          this.tacticForm.reset();
+          this.tacticForm.reset({ isMain: false });
           this.loadTactics();
         },
         error: (err) => {
@@ -128,7 +127,7 @@ export class Tactics implements OnInit {
 
   cancel(): void {
     this.createMode.set(false);
-    this.tacticForm.reset();
+    this.tacticForm.reset({ isMain: false });
     this.cdr.markForCheck();
   }
 }
