@@ -1,0 +1,8 @@
+.competition-parent-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.space-y-4 > * + * {
+  margin-top: 1rem;
+}

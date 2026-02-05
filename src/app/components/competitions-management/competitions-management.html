@@ -1,73 +1,97 @@
-<div class="h-10 py-10">
-    <h2>Competitions</h2>
-</div>
-<div class="p-4">
-    <div class="grid grid-cols-6 gap-4">
-        <mat-card>
-            <div class="w-full p-1 flex flex-col bg-gray-300 rounded-xl border">
-                <div class="flex w-full rounded-xl border p-3 bg-gray-300 border-gray-300">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Flag_of_Greece.svg/250px-Flag_of_Greece.svg.png" width="100%" alt="Greece">
-                </div>
-                <div>
-                    <span class="text-black">Greece League 1</span>
-                </div>
-            </div>
-        </mat-card>
-        <mat-card>
-            <div class="w-full p-1 flex flex-col">
-                <div class="flex w-full rounded-xl border p-3 bg-gray-300 border-gray-300">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Flag_of_Greece.svg/250px-Flag_of_Greece.svg.png" width="100%" alt="Greece">
-                </div>
-                <div>Greece League 2</div>
-            </div>
-        </mat-card>
-        <mat-card>
-            <div class="w-full p-1 flex flex-col">
-                <div class="flex w-full rounded-xl border p-3 bg-gray-300 border-gray-300">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Flag_of_Greece.svg/250px-Flag_of_Greece.svg.png" width="100%" alt="Greece">
-                </div>
-                <div>Greece League 3</div>
-            </div>
-        </mat-card>
-        <mat-card>
-            <div class="w-full p-1 flex flex-col">
-                <div class="flex w-full rounded-xl border p-3 bg-gray-300 border-gray-300">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Flag_of_Greece.svg/250px-Flag_of_Greece.svg.png" width="100%" alt="Greece">
-                </div>
-                <div>Greece League 4</div>
-            </div>
-        </mat-card>
-        <mat-card>
-            <div class="w-full p-1 flex flex-col">
-                <div class="flex w-full rounded-xl border p-3 bg-gray-300 border-gray-300">
-                    <img src="https://upload.wikimedia.org/wikipedia/en/thumb/b/be/Flag_of_England.svg/1920px-Flag_of_England.svg.png" width="100%" alt="Greece">
-                </div>
-                <div>English League 1</div>
-            </div>
-        </mat-card>
-        <mat-card>
-            <div class="w-full p-1 flex flex-col">
-                <div class="flex w-full rounded-xl border p-3 bg-gray-300 border-gray-300">
-                    <img src="https://upload.wikimedia.org/wikipedia/en/thumb/b/be/Flag_of_England.svg/1920px-Flag_of_England.svg.png" width="100%" alt="Greece">
-                </div>
-                <div>English League 2</div>
-            </div>
-        </mat-card>
-        <mat-card>
-            <div class="w-full p-1 flex flex-col">
-                <div class="flex w-full rounded-xl border p-3 bg-gray-300 border-gray-300">
-                    <img src="https://upload.wikimedia.org/wikipedia/en/thumb/b/be/Flag_of_England.svg/1920px-Flag_of_England.svg.png" width="100%" alt="Greece">
-                </div>
-                <div>English League 3</div>
-            </div>
-        </mat-card>
-        <mat-card>
-            <div class="w-full p-1 flex flex-col">
-                <div class="flex w-full rounded-xl border p-3 bg-gray-300 border-gray-300">
-                    <img src="https://upload.wikimedia.org/wikipedia/en/thumb/b/be/Flag_of_England.svg/1920px-Flag_of_England.svg.png" width="100%" alt="Greece">
-                </div>
-                <div>English League 4</div>
-            </div>
-        </mat-card>
+<div class="competition-parent-container p-4">
+  <!-- Header -->
+  <div class="mb-6">
+    <h2 class="text-2xl font-bold">Competition Parents Management</h2>
+    <p class="text-gray-600 mt-2">Manage competition parents (Nations, Continents, and World)</p>
+  </div>
+
+  <!-- Error Message -->
+  @if (error()) {
+    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+      {{ error() }}
     </div>
+  }
+
+  <!-- Loading Indicator -->
+  @if (loading()) {
+    <div class="flex justify-center items-center py-8">
+      <div class="text-lg">Loading...</div>
+    </div>
+  }
+
+  <!-- Create Form -->
+  @if (createMode()) {
+    <mat-card class="mb-4">
+      <mat-card-header>
+        <mat-card-title>Create New Competition Parent</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <form [formGroup]="competitionParentForm" class="space-y-4 mt-4">
+          <app-form-textfield
+            [labelText]="'Name'"
+            [placeHolderText]="'Enter competition parent name (e.g., UEFA, Greece, FIFA)'"
+            [type]="'text'"
+            formControlName="Name">
+          </app-form-textfield>
+
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Type</mat-label>
+            <mat-select formControlName="Type">
+              @for (type of competitionTypes; track type) {
+                <mat-option [value]="type">{{ type }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+
+          <div class="flex gap-2 mt-4">
+            <button
+              mat-raised-button
+              color="primary"
+              type="button"
+              [disabled]="!competitionParentForm.valid || loading()"
+              (click)="saveCompetitionParent()">
+              Create
+            </button>
+            <button mat-stroked-button type="button" (click)="cancel()">Cancel</button>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  }
+
+  <!-- Competition Parents Grid -->
+  @if (!createMode() && !loading()) {
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+      <!-- Existing Competition Parents Cards -->
+      @for (parent of competitionParents(); track parent.competitionParentID) {
+        <mat-card class="relative">
+          <button 
+            mat-icon-button 
+            class="absolute top-2 right-2 z-10"
+            (click)="deleteCompetitionParent(parent, $event)"
+            aria-label="Delete competition parent">
+            <mat-icon>close</mat-icon>
+          </button>
+          <mat-card-content class="p-4">
+            <div class="flex flex-col items-center">
+              <div class="text-lg font-semibold mb-2">{{ parent.name }}</div>
+              <div class="text-sm text-gray-600 bg-gray-100 px-3 py-1 rounded-full">
+                {{ parent.type }}
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      }
+
+      <!-- Add New Competition Parent Card -->
+      <mat-card class="cursor-pointer hover:bg-gray-50 transition-colors" (click)="createNew()">
+        <mat-card-content class="p-4 flex items-center justify-center h-full min-h-[120px]">
+          <div class="flex flex-col items-center text-gray-400">
+            <mat-icon class="text-5xl mb-2">add_circle_outline</mat-icon>
+            <div class="text-sm">Add Competition Parent</div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  }
 </div>
