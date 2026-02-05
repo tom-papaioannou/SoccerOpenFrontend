@@ -59,16 +59,10 @@
   @if (!createMode() && !loading()) {
     <div class="tactics-grid">
       <!-- Existing Tactics Cards -->
-      @for (tactic of tactics(); track tactic.TacticID) {
-        <mat-card class="tactic-card">
+      @for (tactic of sortedTactics(); track tactic.TacticID) {
+        <mat-card class="tactic-card" [class.main-tactic]="tactic.isMain">
           <mat-card-content class="tactic-card-content">
             <div class="tactic-name">{{ tactic.Name }}</div>
-            @if (tactic.isMain) {
-              <div class="main-badge">
-                <mat-icon class="badge-icon">star</mat-icon>
-                <span>Main</span>
-              </div>
-            }
           </mat-card-content>
         </mat-card>
       }

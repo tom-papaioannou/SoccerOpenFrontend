@@ -48,6 +48,16 @@ export class Tactics implements OnInit {
   // Computed values
   canCreateNewTactic = computed(() => this.tactics().length < this.MAX_TACTICS);
   tacticsRemaining = computed(() => this.MAX_TACTICS - this.tactics().length);
+  
+  // Sorted tactics with isMain first
+  sortedTactics = computed(() => {
+    const tacticsList = [...this.tactics()];
+    return tacticsList.sort((a, b) => {
+      // Sort by isMain descending (true first, then false)
+      if (a.isMain === b.isMain) return 0;
+      return a.isMain ? -1 : 1;
+    });
+  });
 
   constructor(
     private readonly tacticsService: TacticsService,
