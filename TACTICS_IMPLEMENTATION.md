@@ -4,70 +4,128 @@ This document describes the tactics management feature implementation for the Fo
 
 ## Overview
 
-The tactics feature provides a complete CRUD (Create, Read, Update, Delete) interface for managing team tactics.
+The tactics feature provides an interface for managing team tactics, aligned with the actual backend API implementation.
 
 ## Files Changed
 
 ### 1. Type Definitions
-- **`src/app/models/tactic.model.ts`** (NEW)
-  - `Tactic` interface: Main data model
-  - `CreateTacticRequest` interface: DTO for creating tactics
-  - `UpdateTacticRequest` interface: DTO for updating tactics
+- **`src/app/models/tactic.model.ts`** (UPDATED)
+  - `Tactic` interface: Main data model (TeamID, Name, Formation, Description)
+  - `CreateTacticRequest` interface: DTO for creating tactics (requires TeamID)
+  - `PlayerTactic` interface: Player positioning within tactics
+  - `AddPlayerTacticRequest` interface: DTO for adding players to tactics
 
 ### 2. Service Layer
-- **`src/app/services/tactics.service.ts`** (ENHANCED)
-  - `getAllTactics()`: Get all tactics across teams
-  - `getTactics(teamId)`: Get tactics for a specific team
-  - `getTactic(id)`: Get a single tactic by ID
-  - `createTactic(tactic)`: Create a new tactic
-  - `updateTactic(id, tactic)`: Update an existing tactic
-  - `deleteTactic(id)`: Delete a tactic
+- **`src/app/services/tactics.service.ts`** (UPDATED TO MATCH BACKEND)
+  - `getTeamTactics(teamID)`: Get tactics for a specific team
+  - `createTeamTactic(tactic)`: Create a new tactic
+  - `getPlayerTactics(tacticID)`: Get player tactics for a tactic
+  - `addPlayerTactic(playerTactic)`: Add a player to a tactic
   - Error handling with `catchError`
-  - Caching with `shareReplay(1)`
+  - Caching with `shareReplay(1)` for GET requests
   - All methods return RxJS `Observable`
 
 ### 3. Component Layer
-- **`src/app/components/team/tactics/tactics.ts`** (ENHANCED)
+- **`src/app/components/team/tactics/tactics.ts`** (UPDATED)
   - Standalone component using Angular 20.3.0 patterns
   - Signal-based state management
   - Reactive forms with validation
   - OnPush change detection
   - Proper subscription management with `takeUntilDestroyed`
+  - **Note**: Edit and delete functionality removed (not supported by backend)
 
-- **`src/app/components/team/tactics/tactics.html`** (ENHANCED)
+- **`src/app/components/team/tactics/tactics.html`** (UPDATED)
   - List view using DataTable component
-  - Create/edit form with FormTextfield components
-  - Delete confirmation dialog
+  - Create form with FormTextfield components
   - Loading and error states
   - Responsive design with Tailwind CSS
+  - **Note**: Edit/delete actions removed
 
-- **`src/app/components/team/tactics/tactics.css`** (ENHANCED)
+- **`src/app/components/team/tactics/tactics.css`** (NO CHANGES)
   - Container styling
   - Form spacing utilities
 
-- **`src/app/components/team/tactics/tactics.spec.ts`** (ENHANCED)
-  - Updated test setup with HttpClient testing providers
+- **`src/app/components/team/tactics/tactics.spec.ts`** (NO CHANGES)
+  - Test setup with HttpClient testing providers
 
 ## API Endpoints
 
 The service uses the following REST endpoints (base URL: `https://localhost:7201`):
 
-- `GET /api/tactics` - List all tactics
-- `GET /api/tactics/team/{teamId}` - List tactics for a team
-- `GET /api/tactics/{id}` - Get single tactic
-- `POST /api/tactics` - Create tactic
-- `PUT /api/tactics/{id}` - Update tactic
-- `DELETE /api/tactics/{id}` - Delete tactic
+### Team Tactics Endpoints
+- `GET /api/tactics/getTeamTactics/{teamID}` - Get all tactics for a team
+- `POST /api/tactics/createTeamTactic` - Create a new tactic
+
+### Player Tactics Endpoints
+- `GET /api/tactics/getPlayerTactics/{tacticID}` - Get player tactics for a tactic
+- `POST /api/tactics/addPlayerTactic` - Add a player to a tactic position
+
+## Backend API Details
+
+Based on `TacticsController.cs`:
+
+### Get Team Tactics
+```csharp
+[HttpGet("getTeamTactics/{teamID}")]
+public async Task<IActionResult> GetTeamTactics(Guid teamID)
+```
+Returns: `List<Tactic>`
+
+### Create Team Tactic
+```csharp
+[HttpPost("createTeamTactic")]
+public async Task<IActionResult> CreateTeamTactic([FromBody] Tactic newTactic)
+```
+Validates that team exists before creating.
+Returns: Created `Tactic`
+
+### Get Player Tactics
+```csharp
+[HttpGet("getPlayerTactics/{tacticID}")]
+public async Task<IActionResult> GetPlayerTactics(Guid tacticID)
+```
+Returns: `List<PlayerTactic>`
+
+### Add Player Tactic
+```csharp
+[HttpPost("addPlayerTactic")]
+public async Task<IActionResult> AddPlayerTactic([FromBody] PlayerTactic newPlayerTactic)
+```
+Automatically removes existing player at same position before adding.
+Returns: Added `PlayerTactic`
+
+## Data Models
+
+### Tactic
+```typescript
+interface Tactic {
+  TacticID?: string;
+  TeamID: string;      // Required - GUID
+  Name?: string;
+  Formation?: string;
+  Description?: string;
+}
+```
+
+### PlayerTactic
+```typescript
+interface PlayerTactic {
+  PlayerTacticID?: string;
+  TacticID: string;      // Required - GUID
+  PlayerID?: string;     // GUID
+  PlayerPosition: string;
+}
+```
 
 ## Component Features
 
 ### List View
 - Displays tactics in a sortable table
-- Shows name, formation, and description
-- Edit and delete actions per row
-- "New Tactic" button to create tactics
+- Shows Name, Formation, and Description
+- Create button to add new tactics
+- **No edit or delete** (not supported by backend)
 
-### Create/Edit Form
+### Create Form
 - Name field (required, min 3 characters)
 - Formation field (optional)
 - Description field (optional)
@@ -75,15 +133,10 @@ The service uses the following REST endpoints (base URL: `https://localhost:7201
 - Disabled submit when invalid
 - Cancel button to close form
 
-### Delete Functionality
-- Confirmation dialog before deletion
-- Removes tactic from list on success
-- Error handling on failure
-
 ### State Management
 - Loading indicators during API calls
 - Error messages displayed to user
-- Optimistic UI updates where appropriate
+- Signal-based reactive state
 
 ## Technology Stack
 
@@ -102,19 +155,35 @@ The service uses the following REST endpoints (base URL: `https://localhost:7201
 The tactics component is accessible via the route:
 - `/team/tactics` (child route of team)
 
-## Assumptions
+## Current Limitations
 
-1. API endpoints follow the `/api/{resource}` pattern
-2. Backend returns JSON matching the `Tactic` interface
-3. Authentication/authorization is handled by existing guards
-4. Team ID context is provided when needed (currently uses getAllTactics for listing)
+1. **TeamID**: Currently hardcoded as a placeholder (`00000000-0000-0000-0000-000000000000`). 
+   - **TODO**: Update to get actual team ID from route params or authentication service.
+
+2. **No Update/Delete**: Backend API does not provide endpoints for updating or deleting tactics.
+   - If needed in the future, backend API must be enhanced first.
+
+3. **Player Tactics**: Service methods exist but not yet integrated in UI.
+   - Can be added in future enhancement.
+
+## Usage
+
+### Creating a Tactic
+1. Navigate to `/team/tactics`
+2. Click "New Tactic" button
+3. Fill in Name (required), Formation, and Description
+4. Click "Create"
+5. Tactic appears in the list
+
+### Backend Requirements
+- Team with matching TeamID must exist
+- Backend validates team existence before creation
 
 ## Future Enhancements
 
 Potential improvements:
-1. Team-specific filtering
-2. Advanced formation builder UI
-3. Pagination for large datasets
-4. Search and filtering
+1. Get TeamID from route or auth service (instead of hardcoded)
+2. Player tactics management UI
+3. Request backend to add update/delete endpoints if needed
+4. Formation diagram visualization
 5. Import/export tactics
-6. Tactical diagrams visualization
