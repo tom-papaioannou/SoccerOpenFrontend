@@ -60,7 +60,7 @@ export class TacticsService {
    * Backend endpoint: DELETE /api/tactics/deleteTactic/{tacticID}
    */
   deleteTactic(tacticID: string): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/deleteTactic/${tacticID}`).pipe(
+    return this.http.delete<void>(`${this.apiUrl}/deleteTeamTactic/${tacticID}`).pipe(
       catchError(this.handleError)
     );
   }

@@ -34,7 +34,7 @@ export class Tactics implements OnInit {
   
   // TODO: Get team ID from route params or auth service
   // For now using a placeholder that needs to be set
-  private teamId = '00000000-0000-0000-0000-000000000000'; 
+  private teamId = 'dc31837f-b9bc-4ae3-a65f-883fff1a4498';
   
   // State signals
   tactics = signal<Tactic[]>([]);
@@ -148,19 +148,18 @@ export class Tactics implements OnInit {
     event.stopPropagation();
     
     // Confirm deletion
-    if (!confirm(`Are you sure you want to delete the tactic "${tactic.Name}"?`)) {
+    if (!confirm(`Are you sure you want to delete the tactic "${tactic.name}"?`)) {
       return;
     }
 
-    if (!tactic.TacticID) {
+    if (!tactic.tacticID) {
       this.error.set('Cannot delete tactic: missing ID');
       return;
     }
 
     this.loading.set(true);
     this.error.set(null);
-
-    this.tacticsService.deleteTactic(tactic.TacticID)
+    this.tacticsService.deleteTactic(tactic.tacticID)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {

@@ -59,7 +59,7 @@
   @if (!createMode() && !loading()) {
     <div class="tactics-grid">
       <!-- Existing Tactics Cards -->
-      @for (tactic of sortedTactics(); track tactic.TacticID) {
+      @for (tactic of sortedTactics(); track tactic.tacticID) {
         <mat-card class="tactic-card" [class.main-tactic]="tactic.isMain">
           <button 
             mat-icon-button 
@@ -69,7 +69,7 @@
             <mat-icon>close</mat-icon>
           </button>
           <mat-card-content class="tactic-card-content">
-            <div class="tactic-name">{{ tactic.Name }}</div>
+            <div class="tactic-name">{{ tactic.name }}</div>
           </mat-card-content>
         </mat-card>
       }

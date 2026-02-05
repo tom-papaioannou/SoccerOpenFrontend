@@ -3,9 +3,9 @@
  * Matches the backend Tactic entity
  */
 export interface Tactic {
-  TacticID?: string;
-  TeamID: string;
-  Name: string;
+  tacticID?: string;
+  teamID: string;
+  name: string;
   isMain: boolean;
 }
 
