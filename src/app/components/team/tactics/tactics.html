@@ -1,1 +1,93 @@
-<p>tactics works!</p>
+<div class="tactics-container p-4">
+  <!-- Header -->
+  <div class="flex justify-between items-center mb-4">
+    <h2 class="text-2xl font-bold">Tactics Management</h2>
+    @if (!editMode()) {
+      <button mat-raised-button color="primary" (click)="createNew()">
+        <mat-icon>add</mat-icon>
+        New Tactic
+      </button>
+    }
+  </div>
+
+  <!-- Error Message -->
+  @if (error()) {
+    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+      {{ error() }}
+    </div>
+  }
+
+  <!-- Loading Indicator -->
+  @if (loading()) {
+    <div class="flex justify-center items-center py-8">
+      <div class="text-lg">Loading...</div>
+    </div>
+  }
+
+  <!-- Create/Edit Form -->
+  @if (editMode()) {
+    <mat-card class="mb-4">
+      <mat-card-header>
+        <mat-card-title>{{ hasSelectedTactic() ? 'Edit Tactic' : 'Create New Tactic' }}</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <form [formGroup]="tacticForm" class="space-y-4 mt-4">
+          <app-form-textfield
+            [labelText]="'Name'"
+            [placeHolderText]="'Enter tactic name'"
+            [type]="'text'"
+            formControlName="name">
+          </app-form-textfield>
+
+          <app-form-textfield
+            [labelText]="'Formation'"
+            [placeHolderText]="'e.g., 4-4-2, 4-3-3'"
+            [type]="'text'"
+            formControlName="formation">
+          </app-form-textfield>
+
+          <app-form-textfield
+            [labelText]="'Description'"
+            [placeHolderText]="'Enter tactic description'"
+            [type]="'text'"
+            formControlName="description">
+          </app-form-textfield>
+
+          <div class="flex gap-2 mt-4">
+            <app-action-button
+              [buttonText]="hasSelectedTactic() ? 'Update' : 'Create'"
+              (clicked)="saveTactic()"
+              [class.opacity-50]="!tacticForm.valid"
+              [class.cursor-not-allowed]="!tacticForm.valid">
+            </app-action-button>
+            <button mat-stroked-button (click)="cancel()">Cancel</button>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  }
+
+  <!-- Tactics List -->
+  @if (!editMode() && !loading()) {
+    @if (tactics().length === 0) {
+      <div class="text-center py-8">
+        <p class="text-gray-500">No tactics found. Create your first tactic!</p>
+      </div>
+    } @else {
+      <app-data-table
+        [data]="tactics()"
+        [columns]="displayedColumns">
+        <ng-template #actionsTemplate let-tactic>
+          <div class="flex gap-2 justify-center">
+            <button mat-icon-button color="primary" (click)="editTactic(tactic)" title="Edit">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="deleteTactic(tactic)" title="Delete">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </ng-template>
+      </app-data-table>
+    }
+  }
+</div>
