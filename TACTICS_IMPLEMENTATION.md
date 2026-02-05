@@ -10,8 +10,8 @@ The tactics feature provides an interface for managing team tactics, aligned wit
 
 ### 1. Type Definitions
 - **`src/app/models/tactic.model.ts`** (UPDATED)
-  - `Tactic` interface: Main data model (TeamID, Name, Formation, Description)
-  - `CreateTacticRequest` interface: DTO for creating tactics (requires TeamID)
+  - `Tactic` interface: Main data model (TeamID, Name, isMain)
+  - `CreateTacticRequest` interface: DTO for creating tactics (requires TeamID, Name, isMain)
   - `PlayerTactic` interface: Player positioning within tactics
   - `AddPlayerTacticRequest` interface: DTO for adding players to tactics
 
@@ -32,14 +32,15 @@ The tactics feature provides an interface for managing team tactics, aligned wit
   - Reactive forms with validation
   - OnPush change detection
   - Proper subscription management with `takeUntilDestroyed`
+  - MatCheckbox for isMain field
   - **Note**: Edit and delete functionality removed (not supported by backend)
 
 - **`src/app/components/team/tactics/tactics.html`** (UPDATED)
   - List view using DataTable component
-  - Create form with FormTextfield components
+  - Create form with Name input and isMain checkbox
   - Loading and error states
   - Responsive design with Tailwind CSS
-  - **Note**: Edit/delete actions removed
+  - **Note**: Formation and Description fields removed
 
 - **`src/app/components/team/tactics/tactics.css`** (NO CHANGES)
   - Container styling
@@ -96,14 +97,27 @@ Returns: Added `PlayerTactic`
 
 ## Data Models
 
-### Tactic
+### Tactic (Backend C# Class)
+```csharp
+public class Tactic
+{
+    public Guid TacticID { get; set; }
+    public Guid TeamID { get; set; }
+    [ForeignKey("TeamID")]
+    public virtual Team? Team { get; set; }
+    [StringLength(100, MinimumLength = 1)]
+    public string Name { get; set; } = string.Empty;
+    public bool isMain { get; set; }
+}
+```
+
+### Tactic (Frontend TypeScript Interface)
 ```typescript
 interface Tactic {
   TacticID?: string;
   TeamID: string;      // Required - GUID
-  Name?: string;
-  Formation?: string;
-  Description?: string;
+  Name: string;        // Required - 1-100 characters
+  isMain: boolean;     // Main tactic flag
 }
 ```
 
@@ -121,14 +135,13 @@ interface PlayerTactic {
 
 ### List View
 - Displays tactics in a sortable table
-- Shows Name, Formation, and Description
+- Shows Name and isMain status
 - Create button to add new tactics
 - **No edit or delete** (not supported by backend)
 
 ### Create Form
-- Name field (required, min 3 characters)
-- Formation field (optional)
-- Description field (optional)
+- Name field (required, 1-100 characters)
+- isMain checkbox (default: false)
 - Form validation
 - Disabled submit when invalid
 - Cancel button to close form
@@ -148,7 +161,7 @@ interface PlayerTactic {
 - **HTTP**: HttpClient with RxJS Observables
 - **UI**: Angular Material + Tailwind CSS
 - **Table**: Custom DataTable component
-- **Form Fields**: Custom FormTextfield component
+- **Form Fields**: Custom FormTextfield component + MatCheckbox
 
 ## Routing
 
@@ -171,13 +184,15 @@ The tactics component is accessible via the route:
 ### Creating a Tactic
 1. Navigate to `/team/tactics`
 2. Click "New Tactic" button
-3. Fill in Name (required), Formation, and Description
-4. Click "Create"
-5. Tactic appears in the list
+3. Fill in Name (required, 1-100 characters)
+4. Optionally check "Set as main tactic"
+5. Click "Create"
+6. Tactic appears in the list
 
 ### Backend Requirements
 - Team with matching TeamID must exist
 - Backend validates team existence before creation
+- Name must be 1-100 characters (validated both frontend and backend)
 
 ## Future Enhancements
 
@@ -187,3 +202,4 @@ Potential improvements:
 3. Request backend to add update/delete endpoints if needed
 4. Formation diagram visualization
 5. Import/export tactics
+6. Bulk operations
