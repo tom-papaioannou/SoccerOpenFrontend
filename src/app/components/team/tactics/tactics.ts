@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, signal, DestroyRef, inject } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, signal, computed, DestroyRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatCard, MatCardHeader, MatCardTitle, MatCardContent } from '@angular/material/card';
@@ -32,6 +32,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 })
 export class Tactics implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
+  private readonly MAX_TACTICS = 3;
   
   // TODO: Get team ID from route params or auth service
   // For now using a placeholder that needs to be set
@@ -45,6 +46,10 @@ export class Tactics implements OnInit {
 
   // Form
   tacticForm: FormGroup;
+
+  // Computed values
+  canCreateNewTactic = computed(() => this.tactics().length < this.MAX_TACTICS);
+  tacticsRemaining = computed(() => this.MAX_TACTICS - this.tactics().length);
 
   // Table columns - updated to match backend property names
   displayedColumns: ColumnDef<Tactic>[] = [
@@ -88,6 +93,11 @@ export class Tactics implements OnInit {
   }
 
   createNew(): void {
+    if (!this.canCreateNewTactic()) {
+      this.error.set(`Maximum of ${this.MAX_TACTICS} tactics reached. You cannot create more tactics.`);
+      return;
+    }
+    
     this.createMode.set(true);
     this.tacticForm.reset({ isMain: false });
     this.cdr.markForCheck();

@@ -3,12 +3,33 @@
   <div class="flex justify-between items-center mb-4">
     <h2 class="text-2xl font-bold">Tactics Management</h2>
     @if (!createMode()) {
-      <button mat-raised-button color="primary" (click)="createNew()">
+      <button 
+        mat-raised-button 
+        color="primary" 
+        (click)="createNew()"
+        [disabled]="!canCreateNewTactic()">
         <mat-icon>add</mat-icon>
         New Tactic
       </button>
     }
   </div>
+
+  <!-- Max tactics info message -->
+  @if (!createMode() && !canCreateNewTactic()) {
+    <div class="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded mb-4">
+      <div class="flex items-center">
+        <mat-icon class="mr-2">info</mat-icon>
+        <span>Maximum of 3 tactics reached. You cannot create more tactics.</span>
+      </div>
+    </div>
+  }
+
+  <!-- Tactics count info -->
+  @if (!createMode() && canCreateNewTactic() && tactics().length > 0) {
+    <div class="bg-gray-100 border border-gray-300 text-gray-700 px-4 py-2 rounded mb-4 text-sm">
+      <span>{{ tactics().length }} of 3 tactics created. {{ tacticsRemaining() }} remaining.</span>
+    </div>
+  }
 
   <!-- Error Message -->
   @if (error()) {
