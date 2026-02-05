@@ -46,7 +46,10 @@ export class App {
         this.cdr.markForCheck();
       });
 
-    this.signedIn = this.role ? true : false;
+    this.signedIn = localStorage.getItem("token") != null ? true : false;
+    if(this.signedIn){
+      this.role = localStorage.getItem("role");
+    }
 
     this.authService.authenticationChange?.subscribe({
       next:() => {

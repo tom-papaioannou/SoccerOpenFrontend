@@ -25,7 +25,6 @@ export class AuthService {
   isLoggedIn(): boolean {
     const t = this.token;
     if (!t){
-      this.emitChange();
       return false;
     }
     return !this.isTokenExpired(t);
@@ -42,7 +41,6 @@ export class AuthService {
     const payload = jwtDecode<JwtPayload>(token);
     if (!payload.exp) return true;
     const now = Math.floor(Date.now() / 1000);
-    this.emitChange();
     return payload.exp <= now;
   }
 
@@ -76,7 +74,6 @@ export class AuthService {
     this.role = result.role;
     this.loggedIn = true;
     localStorage.setItem('role', this.role);
-    localStorage.setItem('token', result.token);
     this.emitChange();
   }
 
