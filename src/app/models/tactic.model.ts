@@ -1,31 +1,41 @@
 /**
  * Tactic model representing a team's tactical setup
+ * Matches the backend Tactic entity
  */
 export interface Tactic {
-  id: string;
-  name: string;
-  description?: string;
-  formation?: string;
-  teamId?: string;
-  createdAt?: Date;
-  updatedAt?: Date;
+  TacticID?: string;
+  TeamID: string;
+  Name?: string;
+  Formation?: string;
+  Description?: string;
 }
 
 /**
  * DTO for creating a new tactic
+ * Must include TeamID as required by backend
  */
 export interface CreateTacticRequest {
-  name: string;
-  description?: string;
-  formation?: string;
-  teamId?: string;
+  TeamID: string;
+  Name?: string;
+  Formation?: string;
+  Description?: string;
 }
 
 /**
- * DTO for updating an existing tactic
+ * PlayerTactic model for player positioning within a tactic
  */
-export interface UpdateTacticRequest {
-  name?: string;
-  description?: string;
-  formation?: string;
+export interface PlayerTactic {
+  PlayerTacticID?: string;
+  TacticID: string;
+  PlayerID?: string;
+  PlayerPosition: string;
+}
+
+/**
+ * DTO for adding a player to a tactic
+ */
+export interface AddPlayerTacticRequest {
+  TacticID: string;
+  PlayerID?: string;
+  PlayerPosition: string;
 }

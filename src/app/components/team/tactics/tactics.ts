@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, signal, computed, DestroyRef, inject, ViewChild, TemplateRef, AfterViewInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, signal, DestroyRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatCard, MatCardHeader, MatCardTitle, MatCardContent } from '@angular/material/card';
@@ -7,7 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { DataTable, ColumnDef } from '../../shared/tables/data-table/data-table';
 import { FormTextfield } from '../../shared/textfields/form-textfield/form-textfield';
 import { TacticsService } from '../../../services/tactics.service';
-import { Tactic, CreateTacticRequest, UpdateTacticRequest } from '../../../models/tactic.model';
+import { Tactic, CreateTacticRequest } from '../../../models/tactic.model';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
@@ -28,30 +28,27 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   styleUrl: './tactics.css',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class Tactics implements OnInit, AfterViewInit {
+export class Tactics implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
   
-  @ViewChild('actionsTemplate', { static: false }) actionsTemplate!: TemplateRef<any>;
+  // TODO: Get team ID from route params or auth service
+  // For now using a placeholder that needs to be set
+  private teamId = '00000000-0000-0000-0000-000000000000'; 
   
   // State signals
   tactics = signal<Tactic[]>([]);
   loading = signal(false);
   error = signal<string | null>(null);
-  editMode = signal(false);
-  selectedTactic = signal<Tactic | null>(null);
+  createMode = signal(false);
 
   // Form
   tacticForm: FormGroup;
 
-  // Computed values
-  hasSelectedTactic = computed(() => this.selectedTactic() !== null);
-
-  // Table columns
+  // Table columns - updated to match backend property names
   displayedColumns: ColumnDef<Tactic>[] = [
-    { key: 'name', header: 'Name', width: '25%', sortable: true },
-    { key: 'formation', header: 'Formation', width: '20%', sortable: true },
-    { key: 'description', header: 'Description', width: '40%' },
-    { key: 'actions', header: 'Actions', width: '15%', align: 'center' }
+    { key: 'Name', header: 'Name', width: '30%', sortable: true },
+    { key: 'Formation', header: 'Formation', width: '25%', sortable: true },
+    { key: 'Description', header: 'Description', width: '45%' }
   ];
 
   constructor(
@@ -60,9 +57,9 @@ export class Tactics implements OnInit, AfterViewInit {
     private readonly cdr: ChangeDetectorRef
   ) {
     this.tacticForm = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(3)]],
-      formation: [''],
-      description: ['']
+      Name: ['', [Validators.required, Validators.minLength(3)]],
+      Formation: [''],
+      Description: ['']
     });
   }
 
@@ -70,22 +67,11 @@ export class Tactics implements OnInit, AfterViewInit {
     this.loadTactics();
   }
 
-  ngAfterViewInit(): void {
-    // Set the template for the actions column after view init
-    if (this.actionsTemplate) {
-      const actionsCol = this.displayedColumns.find(col => col.key === 'actions');
-      if (actionsCol) {
-        actionsCol.cellTemplate = this.actionsTemplate;
-        this.cdr.markForCheck();
-      }
-    }
-  }
-
   loadTactics(): void {
     this.loading.set(true);
     this.error.set(null);
 
-    this.tacticsService.getAllTactics()
+    this.tacticsService.getTeamTactics(this.teamId)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (tactics) => {
@@ -102,41 +88,9 @@ export class Tactics implements OnInit, AfterViewInit {
   }
 
   createNew(): void {
-    this.editMode.set(true);
-    this.selectedTactic.set(null);
+    this.createMode.set(true);
     this.tacticForm.reset();
     this.cdr.markForCheck();
-  }
-
-  editTactic(tactic: Tactic): void {
-    this.editMode.set(true);
-    this.selectedTactic.set(tactic);
-    this.tacticForm.patchValue({
-      name: tactic.name,
-      formation: tactic.formation || '',
-      description: tactic.description || ''
-    });
-    this.cdr.markForCheck();
-  }
-
-  deleteTactic(tactic: Tactic): void {
-    if (!confirm(`Are you sure you want to delete "${tactic.name}"?`)) {
-      return;
-    }
-
-    this.loading.set(true);
-    this.tacticsService.deleteTactic(tactic.id)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: () => {
-          this.loadTactics();
-        },
-        error: (err) => {
-          this.error.set(err.message || 'Failed to delete tactic');
-          this.loading.set(false);
-          this.cdr.markForCheck();
-        }
-      });
   }
 
   saveTactic(): void {
@@ -148,59 +102,32 @@ export class Tactics implements OnInit, AfterViewInit {
     this.error.set(null);
 
     const formValue = this.tacticForm.value;
-    const selected = this.selectedTactic();
+    
+    const createRequest: CreateTacticRequest = {
+      TeamID: this.teamId,
+      Name: formValue.Name,
+      Formation: formValue.Formation,
+      Description: formValue.Description
+    };
 
-    if (selected) {
-      // Update existing tactic
-      const updateRequest: UpdateTacticRequest = {
-        name: formValue.name,
-        formation: formValue.formation,
-        description: formValue.description
-      };
-
-      this.tacticsService.updateTactic(selected.id, updateRequest)
-        .pipe(takeUntilDestroyed(this.destroyRef))
-        .subscribe({
-          next: () => {
-            this.editMode.set(false);
-            this.selectedTactic.set(null);
-            this.tacticForm.reset();
-            this.loadTactics();
-          },
-          error: (err) => {
-            this.error.set(err.message || 'Failed to update tactic');
-            this.loading.set(false);
-            this.cdr.markForCheck();
-          }
-        });
-    } else {
-      // Create new tactic
-      const createRequest: CreateTacticRequest = {
-        name: formValue.name,
-        formation: formValue.formation,
-        description: formValue.description
-      };
-
-      this.tacticsService.createTactic(createRequest)
-        .pipe(takeUntilDestroyed(this.destroyRef))
-        .subscribe({
-          next: () => {
-            this.editMode.set(false);
-            this.tacticForm.reset();
-            this.loadTactics();
-          },
-          error: (err) => {
-            this.error.set(err.message || 'Failed to create tactic');
-            this.loading.set(false);
-            this.cdr.markForCheck();
-          }
-        });
-    }
+    this.tacticsService.createTeamTactic(createRequest)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.createMode.set(false);
+          this.tacticForm.reset();
+          this.loadTactics();
+        },
+        error: (err) => {
+          this.error.set(err.message || 'Failed to create tactic');
+          this.loading.set(false);
+          this.cdr.markForCheck();
+        }
+      });
   }
 
   cancel(): void {
-    this.editMode.set(false);
-    this.selectedTactic.set(null);
+    this.createMode.set(false);
     this.tacticForm.reset();
     this.cdr.markForCheck();
   }
