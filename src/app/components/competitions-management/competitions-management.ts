@@ -47,7 +47,7 @@ export class CompetitionsManagement implements OnInit {
     private cdr: ChangeDetectorRef
   ) {
     this.form = this.fb.group({
-      Name: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(100)]],
+      Name: ['', [Validators.required, Validators.maxLength(100)]],
       Type: [this.scopeOptions[0], Validators.required]
     });
   }
