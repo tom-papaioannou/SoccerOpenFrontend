@@ -5,7 +5,6 @@ import { MatCard, MatCardHeader, MatCardTitle, MatCardContent } from '@angular/m
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { DataTable, ColumnDef } from '../../shared/tables/data-table/data-table';
 import { FormTextfield } from '../../shared/textfields/form-textfield/form-textfield';
 import { TacticsService } from '../../../services/tactics.service';
 import { Tactic, CreateTacticRequest } from '../../../models/tactic.model';
@@ -23,7 +22,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     MatButtonModule,
     MatIconModule,
     MatCheckboxModule,
-    DataTable,
     FormTextfield
   ],
   templateUrl: './tactics.html',
@@ -50,12 +48,6 @@ export class Tactics implements OnInit {
   // Computed values
   canCreateNewTactic = computed(() => this.tactics().length < this.MAX_TACTICS);
   tacticsRemaining = computed(() => this.MAX_TACTICS - this.tactics().length);
-
-  // Table columns - updated to match backend property names
-  displayedColumns: ColumnDef<Tactic>[] = [
-    { key: 'Name', header: 'Name', width: '60%', sortable: true },
-    { key: 'isMain', header: 'Main Tactic', width: '40%', sortable: true }
-  ];
 
   constructor(
     private readonly tacticsService: TacticsService,

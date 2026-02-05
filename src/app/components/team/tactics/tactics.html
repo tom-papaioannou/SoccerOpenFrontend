@@ -1,35 +1,8 @@
 <div class="tactics-container p-4">
   <!-- Header -->
-  <div class="flex justify-between items-center mb-4">
+  <div class="mb-6">
     <h2 class="text-2xl font-bold">Tactics Management</h2>
-    @if (!createMode()) {
-      <button 
-        mat-raised-button 
-        color="primary" 
-        (click)="createNew()"
-        [disabled]="!canCreateNewTactic()">
-        <mat-icon>add</mat-icon>
-        New Tactic
-      </button>
-    }
   </div>
-
-  <!-- Max tactics info message -->
-  @if (!createMode() && !canCreateNewTactic()) {
-    <div class="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded mb-4">
-      <div class="flex items-center">
-        <mat-icon class="mr-2">info</mat-icon>
-        <span>Maximum of 3 tactics reached. You cannot create more tactics.</span>
-      </div>
-    </div>
-  }
-
-  <!-- Tactics count info -->
-  @if (!createMode() && canCreateNewTactic() && tactics().length > 0) {
-    <div class="bg-gray-100 border border-gray-300 text-gray-700 px-4 py-2 rounded mb-4 text-sm">
-      <span>{{ tactics().length }} of 3 tactics created. {{ tacticsRemaining() }} remaining.</span>
-    </div>
-  }
 
   <!-- Error Message -->
   @if (error()) {
@@ -82,17 +55,32 @@
     </mat-card>
   }
 
-  <!-- Tactics List -->
+  <!-- Tactics Cards Grid -->
   @if (!createMode() && !loading()) {
-    @if (tactics().length === 0) {
-      <div class="text-center py-8">
-        <p class="text-gray-500">No tactics found. Create your first tactic!</p>
-      </div>
-    } @else {
-      <app-data-table
-        [data]="tactics()"
-        [columns]="displayedColumns">
-      </app-data-table>
-    }
+    <div class="tactics-grid">
+      <!-- Existing Tactics Cards -->
+      @for (tactic of tactics(); track tactic.TacticID) {
+        <mat-card class="tactic-card">
+          <mat-card-content class="tactic-card-content">
+            <div class="tactic-name">{{ tactic.Name }}</div>
+            @if (tactic.isMain) {
+              <div class="main-badge">
+                <mat-icon class="badge-icon">star</mat-icon>
+                <span>Main</span>
+              </div>
+            }
+          </mat-card-content>
+        </mat-card>
+      }
+
+      <!-- Add New Tactic Card (shown when < 3 tactics) -->
+      @if (canCreateNewTactic()) {
+        <mat-card class="tactic-card add-card" (click)="createNew()">
+          <mat-card-content class="tactic-card-content add-card-content">
+            <mat-icon class="add-icon">add</mat-icon>
+          </mat-card-content>
+        </mat-card>
+      }
+    </div>
   }
 </div>
