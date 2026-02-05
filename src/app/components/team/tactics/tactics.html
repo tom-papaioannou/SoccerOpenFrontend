@@ -1,1 +1,87 @@
-<p>tactics works!</p>
+<div class="tactics-container p-4">
+  <!-- Header -->
+  <div class="mb-6">
+    <h2 class="text-2xl font-bold">Tactics Management</h2>
+  </div>
+
+  <!-- Error Message -->
+  @if (error()) {
+    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+      {{ error() }}
+    </div>
+  }
+
+  <!-- Loading Indicator -->
+  @if (loading()) {
+    <div class="flex justify-center items-center py-8">
+      <div class="text-lg">Loading...</div>
+    </div>
+  }
+
+  <!-- Create Form -->
+  @if (createMode()) {
+    <mat-card class="mb-4">
+      <mat-card-header>
+        <mat-card-title>Create New Tactic</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <form [formGroup]="tacticForm" class="space-y-4 mt-4">
+          <app-form-textfield
+            [labelText]="'Name'"
+            [placeHolderText]="'Enter tactic name (1-100 characters)'"
+            [type]="'text'"
+            formControlName="Name">
+          </app-form-textfield>
+
+          <div class="flex items-center">
+            <mat-checkbox formControlName="isMain" color="primary">
+              Set as main tactic
+            </mat-checkbox>
+          </div>
+
+          <div class="flex gap-2 mt-4">
+            <button
+              mat-raised-button
+              color="primary"
+              type="button"
+              [disabled]="!tacticForm.valid || loading()"
+              (click)="saveTactic()">
+              Create
+            </button>
+            <button mat-stroked-button type="button" (click)="cancel()">Cancel</button>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  }
+
+  <!-- Tactics Cards Grid -->
+  @if (!createMode() && !loading()) {
+    <div class="tactics-grid">
+      <!-- Existing Tactics Cards -->
+      @for (tactic of sortedTactics(); track tactic.tacticID) {
+        <mat-card class="tactic-card" [class.main-tactic]="tactic.isMain">
+          <button 
+            mat-icon-button 
+            class="delete-button"
+            (click)="deleteTactic(tactic, $event)"
+            aria-label="Delete tactic">
+            <mat-icon>close</mat-icon>
+          </button>
+          <mat-card-content class="tactic-card-content">
+            <div class="tactic-name">{{ tactic.name }}</div>
+          </mat-card-content>
+        </mat-card>
+      }
+
+      <!-- Add New Tactic Card (shown when < 3 tactics) -->
+      @if (canCreateNewTactic()) {
+        <mat-card class="tactic-card add-card" (click)="createNew()">
+          <mat-card-content class="tactic-card-content add-card-content">
+            <mat-icon class="add-icon">add</mat-icon>
+          </mat-card-content>
+        </mat-card>
+      }
+    </div>
+  }
+</div>
