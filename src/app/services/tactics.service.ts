@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, throwError } from 'rxjs';
-import { catchError, map, shareReplay, tap } from 'rxjs/operators';
+import { Observable, throwError } from 'rxjs';
+import { catchError, shareReplay } from 'rxjs/operators';
 import { environment } from '../../environments/environment.development';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Tactic, CreateTacticRequest, UpdateTacticRequest } from '../models/tactic.model';
@@ -10,7 +10,6 @@ import { Tactic, CreateTacticRequest, UpdateTacticRequest } from '../models/tact
 })
 export class TacticsService {
   private readonly apiUrl = `${environment.apiUrl}/api/tactics`;
-  private readonly refreshSubject = new BehaviorSubject<void>(undefined);
 
   constructor(private readonly http: HttpClient) {}
 
@@ -48,7 +47,6 @@ export class TacticsService {
    */
   createTactic(tactic: CreateTacticRequest): Observable<Tactic> {
     return this.http.post<Tactic>(this.apiUrl, tactic).pipe(
-      tap(() => this.invalidateCache()),
       catchError(this.handleError)
     );
   }
@@ -58,7 +56,6 @@ export class TacticsService {
    */
   updateTactic(id: string, tactic: UpdateTacticRequest): Observable<Tactic> {
     return this.http.put<Tactic>(`${this.apiUrl}/${id}`, tactic).pipe(
-      tap(() => this.invalidateCache()),
       catchError(this.handleError)
     );
   }
@@ -68,16 +65,8 @@ export class TacticsService {
    */
   deleteTactic(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(
-      tap(() => this.invalidateCache()),
       catchError(this.handleError)
     );
-  }
-
-  /**
-   * Invalidate the cache to force refresh
-   */
-  private invalidateCache(): void {
-    this.refreshSubject.next();
   }
 
   /**

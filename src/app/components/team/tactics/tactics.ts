@@ -6,7 +6,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { DataTable, ColumnDef } from '../../shared/tables/data-table/data-table';
 import { FormTextfield } from '../../shared/textfields/form-textfield/form-textfield';
-import { ActionButton } from '../../shared/buttons/action-button/action-button';
 import { TacticsService } from '../../../services/tactics.service';
 import { Tactic, CreateTacticRequest, UpdateTacticRequest } from '../../../models/tactic.model';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -23,8 +22,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     MatButtonModule,
     MatIconModule,
     DataTable,
-    FormTextfield,
-    ActionButton
+    FormTextfield
   ],
   templateUrl: './tactics.html',
   styleUrl: './tactics.css',
@@ -46,7 +44,6 @@ export class Tactics implements OnInit, AfterViewInit {
   tacticForm: FormGroup;
 
   // Computed values
-  isFormValid = computed(() => this.tacticForm?.valid ?? false);
   hasSelectedTactic = computed(() => this.selectedTactic() !== null);
 
   // Table columns

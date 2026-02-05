@@ -54,13 +54,15 @@
           </app-form-textfield>
 
           <div class="flex gap-2 mt-4">
-            <app-action-button
-              [buttonText]="hasSelectedTactic() ? 'Update' : 'Create'"
-              (clicked)="saveTactic()"
-              [class.opacity-50]="!tacticForm.valid"
-              [class.cursor-not-allowed]="!tacticForm.valid">
-            </app-action-button>
-            <button mat-stroked-button (click)="cancel()">Cancel</button>
+            <button
+              mat-raised-button
+              color="primary"
+              type="button"
+              [disabled]="!tacticForm.valid || loading()"
+              (click)="saveTactic()">
+              {{ hasSelectedTactic() ? 'Update' : 'Create' }}
+            </button>
+            <button mat-stroked-button type="button" (click)="cancel()">Cancel</button>
           </div>
         </form>
       </mat-card-content>
