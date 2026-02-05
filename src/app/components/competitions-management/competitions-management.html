@@ -1,32 +1,28 @@
 <div class="competition-parent-container p-4">
-  <!-- Header -->
   <div class="mb-6">
     <h2 class="text-2xl font-bold">Competition Parents Management</h2>
     <p class="text-gray-600 mt-2">Manage competition parents (Nations, Continents, and World)</p>
   </div>
 
-  <!-- Error Message -->
-  @if (error()) {
+  @if (errorMsg()) {
     <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-      {{ error() }}
+      {{ errorMsg() }}
     </div>
   }
 
-  <!-- Loading Indicator -->
-  @if (loading()) {
+  @if (busy()) {
     <div class="flex justify-center items-center py-8">
       <div class="text-lg">Loading...</div>
     </div>
   }
 
-  <!-- Create Form -->
-  @if (createMode()) {
+  @if (isCreating()) {
     <mat-card class="mb-4">
       <mat-card-header>
         <mat-card-title>Create New Competition Parent</mat-card-title>
       </mat-card-header>
       <mat-card-content>
-        <form [formGroup]="competitionParentForm" class="space-y-4 mt-4">
+        <form [formGroup]="form" class="space-y-4 mt-4">
           <app-form-textfield
             [labelText]="'Name'"
             [placeHolderText]="'Enter competition parent name (e.g., UEFA, Greece, FIFA)'"
@@ -37,8 +33,8 @@
           <mat-form-field appearance="outline" class="w-full">
             <mat-label>Type</mat-label>
             <mat-select formControlName="Type">
-              @for (type of competitionTypes; track type) {
-                <mat-option [value]="type">{{ type }}</mat-option>
+              @for (scopeType of scopeOptions; track scopeType) {
+                <mat-option [value]="scopeType">{{ scopeType }}</mat-option>
               }
             </mat-select>
           </mat-form-field>
@@ -48,43 +44,40 @@
               mat-raised-button
               color="primary"
               type="button"
-              [disabled]="!competitionParentForm.valid || loading()"
-              (click)="saveCompetitionParent()">
+              [disabled]="!form.valid || busy()"
+              (click)="submitForm()">
               Create
             </button>
-            <button mat-stroked-button type="button" (click)="cancel()">Cancel</button>
+            <button mat-stroked-button type="button" (click)="cancelForm()">Cancel</button>
           </div>
         </form>
       </mat-card-content>
     </mat-card>
   }
 
-  <!-- Competition Parents Grid -->
-  @if (!createMode() && !loading()) {
+  @if (!isCreating() && !busy()) {
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-      <!-- Existing Competition Parents Cards -->
-      @for (parent of competitionParents(); track parent.competitionParentID) {
+      @for (organization of orgs(); track organization.competitionParentID) {
         <mat-card class="relative">
           <button 
             mat-icon-button 
             class="absolute top-2 right-2 z-10"
-            (click)="deleteCompetitionParent(parent, $event)"
+            (click)="removeOrg(organization, $event)"
             aria-label="Delete competition parent">
             <mat-icon>close</mat-icon>
           </button>
           <mat-card-content class="p-4">
             <div class="flex flex-col items-center">
-              <div class="text-lg font-semibold mb-2">{{ parent.name }}</div>
+              <div class="text-lg font-semibold mb-2">{{ organization.name }}</div>
               <div class="text-sm text-gray-600 bg-gray-100 px-3 py-1 rounded-full">
-                {{ parent.type }}
+                {{ organization.type }}
               </div>
             </div>
           </mat-card-content>
         </mat-card>
       }
 
-      <!-- Add New Competition Parent Card -->
-      <mat-card class="cursor-pointer hover:bg-gray-50 transition-colors" (click)="createNew()">
+      <mat-card class="cursor-pointer hover:bg-gray-50 transition-colors" (click)="startCreate()">
         <mat-card-content class="p-4 flex items-center justify-center h-full min-h-[120px]">
           <div class="flex flex-col items-center text-gray-400">
             <mat-icon class="text-5xl mb-2">add_circle_outline</mat-icon>

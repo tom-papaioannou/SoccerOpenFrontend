@@ -1,13 +1,14 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DestroyRef, inject, OnInit, signal, computed } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatCardModule, MatCardHeader, MatCardTitle, MatCardContent } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormTextfield } from '../shared/textfields/form-textfield/form-textfield';
 import { CompetitionParentService } from '../../services/competition-parent.service';
-import { CompetitionParent, CreateCompetitionParentRequest } from '../../models/competition-parent.model';
+import { IParentOrganization, IParentOrgPayload, parentOrgScopes } from '../../models/competition-parent.model';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
@@ -22,6 +23,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     MatButtonModule,
     MatIconModule,
     MatSelectModule,
+    MatFormFieldModule,
     FormTextfield
   ],
   templateUrl: './competitions-management.html',
@@ -29,125 +31,110 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CompetitionsManagement implements OnInit {
-  private readonly destroyRef = inject(DestroyRef);
+  private destroyRef = inject(DestroyRef);
   
-  // State signals
-  competitionParents = signal<CompetitionParent[]>([]);
-  loading = signal(false);
-  error = signal<string | null>(null);
-  createMode = signal(false);
+  orgs = signal<IParentOrganization[]>([]);
+  busy = signal(false);
+  errorMsg = signal<string | null>(null);
+  isCreating = signal(false);
 
-  // Form
-  competitionParentForm: FormGroup;
-
-  // Available types for dropdown
-  competitionTypes: ('Nation' | 'Continent' | 'World')[] = ['Nation', 'Continent', 'World'];
+  form: FormGroup;
+  scopeOptions = [...parentOrgScopes];
 
   constructor(
-    private readonly competitionParentService: CompetitionParentService,
-    private readonly fb: FormBuilder,
-    private readonly cdr: ChangeDetectorRef
+    private svc: CompetitionParentService,
+    private fb: FormBuilder,
+    private cdr: ChangeDetectorRef
   ) {
-    this.competitionParentForm = this.fb.group({
+    this.form = this.fb.group({
       Name: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(100)]],
-      Type: ['Nation', Validators.required]
+      Type: [this.scopeOptions[0], Validators.required]
     });
   }
 
   ngOnInit(): void {
-    this.loadCompetitionParents();
+    this.refresh();
   }
 
-  loadCompetitionParents(): void {
-    this.loading.set(true);
-    this.error.set(null);
+  refresh(): void {
+    this.busy.set(true);
+    this.errorMsg.set(null);
 
-    this.competitionParentService.getAllCompetitionParents()
+    this.svc.loadAll()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: (competitionParents) => {
-          this.competitionParents.set(competitionParents);
-          this.loading.set(false);
+        next: (data) => {
+          this.orgs.set(data);
+          this.busy.set(false);
           this.cdr.markForCheck();
         },
         error: (err) => {
-          this.error.set(err.message || 'Failed to load competition parents');
-          this.loading.set(false);
+          this.errorMsg.set(err.message || 'Failed to load organizations');
+          this.busy.set(false);
           this.cdr.markForCheck();
         }
       });
   }
 
-  createNew(): void {
-    this.createMode.set(true);
-    this.competitionParentForm.reset({ Type: 'Nation' });
+  startCreate(): void {
+    this.isCreating.set(true);
+    this.form.reset({ Type: this.scopeOptions[0] });
     this.cdr.markForCheck();
   }
 
-  saveCompetitionParent(): void {
-    if (!this.competitionParentForm.valid) {
-      return;
-    }
+  submitForm(): void {
+    if (!this.form.valid) return;
 
-    this.loading.set(true);
-    this.error.set(null);
+    this.busy.set(true);
+    this.errorMsg.set(null);
 
-    const formValue = this.competitionParentForm.value;
-    
-    const createRequest: CreateCompetitionParentRequest = {
-      Name: formValue.Name,
-      Type: formValue.Type
-    };
+    const payload: IParentOrgPayload = this.form.value;
 
-    this.competitionParentService.createCompetitionParent(createRequest)
+    this.svc.save(payload)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
-          this.createMode.set(false);
-          this.competitionParentForm.reset({ Type: 'Nation' });
-          this.loadCompetitionParents();
+          this.isCreating.set(false);
+          this.form.reset({ Type: this.scopeOptions[0] });
+          this.refresh();
         },
         error: (err) => {
-          this.error.set(err.message || 'Failed to create competition parent');
-          this.loading.set(false);
+          this.errorMsg.set(err.message || 'Failed to create organization');
+          this.busy.set(false);
           this.cdr.markForCheck();
         }
       });
   }
 
-  cancel(): void {
-    this.createMode.set(false);
-    this.competitionParentForm.reset({ Type: 'Nation' });
+  cancelForm(): void {
+    this.isCreating.set(false);
+    this.form.reset({ Type: this.scopeOptions[0] });
     this.cdr.markForCheck();
   }
 
-  deleteCompetitionParent(competitionParent: CompetitionParent, event: Event): void {
-    // Prevent card click event from triggering
-    event.stopPropagation();
+  removeOrg(org: IParentOrganization, evt: Event): void {
+    evt.stopPropagation();
     
-    // Confirm deletion
-    if (!confirm(`Are you sure you want to delete the competition parent "${competitionParent.name}"?`)) {
+    if (!confirm(`Delete "${org.name}"?`)) return;
+    if (!org.competitionParentID) {
+      this.errorMsg.set('Cannot delete: missing ID');
       return;
     }
 
-    if (!competitionParent.competitionParentID) {
-      this.error.set('Cannot delete competition parent: missing ID');
-      return;
-    }
-
-    this.loading.set(true);
-    this.error.set(null);
-    this.competitionParentService.deleteCompetitionParent(competitionParent.competitionParentID)
+    this.busy.set(true);
+    this.errorMsg.set(null);
+    
+    this.svc.destroy(org.competitionParentID)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
-          this.loading.set(false);
-          this.loadCompetitionParents();
+          this.busy.set(false);
+          this.refresh();
           this.cdr.markForCheck();
         },
         error: (err) => {
-          this.error.set(err.message || 'Failed to delete competition parent');
-          this.loading.set(false);
+          this.errorMsg.set(err.message || 'Failed to delete organization');
+          this.busy.set(false);
           this.cdr.markForCheck();
         }
       });

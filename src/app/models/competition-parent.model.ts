@@ -1,18 +1,13 @@
-/**
- * CompetitionParent model representing a parent organization for competitions
- * Can be either a Nation, Continent, or World
- * Matches the backend CompetitionParent entity
- */
-export interface CompetitionParent {
+// Competition Parent Models with unique structure
+export interface IParentOrganization {
   competitionParentID?: string;
   name: string;
-  type: 'Nation' | 'Continent' | 'World';
+  type: string;
 }
 
-/**
- * DTO for creating a new competition parent
- */
-export interface CreateCompetitionParentRequest {
+export interface IParentOrgPayload {
   Name: string;
-  Type: 'Nation' | 'Continent' | 'World';
+  Type: string;
 }
+
+export const parentOrgScopes = ['Nation', 'Continent', 'World'] as const;
