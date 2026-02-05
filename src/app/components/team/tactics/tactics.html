@@ -61,6 +61,13 @@
       <!-- Existing Tactics Cards -->
       @for (tactic of sortedTactics(); track tactic.TacticID) {
         <mat-card class="tactic-card" [class.main-tactic]="tactic.isMain">
+          <button 
+            mat-icon-button 
+            class="delete-button"
+            (click)="deleteTactic(tactic, $event)"
+            aria-label="Delete tactic">
+            <mat-icon>close</mat-icon>
+          </button>
           <mat-card-content class="tactic-card-content">
             <div class="tactic-name">{{ tactic.Name }}</div>
           </mat-card-content>

@@ -56,6 +56,16 @@ export class TacticsService {
   }
 
   /**
+   * Delete a tactic
+   * Backend endpoint: DELETE /api/tactics/deleteTactic/{tacticID}
+   */
+  deleteTactic(tacticID: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/deleteTactic/${tacticID}`).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  /**
    * Handle HTTP errors
    */
   private handleError(error: HttpErrorResponse): Observable<never> {

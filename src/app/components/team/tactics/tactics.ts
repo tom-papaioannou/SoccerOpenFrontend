@@ -142,4 +142,37 @@ export class Tactics implements OnInit {
     this.tacticForm.reset({ isMain: false });
     this.cdr.markForCheck();
   }
+
+  deleteTactic(tactic: Tactic, event: Event): void {
+    // Prevent card click event from triggering
+    event.stopPropagation();
+    
+    // Confirm deletion
+    if (!confirm(`Are you sure you want to delete the tactic "${tactic.Name}"?`)) {
+      return;
+    }
+
+    if (!tactic.TacticID) {
+      this.error.set('Cannot delete tactic: missing ID');
+      return;
+    }
+
+    this.loading.set(true);
+    this.error.set(null);
+
+    this.tacticsService.deleteTactic(tactic.TacticID)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.loading.set(false);
+          this.loadTactics();
+          this.cdr.markForCheck();
+        },
+        error: (err) => {
+          this.error.set(err.message || 'Failed to delete tactic');
+          this.loading.set(false);
+          this.cdr.markForCheck();
+        }
+      });
+  }
 }
