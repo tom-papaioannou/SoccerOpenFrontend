@@ -26,3 +26,13 @@
 :host ::ng-deep .mdc-line-ripple {
   display: none !important;
 }
+
+/* Dropdown overlay panel styling */
+:host ::ng-deep .cdk-overlay-pane {
+  background-color: white !important;
+}
+
+:host ::ng-deep .mat-mdc-select-panel {
+  background-color: white !important;
+}
+
