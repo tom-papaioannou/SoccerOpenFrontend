@@ -14,7 +14,7 @@ export class CompetitionParentService {
   }
 
   loadAll(): Observable<IParentOrganization[]> {
-    return this.http.get<IParentOrganization[]>(this.buildUrl());
+    return this.http.get<IParentOrganization[]>(this.buildUrl('getAllCompetitionParents'));
   }
 
   save(payload: IParentOrgPayload): Observable<IParentOrganization> {
