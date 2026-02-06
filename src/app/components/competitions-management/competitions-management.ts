@@ -85,6 +85,9 @@ export class CompetitionsManagement implements OnInit {
     { value: CompetitionType.Continental, label: 'Continental' }
   ];
 
+  // Expose enum to template for conditional rendering
+  CompetitionType = CompetitionType;
+
   constructor(
     private svc: CompetitionParentService,
     private competitionSvc: CompetitionService,
@@ -111,6 +114,27 @@ export class CompetitionsManagement implements OnInit {
         this.isMobile = isMobile;
         this.cdr.markForCheck();
       });
+  }
+
+  // Getter to check current competition type
+  get selectedCompetitionType(): CompetitionType {
+    return this.competitionForm.get('CompetitionType')?.value;
+  }
+
+  // Getter to return appropriate priority options based on competition type
+  get priorityOptions() {
+    const type = this.selectedCompetitionType;
+    if (type === CompetitionType.League) {
+      return this.priorityLeagueTypes;
+    } else {
+      return this.priorityCupTypes;
+    }
+  }
+
+  // Getter to return appropriate label for priority field
+  get priorityLabel(): string {
+    const type = this.selectedCompetitionType;
+    return type === CompetitionType.League ? 'Division' : 'Importance';
   }
 
   ngOnInit(): void {
