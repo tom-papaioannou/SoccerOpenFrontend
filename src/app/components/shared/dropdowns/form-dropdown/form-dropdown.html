@@ -1,0 +1,22 @@
+
+<mat-form-field class="w-full" appearance="fill">
+    <mat-label>{{ labelText }}</mat-label>
+
+    <mat-select [panelClass]="'panelBg'"
+        [disabled]="disabled" 
+        [value]="value" 
+        [placeholder]="placeHolderText"
+        (selectionChange)="onSelectionChange($event.value)"
+        (blur)="onBlur()">
+        
+        @for (option of options; track option[valueKey]) {
+            <mat-option [value]="option[valueKey]">
+                {{ option[displayKey] }}
+            </mat-option>
+        }
+    </mat-select>
+
+    @if (hintText) {
+        <mat-hint>{{ hintText }}</mat-hint>
+    }
+</mat-form-field>

@@ -1,0 +1,46 @@
+<div class="competition-details-container p-4">
+  <!-- Header with back button -->
+  <div class="mb-4 flex items-center gap-4">
+    <button mat-icon-button (click)="goBack()" aria-label="Go back">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <h2 class="text-2xl font-bold">Competition Details</h2>
+  </div>
+
+  @if (loading()) {
+    <div class="flex justify-center items-center py-8">
+      <div class="text-lg">Loading competition details...</div>
+    </div>
+  } @else if (error()) {
+    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+      {{ error() }}
+    </div>
+  } @else if (competition()) {
+    <!-- Competition Info Card -->
+    <mat-card class="mb-6">
+      <mat-card-content class="p-4">
+        <h3 class="text-xl font-bold text-blue-600 mb-2">{{ competition()!.competitionName }}</h3>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Teams Table -->
+    <mat-card>
+      <mat-card-content class="p-4">
+        <h4 class="text-lg font-semibold mb-4">Teams</h4>
+        
+        @if (teams().length > 0) {
+          <app-data-table
+            [data]="teams()"
+            [columns]="$any(displayedColumns)"
+            class="teams-theme">
+          </app-data-table>
+        } @else {
+          <div class="text-center py-8 text-gray-500">
+            <mat-icon class="text-4xl mb-2 opacity-50">sports_soccer</mat-icon>
+            <p>No teams in this competition yet</p>
+          </div>
+        }
+      </mat-card-content>
+    </mat-card>
+  }
+</div>

@@ -15,7 +15,6 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(authReq).pipe(
     catchError((err: unknown) => {
-      debugger
       if (!(err instanceof HttpErrorResponse)) {
         return throwError(() => err);
       }
@@ -52,7 +51,6 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
           return next(retry);
         }),
         catchError(refreshErr => {
-          debugger
           isRefreshing = false;
           auth.clearToken(); // optional: log out client-side
           return throwError(() => refreshErr);

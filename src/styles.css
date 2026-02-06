@@ -66,3 +66,8 @@ body {
 .dt-header-right .mat-sort-header-container {
   justify-content: flex-end !important;
 }
+
+.panelBg.mat-mdc-select-panel,
+.panelBg.mat-mdc-select-panel .mdc-menu-surface {
+  background: #fff !important;
+}

@@ -1,73 +1,198 @@
-<div class="h-10 py-10">
-    <h2>Competitions</h2>
-</div>
-<div class="p-4">
-    <div class="grid grid-cols-6 gap-4">
-        <mat-card>
-            <div class="w-full p-1 flex flex-col bg-gray-300 rounded-xl border">
-                <div class="flex w-full rounded-xl border p-3 bg-gray-300 border-gray-300">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Flag_of_Greece.svg/250px-Flag_of_Greece.svg.png" width="100%" alt="Greece">
-                </div>
-                <div>
-                    <span class="text-black">Greece League 1</span>
-                </div>
-            </div>
-        </mat-card>
-        <mat-card>
-            <div class="w-full p-1 flex flex-col">
-                <div class="flex w-full rounded-xl border p-3 bg-gray-300 border-gray-300">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Flag_of_Greece.svg/250px-Flag_of_Greece.svg.png" width="100%" alt="Greece">
-                </div>
-                <div>Greece League 2</div>
-            </div>
-        </mat-card>
-        <mat-card>
-            <div class="w-full p-1 flex flex-col">
-                <div class="flex w-full rounded-xl border p-3 bg-gray-300 border-gray-300">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Flag_of_Greece.svg/250px-Flag_of_Greece.svg.png" width="100%" alt="Greece">
-                </div>
-                <div>Greece League 3</div>
-            </div>
-        </mat-card>
-        <mat-card>
-            <div class="w-full p-1 flex flex-col">
-                <div class="flex w-full rounded-xl border p-3 bg-gray-300 border-gray-300">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Flag_of_Greece.svg/250px-Flag_of_Greece.svg.png" width="100%" alt="Greece">
-                </div>
-                <div>Greece League 4</div>
-            </div>
-        </mat-card>
-        <mat-card>
-            <div class="w-full p-1 flex flex-col">
-                <div class="flex w-full rounded-xl border p-3 bg-gray-300 border-gray-300">
-                    <img src="https://upload.wikimedia.org/wikipedia/en/thumb/b/be/Flag_of_England.svg/1920px-Flag_of_England.svg.png" width="100%" alt="Greece">
-                </div>
-                <div>English League 1</div>
-            </div>
-        </mat-card>
-        <mat-card>
-            <div class="w-full p-1 flex flex-col">
-                <div class="flex w-full rounded-xl border p-3 bg-gray-300 border-gray-300">
-                    <img src="https://upload.wikimedia.org/wikipedia/en/thumb/b/be/Flag_of_England.svg/1920px-Flag_of_England.svg.png" width="100%" alt="Greece">
-                </div>
-                <div>English League 2</div>
-            </div>
-        </mat-card>
-        <mat-card>
-            <div class="w-full p-1 flex flex-col">
-                <div class="flex w-full rounded-xl border p-3 bg-gray-300 border-gray-300">
-                    <img src="https://upload.wikimedia.org/wikipedia/en/thumb/b/be/Flag_of_England.svg/1920px-Flag_of_England.svg.png" width="100%" alt="Greece">
-                </div>
-                <div>English League 3</div>
-            </div>
-        </mat-card>
-        <mat-card>
-            <div class="w-full p-1 flex flex-col">
-                <div class="flex w-full rounded-xl border p-3 bg-gray-300 border-gray-300">
-                    <img src="https://upload.wikimedia.org/wikipedia/en/thumb/b/be/Flag_of_England.svg/1920px-Flag_of_England.svg.png" width="100%" alt="Greece">
-                </div>
-                <div>English League 4</div>
-            </div>
-        </mat-card>
+<div class="competition-parent-container p-4">
+  <div class="mb-6">
+    <h2 class="text-2xl font-bold">Competitions Management</h2>
+  </div>
+
+  @if (errorMsg()) {
+    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+      {{ errorMsg() }}
     </div>
+  }
+
+  @if (busy()) {
+    <div class="flex justify-center items-center py-8">
+      <div class="text-lg">Loading...</div>
+    </div>
+  }
+
+  @if (isCreating()) {
+    <mat-card class="mb-4">
+      <mat-card-header>
+        <mat-card-title>Create New Competition Parent</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <form [formGroup]="form" class="space-y-4 mt-4">
+          <app-form-textfield
+            [labelText]="'Name'"
+            [placeHolderText]="'Enter competition parent name (e.g., UEFA, Greece, FIFA)'"
+            [type]="'text'"
+            formControlName="Name">
+          </app-form-textfield>
+
+          <app-form-dropdown
+            [labelText]="'Type'"
+            [options]="scopeOptionsForDropdown"
+            formControlName="Type">
+          </app-form-dropdown>
+
+          <div class="flex gap-2 mt-4">
+            <button
+              mat-raised-button
+              color="primary"
+              type="button"
+              [disabled]="!form.valid || busy()"
+              (click)="submitForm()">
+              Create
+            </button>
+            <button mat-stroked-button type="button" (click)="cancelForm()">Cancel</button>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  }
+
+  @if (!isCreating() && !busy()) {
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+      @for (organization of orgs(); track organization.competitionParentID) {
+        <mat-card class="relative cursor-pointer hover:shadow-lg transition-shadow" (click)="openDrawer(organization)">
+          <button 
+            mat-icon-button 
+            class="absolute top-2 right-2 z-10"
+            (click)="removeOrg(organization, $event)"
+            aria-label="Delete competition parent">
+            <mat-icon>close</mat-icon>
+          </button>
+          <mat-card-content class="p-4">
+            <div class="flex flex-col items-center">
+              <div class="text-lg font-semibold mb-2">{{ organization.name }}</div>
+              <div class="text-sm text-gray-600 bg-gray-100 px-3 py-1 rounded-full">
+                {{ organization.type }}
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      }
+
+      <mat-card class="cursor-pointer hover:bg-gray-50 transition-colors" (click)="startCreate()">
+        <mat-card-content class="p-4 flex items-center justify-center h-full min-h-[120px]">
+          <div class="flex flex-1 flex-col items-center justify-center text-gray-400">
+            <mat-icon class="text-5xl">add_circle_outline</mat-icon>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  }
 </div>
+
+<!-- Drawer for Competition Details -->
+<mat-drawer-container class="drawer-container" [hasBackdrop]="true">
+  <mat-drawer
+    #drawer
+    [mode]="'over'"
+    [position]="'end'"
+    [opened]="drawerOpen()"
+    (closed)="closeDrawer()"
+    [class.drawer-bottom]="isMobile"
+    [class.drawer-side]="!isMobile">
+    
+    @if (selectedParent()) {
+      <div class="drawer-content">
+        <!-- Header -->
+        <div class="drawer-header">
+          <div class="flex items-center justify-between p-4 border-b">
+            <h3 class="text-xl font-bold text-blue-600">{{ selectedParent()!.name }}</h3>
+            <button mat-icon-button (click)="closeDrawer()" aria-label="Close drawer">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+          <div class="px-4 py-2 bg-gray-50">
+            <span class="text-sm text-gray-600">{{ selectedParent()!.type }}</span>
+          </div>
+        </div>
+
+        <!-- Content -->
+        <div class="drawer-body p-4">
+          <h4 class="text-lg font-semibold mb-4">Competitions</h4>
+
+          <!-- Add Competition Form -->
+          <mat-card class="mb-4">
+            <mat-card-content class="p-4 bg-gray-300 rounded-xl">
+              <h5 class="font-medium mb-3">Add Competition</h5>
+              <form [formGroup]="competitionForm" class="space-y-3">
+                <app-form-textfield
+                  [labelText]="'Competition Name'"
+                  [placeHolderText]="'Enter competition name'"
+                  [type]="'text'"
+                  formControlName="CompetitionName">
+                </app-form-textfield>
+
+                <app-form-dropdown
+                  [labelText]="'Teams Type'"
+                  [options]="competitionTeamsTypes"
+                  formControlName="CompetitionTeamsType">
+                </app-form-dropdown>
+
+                <app-form-dropdown
+                  [labelText]="'Competition Type'"
+                  [options]="competitionTypes"
+                  formControlName="CompetitionType">
+                </app-form-dropdown>
+
+                <app-form-dropdown
+                  [labelText]="priorityLabel"
+                  [options]="priorityOptions"
+                  formControlName="Priority">
+                </app-form-dropdown>
+
+                <button
+                  mat-raised-button
+                  color="primary"
+                  type="button"
+                  [disabled]="!competitionForm.valid || competitionsBusy()"
+                  (click)="addCompetition()"
+                  class="w-full">
+                  <mat-icon>add</mat-icon>
+                  Add Competition
+                </button>
+              </form>
+            </mat-card-content>
+          </mat-card>
+
+          <!-- Competitions List -->
+          @if (competitionsBusy()) {
+            <div class="flex justify-center py-4">
+              <div class="text-sm text-gray-500">Loading competitions...</div>
+            </div>
+          } @else if (competitions().length === 0) {
+            <div class="text-center py-8 text-gray-500">
+              <mat-icon class="text-4xl mb-2 opacity-50">sports_soccer</mat-icon>
+              <p>No competitions yet</p>
+            </div>
+          } @else {
+            <div class="space-y-2">
+              @for (competition of competitions(); track competition.competitionID) {
+                <mat-card class="cursor-pointer hover:shadow-lg transition-shadow">
+                  <mat-card-content class="p-3">
+                    <div class="flex items-center justify-between">
+                      <div class="flex-1" (click)="viewCompetitionDetails(competition)">
+                        <div class="font-medium text-blue-500">{{ competition.competitionName }}</div>
+                        @if (competition.priority) {
+                          <div class="text-sm text-gray-600">Priority: {{ competition.priority }}</div>
+                        }
+                      </div>
+                      <button mat-icon-button color="warn"
+                        (click)="deleteCompetition(competition); $event.stopPropagation()"
+                        aria-label="Delete competition">
+                        <mat-icon>delete</mat-icon>
+                      </button>
+                    </div>
+                  </mat-card-content>
+                </mat-card>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    }
+  </mat-drawer>
+</mat-drawer-container>
