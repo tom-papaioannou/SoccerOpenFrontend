@@ -254,7 +254,7 @@ export class CompetitionsManagement implements OnInit {
   }
 
   deleteCompetition(competition: Competition): void {
-    if (!confirm(`Delete "${competition.name}"?`)) return;
+    if (!confirm(`Delete "${competition.competitionName}"?`)) return;
     if (!competition.competitionID) return;
 
     this.competitionsBusy.set(true);

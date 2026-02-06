@@ -13,7 +13,7 @@ export enum CompetitionType {
 // Competition model for managing competitions under parent organizations
 export interface Competition {
   competitionID?: string;
-  name: string;
+  competitionName: string;
   competitionParentID: string;
   priority?: number;
   competitionTeamsType?: CompetitionTeamsType;
