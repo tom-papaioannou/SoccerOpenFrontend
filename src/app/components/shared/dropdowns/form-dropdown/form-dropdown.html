@@ -2,7 +2,7 @@
 <mat-form-field class="w-full" appearance="fill">
     <mat-label>{{ labelText }}</mat-label>
 
-    <mat-select 
+    <mat-select [panelClass]="'panelBg'"
         [disabled]="disabled" 
         [value]="value" 
         [placeholder]="placeHolderText"
