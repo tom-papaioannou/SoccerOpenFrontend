@@ -14,6 +14,10 @@ export class CompetitionService {
     return this.http.get<Competition[]>(`${this.apiUrl}/getAllCompetitions/${parentId}`);
   }
 
+  getById(competitionId: string): Observable<Competition> {
+    return this.http.get<Competition>(`${this.apiUrl}/${competitionId}`);
+  }
+
   create(payload: CompetitionPayload): Observable<Competition> {
     return this.http.post<Competition>(this.apiUrl, payload);
   }

@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { MatCardModule, MatCardHeader, MatCardTitle, MatCardContent } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -93,7 +94,8 @@ export class CompetitionsManagement implements OnInit {
     private competitionSvc: CompetitionService,
     private deviceSvc: DeviceService,
     private fb: FormBuilder,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private router: Router
   ) {
     this.form = this.fb.group({
       Name: ['', [Validators.required, Validators.maxLength(100)]],
@@ -292,6 +294,12 @@ export class CompetitionsManagement implements OnInit {
           this.cdr.markForCheck();
         }
       });
+  }
+
+  viewCompetitionDetails(competition: Competition): void {
+    if (competition.competitionID) {
+      this.router.navigate(['/competition', competition.competitionID]);
+    }
   }
 
   deleteCompetition(competition: Competition): void {

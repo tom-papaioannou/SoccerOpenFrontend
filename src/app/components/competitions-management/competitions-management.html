@@ -171,14 +171,17 @@
           } @else {
             <div class="space-y-2">
               @for (competition of competitions(); track competition.competitionID) {
-                <mat-card>
+                <mat-card class="cursor-pointer hover:shadow-lg transition-shadow">
                   <mat-card-content class="p-3">
                     <div class="flex items-center justify-between">
-                      <div class="flex-1">
+                      <div class="flex-1" (click)="viewCompetitionDetails(competition)">
                         <div class="font-medium text-blue-500">{{ competition.competitionName }}</div>
+                        @if (competition.priority) {
+                          <div class="text-sm text-gray-600">Priority: {{ competition.priority }}</div>
+                        }
                       </div>
                       <button mat-icon-button color="warn"
-                        (click)="deleteCompetition(competition)"
+                        (click)="deleteCompetition(competition); $event.stopPropagation()"
                         aria-label="Delete competition">
                         <mat-icon>delete</mat-icon>
                       </button>

@@ -8,6 +8,7 @@ import { Tactics } from './components/team/tactics/tactics';
 import { Fixtures } from './components/team/fixtures/fixtures';
 import { Competitions } from './components/competitions/competitions';
 import { CompetitionsManagement } from './components/competitions-management/competitions-management';
+import { CompetitionDetails } from './components/competition-details/competition-details';
 import { Register } from './components/register/register';
 import { guestsGuard } from './guards/guests-guard';
 
@@ -17,6 +18,7 @@ export const routes: Routes = [
     { path: 'login', canActivate: [guestsGuard], component: Login },
     { path: 'register', component: Register },
     { path: 'competitions-management', component: CompetitionsManagement },
+    { path: 'competition/:id', component: CompetitionDetails },
     { path: 'competitions', component: Competitions },
     { path: 'team', component: Team,
         children:[

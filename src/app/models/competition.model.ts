@@ -18,6 +18,15 @@ export interface Competition {
   priority?: number;
   competitionTeamsType?: CompetitionTeamsType;
   competitionType?: CompetitionType;
+  teams?: Team[];
+}
+
+export interface Team {
+  teamID?: string;
+  name: string;
+  country?: string;
+  stadium?: string;
+  foundedYear?: number;
 }
 
 export interface CompetitionPayload {
