@@ -93,8 +93,8 @@
 <mat-drawer-container class="drawer-container" [hasBackdrop]="true">
   <mat-drawer
     #drawer
-    [mode]="isMobile ? 'over' : 'over'"
-    [position]="isMobile ? 'end' : 'end'"
+    [mode]="'over'"
+    [position]="'end'"
     [opened]="drawerOpen()"
     (closed)="closeDrawer()"
     [class.drawer-bottom]="isMobile"

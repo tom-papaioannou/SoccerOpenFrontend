@@ -62,13 +62,29 @@
   overflow-y: auto;
 }
 
-/* Mobile specific adjustments */
+/* Mobile specific adjustments - slide from bottom */
 @media (max-width: 1024px) {
-  .drawer-container ::ng-deep .mat-drawer {
+  .drawer-container ::ng-deep .mat-drawer-container {
+    background-color: transparent;
+  }
+
+  .drawer-container ::ng-deep .mat-drawer.drawer-bottom {
     position: fixed !important;
-    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
     top: auto !important;
+    bottom: 0 !important;
     height: 80vh !important;
     width: 100% !important;
+    transform: translateY(100%) !important;
+  }
+
+  .drawer-container ::ng-deep .mat-drawer.drawer-bottom.mat-drawer-opened {
+    transform: translateY(0) !important;
+  }
+
+  .drawer-container ::ng-deep .mat-drawer-inner-container {
+    height: 100%;
+    overflow: visible;
   }
 }
