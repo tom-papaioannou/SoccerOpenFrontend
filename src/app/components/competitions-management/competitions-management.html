@@ -29,14 +29,11 @@
             formControlName="Name">
           </app-form-textfield>
 
-          <mat-form-field appearance="outline" class="w-full">
-            <mat-label>Type</mat-label>
-            <mat-select formControlName="Type">
-              @for (scopeType of scopeOptions; track scopeType) {
-                <mat-option [value]="scopeType">{{ scopeType }}</mat-option>
-              }
-            </mat-select>
-          </mat-form-field>
+          <app-form-dropdown
+            [labelText]="'Type'"
+            [options]="scopeOptionsForDropdown"
+            formControlName="Type">
+          </app-form-dropdown>
 
           <div class="flex gap-2 mt-4">
             <button
@@ -135,23 +132,17 @@
                   <mat-hint>Lower numbers = higher priority</mat-hint>
                 </mat-form-field>
 
-                <mat-form-field appearance="outline" class="w-full">
-                  <mat-label>Competition Type</mat-label>
-                  <mat-select formControlName="CompetitionType">
-                    @for (type of competitionTypes; track type.value) {
-                      <mat-option [value]="type.value">{{ type.label }}</mat-option>
-                    }
-                  </mat-select>
-                </mat-form-field>
+                <app-form-dropdown
+                  [labelText]="'Competition Type'"
+                  [options]="competitionTypes"
+                  formControlName="CompetitionType">
+                </app-form-dropdown>
 
-                <mat-form-field appearance="outline" class="w-full">
-                  <mat-label>Teams Type</mat-label>
-                  <mat-select formControlName="CompetitionTeamsType">
-                    @for (teamsType of competitionTeamsTypes; track teamsType.value) {
-                      <mat-option [value]="teamsType.value">{{ teamsType.label }}</mat-option>
-                    }
-                  </mat-select>
-                </mat-form-field>
+                <app-form-dropdown
+                  [labelText]="'Teams Type'"
+                  [options]="competitionTeamsTypes"
+                  formControlName="CompetitionTeamsType">
+                </app-form-dropdown>
 
                 <button
                   mat-raised-button

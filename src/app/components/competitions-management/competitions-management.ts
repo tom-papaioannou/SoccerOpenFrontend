@@ -9,6 +9,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { FormTextfield } from '../shared/textfields/form-textfield/form-textfield';
+import { FormDropdown } from '../shared/dropdowns/form-dropdown/form-dropdown';
 import { CompetitionParentService } from '../../services/competition-parent.service';
 import { CompetitionService } from '../../services/competition.service';
 import { DeviceService } from '../../services/device.service';
@@ -31,7 +32,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     MatFormFieldModule,
     MatInputModule,
     MatSidenavModule,
-    FormTextfield
+    FormTextfield,
+    FormDropdown
   ],
   templateUrl: './competitions-management.html',
   styleUrl: './competitions-management.css',
@@ -54,6 +56,7 @@ export class CompetitionsManagement implements OnInit {
   form: FormGroup;
   competitionForm: FormGroup;
   scopeOptions = [...parentOrgScopes];
+  scopeOptionsForDropdown = parentOrgScopes.map(scope => ({ value: scope, label: scope }));
   isMobile = false;
 
   // Enum options for dropdowns
