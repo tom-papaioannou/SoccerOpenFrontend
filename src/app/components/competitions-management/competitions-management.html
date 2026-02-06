@@ -128,12 +128,31 @@
                   [labelText]="'Competition Name'"
                   [placeHolderText]="'Enter competition name'"
                   [type]="'text'"
-                  formControlName="Name">
+                  formControlName="CompetitionName">
                 </app-form-textfield>
 
                 <mat-form-field appearance="outline" class="w-full">
-                  <mat-label>Tier</mat-label>
-                  <input matInput type="number" formControlName="Tier" min="1">
+                  <mat-label>Priority</mat-label>
+                  <input matInput type="number" formControlName="Priority" min="1">
+                  <mat-hint>Lower numbers = higher priority</mat-hint>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="w-full">
+                  <mat-label>Competition Type</mat-label>
+                  <mat-select formControlName="CompetitionType">
+                    @for (type of competitionTypes; track type.value) {
+                      <mat-option [value]="type.value">{{ type.label }}</mat-option>
+                    }
+                  </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="w-full">
+                  <mat-label>Teams Type</mat-label>
+                  <mat-select formControlName="CompetitionTeamsType">
+                    @for (teamsType of competitionTeamsTypes; track teamsType.value) {
+                      <mat-option [value]="teamsType.value">{{ teamsType.label }}</mat-option>
+                    }
+                  </mat-select>
                 </mat-form-field>
 
                 <button
@@ -168,8 +187,8 @@
                     <div class="flex items-center justify-between">
                       <div class="flex-1">
                         <div class="font-medium">{{ competition.name }}</div>
-                        @if (competition.tier) {
-                          <div class="text-sm text-gray-500">Tier {{ competition.tier }}</div>
+                        @if (competition.priority !== undefined) {
+                          <div class="text-sm text-gray-500">Priority {{ competition.priority }}</div>
                         }
                       </div>
                       <button

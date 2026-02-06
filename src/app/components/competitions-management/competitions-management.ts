@@ -13,7 +13,7 @@ import { CompetitionParentService } from '../../services/competition-parent.serv
 import { CompetitionService } from '../../services/competition.service';
 import { DeviceService } from '../../services/device.service';
 import { IParentOrganization, IParentOrgPayload, parentOrgScopes } from '../../models/competition-parent.model';
-import { Competition, CompetitionPayload } from '../../models/competition.model';
+import { Competition, CompetitionPayload, CompetitionTeamsType, CompetitionType } from '../../models/competition.model';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
@@ -56,6 +56,18 @@ export class CompetitionsManagement implements OnInit {
   scopeOptions = [...parentOrgScopes];
   isMobile = false;
 
+  // Enum options for dropdowns
+  competitionTeamsTypes = [
+    { value: CompetitionTeamsType.Clubs, label: 'Clubs' },
+    { value: CompetitionTeamsType.NationalTeams, label: 'National Teams' }
+  ];
+
+  competitionTypes = [
+    { value: CompetitionType.League, label: 'League' },
+    { value: CompetitionType.Cup, label: 'Cup' },
+    { value: CompetitionType.Continental, label: 'Continental' }
+  ];
+
   constructor(
     private svc: CompetitionParentService,
     private competitionSvc: CompetitionService,
@@ -69,8 +81,10 @@ export class CompetitionsManagement implements OnInit {
     });
 
     this.competitionForm = this.fb.group({
-      Name: ['', [Validators.required, Validators.maxLength(100)]],
-      Tier: [1, [Validators.required, Validators.min(1)]]
+      CompetitionName: ['', [Validators.required, Validators.maxLength(100)]],
+      Priority: [1, [Validators.required, Validators.min(1)]],
+      CompetitionTeamsType: [CompetitionTeamsType.Clubs, Validators.required],
+      CompetitionType: [CompetitionType.League, Validators.required]
     });
 
     // Subscribe to device changes
@@ -181,7 +195,11 @@ export class CompetitionsManagement implements OnInit {
     this.drawerOpen.set(false);
     this.selectedParent.set(null);
     this.competitions.set([]);
-    this.competitionForm.reset({ Tier: 1 });
+    this.competitionForm.reset({ 
+      Priority: 1,
+      CompetitionTeamsType: CompetitionTeamsType.Clubs,
+      CompetitionType: CompetitionType.League
+    });
     this.cdr.markForCheck();
   }
 
@@ -209,16 +227,22 @@ export class CompetitionsManagement implements OnInit {
     this.competitionsBusy.set(true);
 
     const payload: CompetitionPayload = {
-      Name: this.competitionForm.value.Name,
-      CompetitionParentID: this.selectedParent()!.competitionParentID!,
-      Tier: this.competitionForm.value.Tier
+      CompetitionName: this.competitionForm.value.CompetitionName,
+      ParentID: this.selectedParent()!.competitionParentID!,
+      Priority: this.competitionForm.value.Priority,
+      CompetitionTeamsType: this.competitionForm.value.CompetitionTeamsType,
+      CompetitionType: this.competitionForm.value.CompetitionType
     };
 
     this.competitionSvc.create(payload)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
-          this.competitionForm.reset({ Tier: 1 });
+          this.competitionForm.reset({ 
+            Priority: 1,
+            CompetitionTeamsType: CompetitionTeamsType.Clubs,
+            CompetitionType: CompetitionType.League
+          });
           this.loadCompetitions(this.selectedParent()!.competitionParentID!);
         },
         error: (err) => {
