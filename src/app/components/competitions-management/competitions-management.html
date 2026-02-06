@@ -58,7 +58,7 @@
   @if (!isCreating() && !busy()) {
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
       @for (organization of orgs(); track organization.competitionParentID) {
-        <mat-card class="relative">
+        <mat-card class="relative cursor-pointer hover:shadow-lg transition-shadow" (click)="openDrawer(organization)">
           <button 
             mat-icon-button 
             class="absolute top-2 right-2 z-10"
@@ -88,3 +88,105 @@
     </div>
   }
 </div>
+
+<!-- Drawer for Competition Details -->
+<mat-drawer-container class="drawer-container" [hasBackdrop]="true">
+  <mat-drawer
+    #drawer
+    [mode]="isMobile ? 'over' : 'over'"
+    [position]="isMobile ? 'end' : 'end'"
+    [opened]="drawerOpen()"
+    (closed)="closeDrawer()"
+    [class.drawer-bottom]="isMobile"
+    [class.drawer-side]="!isMobile">
+    
+    @if (selectedParent()) {
+      <div class="drawer-content">
+        <!-- Header -->
+        <div class="drawer-header">
+          <div class="flex items-center justify-between p-4 border-b">
+            <h3 class="text-xl font-bold">{{ selectedParent()!.name }}</h3>
+            <button mat-icon-button (click)="closeDrawer()" aria-label="Close drawer">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+          <div class="px-4 py-2 bg-gray-50">
+            <span class="text-sm text-gray-600">{{ selectedParent()!.type }}</span>
+          </div>
+        </div>
+
+        <!-- Content -->
+        <div class="drawer-body p-4">
+          <h4 class="text-lg font-semibold mb-4">Competitions</h4>
+
+          <!-- Add Competition Form -->
+          <mat-card class="mb-4">
+            <mat-card-content class="p-4">
+              <h5 class="font-medium mb-3">Add Competition</h5>
+              <form [formGroup]="competitionForm" class="space-y-3">
+                <app-form-textfield
+                  [labelText]="'Competition Name'"
+                  [placeHolderText]="'Enter competition name'"
+                  [type]="'text'"
+                  formControlName="Name">
+                </app-form-textfield>
+
+                <mat-form-field appearance="outline" class="w-full">
+                  <mat-label>Tier</mat-label>
+                  <input matInput type="number" formControlName="Tier" min="1">
+                </mat-form-field>
+
+                <button
+                  mat-raised-button
+                  color="primary"
+                  type="button"
+                  [disabled]="!competitionForm.valid || competitionsBusy()"
+                  (click)="addCompetition()"
+                  class="w-full">
+                  <mat-icon>add</mat-icon>
+                  Add Competition
+                </button>
+              </form>
+            </mat-card-content>
+          </mat-card>
+
+          <!-- Competitions List -->
+          @if (competitionsBusy()) {
+            <div class="flex justify-center py-4">
+              <div class="text-sm text-gray-500">Loading competitions...</div>
+            </div>
+          } @else if (competitions().length === 0) {
+            <div class="text-center py-8 text-gray-500">
+              <mat-icon class="text-4xl mb-2 opacity-50">sports_soccer</mat-icon>
+              <p>No competitions yet</p>
+            </div>
+          } @else {
+            <div class="space-y-2">
+              @for (competition of competitions(); track competition.competitionID) {
+                <mat-card>
+                  <mat-card-content class="p-3">
+                    <div class="flex items-center justify-between">
+                      <div class="flex-1">
+                        <div class="font-medium">{{ competition.name }}</div>
+                        @if (competition.tier) {
+                          <div class="text-sm text-gray-500">Tier {{ competition.tier }}</div>
+                        }
+                      </div>
+                      <button
+                        mat-icon-button
+                        color="warn"
+                        (click)="deleteCompetition(competition)"
+                        aria-label="Delete competition">
+                        <mat-icon>delete</mat-icon>
+                      </button>
+                    </div>
+                  </mat-card-content>
+                </mat-card>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    }
+  </mat-drawer>
+</mat-drawer-container>

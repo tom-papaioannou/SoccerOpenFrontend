@@ -6,3 +6,69 @@
 .space-y-4 > * + * {
   margin-top: 1rem;
 }
+
+.space-y-3 > * + * {
+  margin-top: 0.75rem;
+}
+
+.space-y-2 > * + * {
+  margin-top: 0.5rem;
+}
+
+/* Drawer styles */
+.drawer-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 1000;
+}
+
+.drawer-container ::ng-deep .mat-drawer-backdrop {
+  pointer-events: auto;
+}
+
+.drawer-container ::ng-deep .mat-drawer {
+  pointer-events: auto;
+}
+
+/* Desktop drawer - from right */
+.drawer-side {
+  width: 400px;
+  max-width: 90vw;
+}
+
+/* Mobile drawer - from bottom */
+.drawer-bottom {
+  width: 100%;
+  height: 80vh;
+  max-height: 80vh;
+}
+
+.drawer-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.drawer-header {
+  flex-shrink: 0;
+}
+
+.drawer-body {
+  flex: 1;
+  overflow-y: auto;
+}
+
+/* Mobile specific adjustments */
+@media (max-width: 1024px) {
+  .drawer-container ::ng-deep .mat-drawer {
+    position: fixed !important;
+    bottom: 0 !important;
+    top: auto !important;
+    height: 80vh !important;
+    width: 100% !important;
+  }
+}

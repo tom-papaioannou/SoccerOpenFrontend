@@ -1,0 +1,24 @@
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment.development';
+import { Competition, CompetitionPayload } from '../models/competition.model';
+
+@Injectable({ providedIn: 'root' })
+export class CompetitionService {
+  private apiUrl = environment.apiUrl + '/api/Competitions';
+
+  constructor(private http: HttpClient) {}
+
+  getByParent(parentId: string): Observable<Competition[]> {
+    return this.http.get<Competition[]>(`${this.apiUrl}/parent/${parentId}`);
+  }
+
+  create(payload: CompetitionPayload): Observable<Competition> {
+    return this.http.post<Competition>(this.apiUrl, payload);
+  }
+
+  delete(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+}
