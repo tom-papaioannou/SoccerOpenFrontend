@@ -20,18 +20,6 @@
     <mat-card class="mb-6">
       <mat-card-content class="p-4">
         <h3 class="text-xl font-bold text-blue-600 mb-2">{{ competition()!.competitionName }}</h3>
-        <div class="text-sm text-gray-600">
-          <p><strong>Competition ID:</strong> {{ competition()!.competitionID }}</p>
-          @if (competition()!.priority) {
-            <p><strong>Priority:</strong> {{ competition()!.priority }}</p>
-          }
-          @if (competition()!.competitionType !== undefined) {
-            <p><strong>Type:</strong> {{ competition()!.competitionType === 0 ? 'League' : competition()!.competitionType === 1 ? 'Cup' : 'Continental' }}</p>
-          }
-          @if (competition()!.competitionTeamsType !== undefined) {
-            <p><strong>Teams Type:</strong> {{ competition()!.competitionTeamsType === 0 ? 'Clubs' : 'National Teams' }}</p>
-          }
-        </div>
       </mat-card-content>
     </mat-card>
 
