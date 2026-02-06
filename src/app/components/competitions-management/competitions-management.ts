@@ -65,6 +65,20 @@ export class CompetitionsManagement implements OnInit {
     { value: CompetitionTeamsType.NationalTeams, label: 'National Teams' }
   ];
 
+  priorityLeagueTypes = [
+    { value: 1, label: 'First' },
+    { value: 2, label: 'Second' },
+    { value: 3, label: 'Third' },
+    { value: 4, label: 'Fourth' }
+  ];
+
+  priorityCupTypes = [
+    { value: 1, label: 'Important' },
+    { value: 2, label: 'Less Important' },
+    { value: 3, label: 'Unimportant' },
+    { value: 4, label: 'Friendly' }
+  ];
+
   competitionTypes = [
     { value: CompetitionType.League, label: 'League' },
     { value: CompetitionType.Cup, label: 'Cup' },

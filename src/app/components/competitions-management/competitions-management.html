@@ -116,7 +116,7 @@
 
           <!-- Add Competition Form -->
           <mat-card class="mb-4">
-            <mat-card-content class="p-4">
+            <mat-card-content class="p-4 bg-gray-300 rounded-xl">
               <h5 class="font-medium mb-3">Add Competition</h5>
               <form [formGroup]="competitionForm" class="space-y-3">
                 <app-form-textfield
@@ -126,11 +126,11 @@
                   formControlName="CompetitionName">
                 </app-form-textfield>
 
-                <mat-form-field appearance="outline" class="w-full">
-                  <mat-label>Priority</mat-label>
-                  <input matInput type="number" formControlName="Priority" min="1">
-                  <mat-hint>Lower numbers = higher priority</mat-hint>
-                </mat-form-field>
+                <app-form-dropdown
+                  [labelText]="'Teams Type'"
+                  [options]="competitionTeamsTypes"
+                  formControlName="CompetitionTeamsType">
+                </app-form-dropdown>
 
                 <app-form-dropdown
                   [labelText]="'Competition Type'"
@@ -139,9 +139,9 @@
                 </app-form-dropdown>
 
                 <app-form-dropdown
-                  [labelText]="'Teams Type'"
-                  [options]="competitionTeamsTypes"
-                  formControlName="CompetitionTeamsType">
+                  [labelText]="'Division'"
+                  [options]="priorityLeagueTypes"
+                  formControlName="Priority">
                 </app-form-dropdown>
 
                 <button
