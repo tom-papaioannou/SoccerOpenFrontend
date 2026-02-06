@@ -23,7 +23,7 @@
   right: 0;
   bottom: 0;
   pointer-events: none;
-  z-index: 1000;
+  z-index: 900;
 }
 
 .drawer-container ::ng-deep .mat-drawer-backdrop {
@@ -55,6 +55,7 @@
 
 .drawer-header {
   flex-shrink: 0;
+  padding-top: 64px; /* Space for navbar on desktop */
 }
 
 .drawer-body {
@@ -86,5 +87,11 @@
   .drawer-container ::ng-deep .mat-drawer-inner-container {
     height: 100%;
     overflow: visible;
+  }
+}
+
+@media (max-width: 599px) {
+  .drawer-header {
+    padding-top: 56px; /* Space for navbar on mobile */
   }
 }
