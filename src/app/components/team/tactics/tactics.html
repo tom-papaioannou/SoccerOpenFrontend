@@ -20,39 +20,51 @@
 
   <!-- Create Form -->
   @if (createMode()) {
-    <mat-card class="mb-4">
-      <mat-card-header>
-        <mat-card-title>Create New Tactic</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <form [formGroup]="tacticForm" class="space-y-4 mt-4">
-          <app-form-textfield
-            [labelText]="'Name'"
-            [placeHolderText]="'Enter tactic name (1-100 characters)'"
-            [type]="'text'"
-            formControlName="Name">
-          </app-form-textfield>
+    <div class="flex-1 flex justify-center">
+      <mat-card class="mb-4 max-w-2xl">
+        <mat-card-header>
+          <mat-card-title>New Tactic</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <form [formGroup]="tacticForm" class="space-y-4 mt-4">
+            <app-form-textfield
+              [labelText]="'Name'"
+              [placeHolderText]="'Enter tactic name (1-30 characters)'"
+              [type]="'text'"
+              formControlName="Name">
+            </app-form-textfield>
 
-          <div class="flex items-center">
-            <mat-checkbox formControlName="isMain" color="primary">
-              Set as main tactic
-            </mat-checkbox>
-          </div>
+            <app-form-dropdown
+              [labelText]="'Formation'"
+              [placeHolderText]="'Select a formation'"
+              [options]="formationOptions"
+              [valueKey]="'value'"
+              [displayKey]="'label'"
+              formControlName="Formation">
+            </app-form-dropdown>
 
-          <div class="flex gap-2 mt-4">
-            <button
-              mat-raised-button
-              color="primary"
-              type="button"
-              [disabled]="!tacticForm.valid || loading()"
-              (click)="saveTactic()">
-              Create
-            </button>
-            <button mat-stroked-button type="button" (click)="cancel()">Cancel</button>
-          </div>
-        </form>
-      </mat-card-content>
-    </mat-card>
+            <div class="flex items-center">
+              <mat-checkbox formControlName="isMain" color="primary">
+                Main
+              </mat-checkbox>
+            </div>
+
+            <div class="flex justify-between items-center mt-4">
+              <app-action-button
+                [buttonText]="'Create'"
+                [disabled]="!tacticForm.valid || loading()"
+                (clicked)="saveTactic()">
+              </app-action-button>
+              <app-action-button
+                [buttonText]="'Cancel'"
+                [variant]="'secondary'"
+                (clicked)="cancel()">
+              </app-action-button>
+            </div>
+          </form>
+        </mat-card-content>
+      </mat-card>
+    </div>
   }
 
   <!-- Tactics Cards Grid -->

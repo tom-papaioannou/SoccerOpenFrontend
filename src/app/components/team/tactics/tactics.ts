@@ -6,8 +6,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { FormTextfield } from '../../shared/textfields/form-textfield/form-textfield';
+import { FormDropdown } from '../../shared/dropdowns/form-dropdown/form-dropdown';
+import { ActionButton } from '../../shared/buttons/action-button/action-button';
 import { TacticsService } from '../../../services/tactics.service';
-import { Tactic, CreateTacticRequest } from '../../../models/tactic.model';
+import { Tactic, CreateTacticRequest, Formation } from '../../../models/tactic.model';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
@@ -22,7 +24,9 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     MatButtonModule,
     MatIconModule,
     MatCheckboxModule,
-    FormTextfield
+    FormTextfield,
+    FormDropdown,
+    ActionButton
   ],
   templateUrl: './tactics.html',
   styleUrl: './tactics.css',
@@ -45,6 +49,34 @@ export class Tactics implements OnInit {
   // Form
   tacticForm: FormGroup;
 
+  // Formation options for dropdown
+  formationOptions = [
+    // Classic formations
+    { value: Formation.Four_Four_Two, label: '4-4-2' },
+    { value: Formation.Four_Three_Three, label: '4-3-3' },
+    { value: Formation.Three_Five_Two, label: '3-5-2' },
+    { value: Formation.Five_Three_Two, label: '5-3-2' },
+    { value: Formation.Four_Five_One, label: '4-5-1' },
+    // 4 at the back variations
+    { value: Formation.Four_Two_Three_One, label: '4-2-3-1' },
+    { value: Formation.Four_Three_Two_One, label: '4-3-2-1' },
+    { value: Formation.Four_One_Four_One, label: '4-1-4-1' },
+    { value: Formation.Four_Four_One_One, label: '4-4-1-1' },
+    { value: Formation.Four_Two_Two_Two, label: '4-2-2-2' },
+    // 3 at the back
+    { value: Formation.Three_Four_Three, label: '3-4-3' },
+    { value: Formation.Three_Four_Two_One, label: '3-4-2-1' },
+    { value: Formation.Three_Four_One_Two, label: '3-4-1-2' },
+    { value: Formation.Three_Three_Four, label: '3-3-4' },
+    // 5 at the back / wingbacks
+    { value: Formation.Five_Four_One, label: '5-4-1' },
+    { value: Formation.Five_Two_Three, label: '5-2-3' },
+    { value: Formation.Five_Three_One_One, label: '5-3-1-1' },
+    // Uncommon / historical
+    { value: Formation.Four_Six_Zero, label: '4-6-0' },
+    { value: Formation.Two_Three_Five, label: '2-3-5' }
+  ];
+
   // Computed values
   canCreateNewTactic = computed(() => this.tactics().length < this.MAX_TACTICS);
   tacticsRemaining = computed(() => this.MAX_TACTICS - this.tactics().length);
@@ -65,8 +97,9 @@ export class Tactics implements OnInit {
     private readonly cdr: ChangeDetectorRef
   ) {
     this.tacticForm = this.fb.group({
-      Name: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(100)]],
-      isMain: [false]
+      Name: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(30)]],
+      isMain: [false],
+      Formation: [Formation.None, [Validators.required]]
     });
   }
 
@@ -101,7 +134,7 @@ export class Tactics implements OnInit {
     }
     
     this.createMode.set(true);
-    this.tacticForm.reset({ isMain: false });
+    this.tacticForm.reset({ Name: `New Tactic (${this.tactics().length + 1})` , isMain: false, Formation: Formation.Four_Four_Two });
     this.cdr.markForCheck();
   }
 
@@ -118,7 +151,8 @@ export class Tactics implements OnInit {
     const createRequest: CreateTacticRequest = {
       TeamID: this.teamId,
       Name: formValue.Name,
-      isMain: formValue.isMain ?? false
+      isMain: formValue.isMain ?? false,
+      Formation: formValue.Formation
     };
 
     this.tacticsService.createTeamTactic(createRequest)
@@ -126,7 +160,7 @@ export class Tactics implements OnInit {
       .subscribe({
         next: () => {
           this.createMode.set(false);
-          this.tacticForm.reset({ isMain: false });
+          this.tacticForm.reset({ isMain: false, Formation: Formation.None });
           this.loadTactics();
         },
         error: (err) => {
@@ -139,7 +173,7 @@ export class Tactics implements OnInit {
 
   cancel(): void {
     this.createMode.set(false);
-    this.tacticForm.reset({ isMain: false });
+    this.tacticForm.reset({ isMain: false, Formation: Formation.None });
     this.cdr.markForCheck();
   }
 

@@ -1,18 +1,22 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-action-button',
-  imports: [MatButtonModule],
+  imports: [MatButtonModule, NgClass],
   templateUrl: './action-button.html',
   styleUrl: './action-button.css'
 })
 export class ActionButton {
   @Output() clicked = new EventEmitter<void>();
   @Input() buttonText: string | undefined;
+  @Input() disabled: boolean = false;
+  @Input() variant: 'primary' | 'secondary' = 'primary';
 
   buttonClicked(){
-    console.log("click!");
-    this.clicked.emit();
+    if (!this.disabled) {
+      this.clicked.emit();
+    }
   }
 }
