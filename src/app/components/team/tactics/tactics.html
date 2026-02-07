@@ -33,6 +33,15 @@
             formControlName="Name">
           </app-form-textfield>
 
+          <app-form-dropdown
+            [labelText]="'Formation'"
+            [placeHolderText]="'Select a formation'"
+            [options]="formationOptions"
+            [valueKey]="'value'"
+            [displayKey]="'label'"
+            formControlName="Formation">
+          </app-form-dropdown>
+
           <div class="flex items-center">
             <mat-checkbox formControlName="isMain" color="primary">
               Set as main tactic
