@@ -71,6 +71,12 @@
   margin-bottom: 0.5rem;
 }
 
+.tactic-image {
+  max-width: 60%;
+  height: auto;
+  margin-top: 1rem;
+}
+
 /* Add Card Styles */
 .add-card {
   border: 2px dashed #d1d5db;

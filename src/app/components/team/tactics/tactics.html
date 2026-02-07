@@ -84,6 +84,7 @@
           }
           <mat-card-content class="tactic-card-content">
             <div class="tactic-name">{{ tactic.name }}</div>
+            <img [src]="getFormationImagePath(tactic.formation)" alt="Tactics formation" class="tactic-image" />
           </mat-card-content>
         </mat-card>
       }

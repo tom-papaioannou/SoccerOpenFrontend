@@ -58,23 +58,23 @@ export class Tactics implements OnInit {
     { value: Formation.Five_Three_Two, label: '5-3-2' },
     { value: Formation.Four_Five_One, label: '4-5-1' },
     // 4 at the back variations
-    { value: Formation.Four_Two_Three_One, label: '4-2-3-1' },
-    { value: Formation.Four_Three_Two_One, label: '4-3-2-1' },
-    { value: Formation.Four_One_Four_One, label: '4-1-4-1' },
-    { value: Formation.Four_Four_One_One, label: '4-4-1-1' },
-    { value: Formation.Four_Two_Two_Two, label: '4-2-2-2' },
-    // 3 at the back
-    { value: Formation.Three_Four_Three, label: '3-4-3' },
-    { value: Formation.Three_Four_Two_One, label: '3-4-2-1' },
-    { value: Formation.Three_Four_One_Two, label: '3-4-1-2' },
-    { value: Formation.Three_Three_Four, label: '3-3-4' },
-    // 5 at the back / wingbacks
-    { value: Formation.Five_Four_One, label: '5-4-1' },
-    { value: Formation.Five_Two_Three, label: '5-2-3' },
-    { value: Formation.Five_Three_One_One, label: '5-3-1-1' },
-    // Uncommon / historical
-    { value: Formation.Four_Six_Zero, label: '4-6-0' },
-    { value: Formation.Two_Three_Five, label: '2-3-5' }
+    // { value: Formation.Four_Two_Three_One, label: '4-2-3-1' },
+    // { value: Formation.Four_Three_Two_One, label: '4-3-2-1' },
+    // { value: Formation.Four_One_Four_One, label: '4-1-4-1' },
+    // { value: Formation.Four_Four_One_One, label: '4-4-1-1' },
+    // { value: Formation.Four_Two_Two_Two, label: '4-2-2-2' },
+    // // 3 at the back
+    // { value: Formation.Three_Four_Three, label: '3-4-3' },
+    // { value: Formation.Three_Four_Two_One, label: '3-4-2-1' },
+    // { value: Formation.Three_Four_One_Two, label: '3-4-1-2' },
+    // { value: Formation.Three_Three_Four, label: '3-3-4' },
+    // // 5 at the back / wingbacks
+    // { value: Formation.Five_Four_One, label: '5-4-1' },
+    // { value: Formation.Five_Two_Three, label: '5-2-3' },
+    // { value: Formation.Five_Three_One_One, label: '5-3-1-1' },
+    // // Uncommon / historical
+    // { value: Formation.Four_Six_Zero, label: '4-6-0' },
+    // { value: Formation.Two_Three_Five, label: '2-3-5' }
   ];
 
   // Computed values
@@ -207,5 +207,21 @@ export class Tactics implements OnInit {
           this.cdr.markForCheck();
         }
       });
+  }
+
+  getFormationImagePath(formation?: Formation): string {
+    switch(formation){
+      case Formation.Four_Three_Three:
+        return 'assets/images/tactics/4-3-3.png';
+      case Formation.Three_Five_Two:
+        return 'assets/images/tactics/3-5-2.png';
+      case Formation.Five_Three_Two:
+        return 'assets/images/tactics/5-3-2.png';
+      case Formation.Four_Five_One:
+        return 'assets/images/tactics/4-5-1.png';
+    }
+
+    // defaults to 4-4-2 image
+    return 'assets/images/tactics/4-4-2.png';
   }
 }
