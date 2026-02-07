@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { FormTextfield } from '../../shared/textfields/form-textfield/form-textfield';
 import { FormDropdown } from '../../shared/dropdowns/form-dropdown/form-dropdown';
+import { ActionButton } from '../../shared/buttons/action-button/action-button';
 import { TacticsService } from '../../../services/tactics.service';
 import { Tactic, CreateTacticRequest, Formation } from '../../../models/tactic.model';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -24,7 +25,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     MatIconModule,
     MatCheckboxModule,
     FormTextfield,
-    FormDropdown
+    FormDropdown,
+    ActionButton
   ],
   templateUrl: './tactics.html',
   styleUrl: './tactics.css',

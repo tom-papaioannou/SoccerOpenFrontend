@@ -49,15 +49,15 @@
           </div>
 
           <div class="flex gap-2 mt-4">
-            <button
-              mat-raised-button
-              color="primary"
-              type="button"
+            <app-action-button
+              [buttonText]="'Create'"
               [disabled]="!tacticForm.valid || loading()"
-              (click)="saveTactic()">
-              Create
-            </button>
-            <button mat-stroked-button type="button" (click)="cancel()">Cancel</button>
+              (clicked)="saveTactic()">
+            </app-action-button>
+            <app-action-button
+              [buttonText]="'Cancel'"
+              (clicked)="cancel()">
+            </app-action-button>
           </div>
         </form>
       </mat-card-content>
