@@ -97,7 +97,7 @@ export class Tactics implements OnInit {
     private readonly cdr: ChangeDetectorRef
   ) {
     this.tacticForm = this.fb.group({
-      Name: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(100)]],
+      Name: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(30)]],
       isMain: [false],
       Formation: [Formation.None, [Validators.required]]
     });

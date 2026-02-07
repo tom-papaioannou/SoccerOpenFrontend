@@ -20,7 +20,7 @@
 
   <!-- Create Form -->
   @if (createMode()) {
-    <mat-card class="mb-4">
+    <mat-card class="mb-4 max-w-2xl">
       <mat-card-header>
         <mat-card-title>New Tactic</mat-card-title>
       </mat-card-header>
@@ -28,7 +28,7 @@
         <form [formGroup]="tacticForm" class="space-y-4 mt-4">
           <app-form-textfield
             [labelText]="'Name'"
-            [placeHolderText]="'Enter tactic name (1-100 characters)'"
+            [placeHolderText]="'Enter tactic name (1-30 characters)'"
             [type]="'text'"
             formControlName="Name">
           </app-form-textfield>
