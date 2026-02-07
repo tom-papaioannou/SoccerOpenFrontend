@@ -1,24 +1,9 @@
-/* Primary button hover */
-:host ::ng-deep button.action-button-primary:hover:not(:disabled),
-button.action-button-primary:hover:not(:disabled) {
-  background-color: white !important;
-  color: #3b82f6 !important;
-}
-
-/* Secondary button hover */
-:host ::ng-deep button.action-button-secondary:hover:not(:disabled),
-button.action-button-secondary:hover:not(:disabled) {
+button.action-button-secondary:hover {
   background-color: #3b82f6 !important;
   color: white !important;
 }
 
-/* Override any Material button styles */
-:host ::ng-deep .mat-mdc-button.action-button-primary:hover:not(:disabled) {
+button.action-button-primary:hover {
   background-color: white !important;
   color: #3b82f6 !important;
-}
-
-:host ::ng-deep .mat-mdc-button.action-button-secondary:hover:not(:disabled) {
-  background-color: #3b82f6 !important;
-  color: white !important;
 }
