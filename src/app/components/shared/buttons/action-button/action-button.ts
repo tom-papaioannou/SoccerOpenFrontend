@@ -11,6 +11,7 @@ export class ActionButton {
   @Output() clicked = new EventEmitter<void>();
   @Input() buttonText: string | undefined;
   @Input() disabled: boolean = false;
+  @Input() variant: 'primary' | 'secondary' = 'primary';
 
   buttonClicked(){
     if (!this.disabled) {
