@@ -1,7 +1,7 @@
 <button (click)="buttonClicked()" matButton="filled" [disabled]="disabled"
     class="w-full !rounded-xl shadow shadow-black"
     [ngClass]="variant === 'primary' 
-      ? 'action-button-primary border !bg-blue-500 !text-white'
-      : 'action-button-secondary border border-blue-500 !bg-white !text-blue-500'">
+      ? 'border !bg-blue-500 !text-white hover:!bg-white hover:!text-blue-500'
+      : 'border border-blue-500 !bg-white !text-blue-500 hover:!bg-blue-500 hover:!text-white'">
     {{buttonText}}
 </button>
