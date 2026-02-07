@@ -98,7 +98,7 @@ export class Tactics implements OnInit {
     this.tacticForm = this.fb.group({
       Name: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(100)]],
       isMain: [false],
-      Formation: [null, [Validators.required]]
+      Formation: [Formation.None, [Validators.required]]
     });
   }
 
@@ -133,7 +133,7 @@ export class Tactics implements OnInit {
     }
     
     this.createMode.set(true);
-    this.tacticForm.reset({ isMain: false, Formation: null });
+    this.tacticForm.reset({ isMain: false, Formation: Formation.None });
     this.cdr.markForCheck();
   }
 
@@ -159,7 +159,7 @@ export class Tactics implements OnInit {
       .subscribe({
         next: () => {
           this.createMode.set(false);
-          this.tacticForm.reset({ isMain: false, Formation: null });
+          this.tacticForm.reset({ isMain: false, Formation: Formation.None });
           this.loadTactics();
         },
         error: (err) => {
@@ -172,7 +172,7 @@ export class Tactics implements OnInit {
 
   cancel(): void {
     this.createMode.set(false);
-    this.tacticForm.reset({ isMain: false, Formation: null });
+    this.tacticForm.reset({ isMain: false, Formation: Formation.None });
     this.cdr.markForCheck();
   }
 
