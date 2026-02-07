@@ -13,7 +13,8 @@ export class ActionButton {
   @Input() disabled: boolean = false;
 
   buttonClicked(){
-    console.log("click!");
-    this.clicked.emit();
+    if (!this.disabled) {
+      this.clicked.emit();
+    }
   }
 }
