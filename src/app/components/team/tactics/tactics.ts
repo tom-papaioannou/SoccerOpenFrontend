@@ -49,7 +49,6 @@ export class Tactics implements OnInit {
 
   // Formation options for dropdown
   formationOptions = [
-    { value: Formation.None, label: 'None' },
     // Classic formations
     { value: Formation.Four_Four_Two, label: '4-4-2' },
     { value: Formation.Four_Three_Three, label: '4-3-3' },
@@ -133,7 +132,7 @@ export class Tactics implements OnInit {
     }
     
     this.createMode.set(true);
-    this.tacticForm.reset({ isMain: false, Formation: Formation.None });
+    this.tacticForm.reset({ Name: `New Tactic (${this.tactics().length + 1})` , isMain: false, Formation: Formation.Four_Four_Two });
     this.cdr.markForCheck();
   }
 
