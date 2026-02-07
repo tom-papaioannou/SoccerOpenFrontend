@@ -208,4 +208,11 @@ export class Tactics implements OnInit {
         }
       });
   }
+
+  getFormationImagePath(formation?: Formation): string {
+    if (formation === Formation.Four_Three_Three) {
+      return 'assets/images/tactics/4-3-3.png';
+    }
+    return 'assets/images/tactics/4-4-2.png';
+  }
 }
