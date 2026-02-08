@@ -46,15 +46,15 @@ export class App {
         this.cdr.markForCheck();
       });
 
-    this.signedIn = localStorage.getItem("token") != null ? true : false;
+    this.signedIn = this.authService.isLoggedIn();
     if(this.signedIn){
-      this.role = localStorage.getItem("role");
+      this.role = this.authService.getRole();
     }
 
     this.authService.authenticationChange?.subscribe({
       next:() => {
-        this.role = localStorage.getItem("role");
-        this.signedIn = localStorage.getItem("token") != null ? true : false;
+        this.signedIn = this.authService.isLoggedIn();
+        this.role = this.authService.getRole();
         this.cdr.detectChanges();
       }
     });

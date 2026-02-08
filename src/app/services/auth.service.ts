@@ -12,7 +12,6 @@ type JwtPayload = { exp?: number; role?: string; };
 export class AuthService {
   authenticationChange = new EventEmitter<any>();
   loggedIn = localStorage.getItem("token") !== null;
-  role = "";
   private tokenSubject = new BehaviorSubject<string | null>(localStorage.getItem('token'));
   token$ = this.tokenSubject.asObservable();
 
@@ -33,8 +32,9 @@ export class AuthService {
   getRole(): string {
     const t = this.token;
     if (!t) return '';
-    const payload = jwtDecode<JwtPayload>(t);
-    return (payload.role as any) ?? '';
+    const payload = jwtDecode<any>(t);
+    const role = payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
+    return (role as any) ?? '';
   }
 
   private isTokenExpired(token: string): boolean {
@@ -70,10 +70,8 @@ export class AuthService {
     this.authenticationChange.emit();
   }
 
-  afterSuccessfullLogin(result: any){
-    this.role = result.role;
+  afterSuccessfulLogin(result: any){
     this.loggedIn = true;
-    localStorage.setItem('role', this.role);
     this.emitChange();
   }
 
@@ -90,6 +88,7 @@ export class AuthService {
 
   public clearToken() {
     localStorage.removeItem('token');
+    localStorage.removeItem('role');
     this.tokenSubject.next(null);
     this.emitChange();
   }
