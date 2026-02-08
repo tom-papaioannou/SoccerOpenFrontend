@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, signal, computed, DestroyRef, inject } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, signal, DestroyRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatCard, MatCardContent } from '@angular/material/card';
@@ -8,14 +8,28 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { forkJoin } from 'rxjs';
 
 import { TacticsService } from '../../../services/tactics.service';
-import { PlayerService } from '../../../services/player.service';
 import { Tactic, Formation, PlayerTactic } from '../../../models/tactic.model';
-import { Player, PlayerPosition, PlayerRole } from '../../../models/player.model';
 import { DataTable } from '../../shared/tables/data-table/data-table';
 
-interface PlayerWithTactic extends Player {
-  playerRole?: PlayerRole;
-  playerPosition?: PlayerPosition;
+// Enums for PlayerPosition and PlayerRole (matching backend)
+export enum PlayerPosition {
+  None = 0,
+  GK = 1,
+  CD = 2,
+  DL = 3,
+  DR = 4,
+  DM = 5,
+  MC = 6,
+  ML = 7,
+  MR = 8,
+  CF = 9
+}
+
+export enum PlayerRole {
+  None = 0,
+  Starter = 1,
+  Substitute = 2,
+  Reserve = 3
 }
 
 @Component({
@@ -42,21 +56,19 @@ export class TacticsDetail implements OnInit {
   
   // State signals
   tactic = signal<Tactic | null>(null);
-  players = signal<PlayerWithTactic[]>([]);
+  playerTactics = signal<PlayerTactic[]>([]);
   loading = signal(false);
   error = signal<string | null>(null);
   
-  // Table columns for players
+  // Table columns for player tactics
   displayedColumns = [
-    { key: 'name', header: 'Name', width: '30%', sortable: true },
+    { key: 'playerID', header: 'Player ID', width: '40%', sortable: true },
     { key: 'position', header: 'Position', sortable: true },
-    { key: 'age', header: 'Age', align: 'right' as const, headerClass: 'text-end', cellClass: 'text-end', sortable: true },
     { key: 'role', header: 'Role', sortable: true }
   ];
 
   constructor(
     private readonly tacticsService: TacticsService,
-    private readonly playerService: PlayerService,
     private readonly cdr: ChangeDetectorRef
   ) {}
 
@@ -76,12 +88,11 @@ export class TacticsDetail implements OnInit {
 
     forkJoin({
       tactics: this.tacticsService.getTeamTactics(this.teamId),
-      playerTactics: this.tacticsService.getPlayerTactics(tacticId),
-      teamPlayers: this.playerService.getTeamPlayers(this.teamId)
+      playerTactics: this.tacticsService.getPlayerTactics(tacticId)
     })
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: ({ tactics, playerTactics, teamPlayers }) => {
+        next: ({ tactics, playerTactics }) => {
           // Find the specific tactic
           const currentTactic = tactics.find(t => t.tacticID === tacticId);
           if (!currentTactic) {
@@ -92,18 +103,7 @@ export class TacticsDetail implements OnInit {
           }
           
           this.tactic.set(currentTactic);
-          
-          // Map players with their roles from playerTactics
-          const playersWithRoles: PlayerWithTactic[] = teamPlayers.map(player => {
-            const playerTactic = playerTactics.find(pt => pt.PlayerID === player.playerID);
-            return {
-              ...player,
-              playerRole: playerTactic?.PlayerRole,
-              playerPosition: playerTactic?.PlayerPosition
-            };
-          });
-          
-          this.players.set(playersWithRoles);
+          this.playerTactics.set(playerTactics);
           this.loading.set(false);
           this.cdr.markForCheck();
         },
@@ -131,7 +131,7 @@ export class TacticsDetail implements OnInit {
     return 'assets/images/tactics/4-4-2.png';
   }
 
-  getPlayerRoleLabel(role?: PlayerRole): string {
+  getPlayerRoleLabel(role?: number): string {
     if (role === undefined || role === null) {
       return 'Not Assigned';
     }
@@ -148,7 +148,7 @@ export class TacticsDetail implements OnInit {
     }
   }
 
-  getPlayerPositionLabel(position?: PlayerPosition): string {
+  getPlayerPositionLabel(position?: number): string {
     if (position === undefined || position === null) {
       return '-';
     }
@@ -181,13 +181,12 @@ export class TacticsDetail implements OnInit {
     this.router.navigate(['/team/tactics']);
   }
 
-  // Transform players for table display
+  // Transform playerTactics for table display
   get tableData() {
-    return this.players().map(player => ({
-      name: `${player.firstName} ${player.lastName}`,
-      position: this.getPlayerPositionLabel(player.playerPosition),
-      age: player.age,
-      role: this.getPlayerRoleLabel(player.playerRole)
+    return this.playerTactics().map(pt => ({
+      playerID: pt.PlayerID || 'Unknown',
+      position: this.getPlayerPositionLabel(pt.PlayerPosition),
+      role: this.getPlayerRoleLabel(pt.PlayerRole)
     }));
   }
 }
