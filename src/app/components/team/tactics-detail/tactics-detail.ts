@@ -37,9 +37,41 @@ export class TacticsDetail implements OnInit {
   loading = signal(false);
   error = signal<string | null>(null);
   
+  // Position sort order map - defines the tactical field layout order
+  private readonly positionSortOrder: Record<number, number> = {
+    [PlayerPosition.Goalkeeper]: 1,
+    [PlayerPosition.LeftBack]: 2,
+    [PlayerPosition.CenterBack]: 3,
+    [PlayerPosition.RightBack]: 4,
+    [PlayerPosition.LeftWingBack]: 5,
+    [PlayerPosition.DefensiveMidfielder]: 6,
+    [PlayerPosition.RightWingBack]: 7,
+    [PlayerPosition.LeftMidfielder]: 8,
+    [PlayerPosition.CentralMidfielder]: 9,
+    [PlayerPosition.RightMidfielder]: 10,
+    [PlayerPosition.LeftWinger]: 11,
+    [PlayerPosition.AttackingMidfielder]: 12,
+    [PlayerPosition.RightWinger]: 13,
+    [PlayerPosition.Striker]: 14
+  };
+
+  // Custom comparator for position sorting
+  private positionComparator = (a: unknown, b: unknown): number => {
+    const aOrder = this.positionSortOrder[a as number] ?? 999;
+    const bOrder = this.positionSortOrder[b as number] ?? 999;
+    return aOrder - bOrder;
+  };
+  
   // Table columns for player tactics
   displayedColumns = [
-    { key: 'position', width: '10%', header: 'Position', sortable: true },
+    { 
+      key: 'position', 
+      width: '10%', 
+      header: 'Position', 
+      sortable: true,
+      sortAccessor: (row: any) => row.positionValue,
+      comparator: this.positionComparator
+    },
     { key: 'playerName', header: 'Name', width: '80%', sortable: true },
     { key: 'role', width: '10%', header: 'Role', sortable: true }
   ];
@@ -294,6 +326,7 @@ export class TacticsDetail implements OnInit {
       return {
         playerName,
         position: this.getPlayerPositionLabel(pt.playerPosition),
+        positionValue: pt.playerPosition, // Include raw enum value for sorting
         role: this.getPlayerRoleLabel(pt.playerRole)
       };
     });
