@@ -32,8 +32,9 @@ export class AuthService {
   getRole(): string {
     const t = this.token;
     if (!t) return '';
-    const payload = jwtDecode<JwtPayload>(t);
-    return (payload.role as any) ?? '';
+    const payload = jwtDecode<any>(t);
+    const role = payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
+    return (role as any) ?? '';
   }
 
   private isTokenExpired(token: string): boolean {
