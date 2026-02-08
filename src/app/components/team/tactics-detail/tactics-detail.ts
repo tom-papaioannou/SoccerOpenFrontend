@@ -39,8 +39,8 @@ export class TacticsDetail implements OnInit {
   
   // Table columns for player tactics
   displayedColumns = [
-    { key: 'playerName', header: 'Player Name', width: '40%', sortable: true },
     { key: 'position', header: 'Position', sortable: true },
+    { key: 'playerName', header: 'Player Name', width: '40%', sortable: true },
     { key: 'role', header: 'Role', sortable: true }
   ];
 

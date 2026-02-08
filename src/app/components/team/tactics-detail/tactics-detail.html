@@ -28,18 +28,19 @@
       <div class="tactic-section">
         <mat-card class="tactic-card" [class.main-tactic]="tactic()?.isMain">
           <mat-card-content class="tactic-card-content">
-            <div class="tactic-name">{{ tactic()?.name }}</div>
+            <div class="tactic-name flex">
+              {{ tactic()?.name }}
+              @if (tactic()?.isMain) {
+                <div class="main-badge mx-4">Main</div>
+              }
+            </div>
             <img [src]="getFormationImagePath(tactic()?.formation)" alt="Tactics formation" class="tactic-image" />
-            @if (tactic()?.isMain) {
-              <div class="main-badge">Main Tactic</div>
-            }
           </mat-card-content>
         </mat-card>
       </div>
 
       <!-- Right Side: Players Table -->
       <div class="players-section">
-        <h3 class="text-xl font-semibold mb-4">Player Assignments</h3>
         @if (tableData.length > 0) {
           <app-data-table
             [data]="tableData"
