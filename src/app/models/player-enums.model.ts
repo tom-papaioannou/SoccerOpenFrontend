@@ -3,15 +3,20 @@
  */
 export enum PlayerPosition {
   None = 0,
-  GK = 1,
-  CD = 2,
-  DL = 3,
-  DR = 4,
-  DM = 5,
-  MC = 6,
-  ML = 7,
-  MR = 8,
-  CF = 9
+  Goalkeeper = 1,
+  RightBack = 2,
+  LeftBack = 3,
+  CenterBack = 4,
+  DefensiveMidfielder = 5,
+  RightWingBack = 6,
+  LeftWingBack = 7,
+  CentralMidfielder = 8,
+  RightMidfielder = 9,
+  LeftMidfielder = 10,
+  AttackingMidfielder = 11,
+  RightWinger = 12,
+  LeftWinger = 13,
+  Striker = 14
 }
 
 /**
@@ -22,4 +27,25 @@ export enum PlayerRole {
   Starter = 1,
   Substitute = 2,
   Reserve = 3
+}
+
+/**
+ * Person model representing a person's basic information
+ */
+export interface Person {
+  PersonID: string;
+  Name?: string;
+  Surname?: string;
+  DateOfBirth?: string;
+  PlaceOfBirth?: string;
+  ContractID?: string;
+}
+
+/**
+ * Player model representing a player
+ */
+export interface Player {
+  PlayerID: string;
+  PersonID: string;
+  Person?: Person;
 }

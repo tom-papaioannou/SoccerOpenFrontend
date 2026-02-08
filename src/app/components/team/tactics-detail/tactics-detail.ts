@@ -39,7 +39,7 @@ export class TacticsDetail implements OnInit {
   
   // Table columns for player tactics
   displayedColumns = [
-    { key: 'playerID', header: 'Player ID', width: '40%', sortable: true },
+    { key: 'playerName', header: 'Player Name', width: '40%', sortable: true },
     { key: 'position', header: 'Position', sortable: true },
     { key: 'role', header: 'Role', sortable: true }
   ];
@@ -136,24 +136,34 @@ export class TacticsDetail implements OnInit {
     }
     
     switch(position) {
-      case PlayerPosition.GK:
-        return 'GK';
-      case PlayerPosition.CD:
-        return 'CD';
-      case PlayerPosition.DL:
-        return 'DL';
-      case PlayerPosition.DR:
-        return 'DR';
-      case PlayerPosition.DM:
-        return 'DM';
-      case PlayerPosition.MC:
-        return 'MC';
-      case PlayerPosition.ML:
-        return 'ML';
-      case PlayerPosition.MR:
-        return 'MR';
-      case PlayerPosition.CF:
-        return 'CF';
+      case PlayerPosition.Goalkeeper:
+        return 'Goalkeeper';
+      case PlayerPosition.RightBack:
+        return 'Right Back';
+      case PlayerPosition.LeftBack:
+        return 'Left Back';
+      case PlayerPosition.CenterBack:
+        return 'Center Back';
+      case PlayerPosition.DefensiveMidfielder:
+        return 'Defensive Midfielder';
+      case PlayerPosition.RightWingBack:
+        return 'Right Wing Back';
+      case PlayerPosition.LeftWingBack:
+        return 'Left Wing Back';
+      case PlayerPosition.CentralMidfielder:
+        return 'Central Midfielder';
+      case PlayerPosition.RightMidfielder:
+        return 'Right Midfielder';
+      case PlayerPosition.LeftMidfielder:
+        return 'Left Midfielder';
+      case PlayerPosition.AttackingMidfielder:
+        return 'Attacking Midfielder';
+      case PlayerPosition.RightWinger:
+        return 'Right Winger';
+      case PlayerPosition.LeftWinger:
+        return 'Left Winger';
+      case PlayerPosition.Striker:
+        return 'Striker';
       default:
         return '-';
     }
@@ -165,10 +175,16 @@ export class TacticsDetail implements OnInit {
 
   // Transform playerTactics for table display
   get tableData() {
-    return this.playerTactics().map(pt => ({
-      playerID: pt.PlayerID || 'Unknown',
-      position: this.getPlayerPositionLabel(pt.PlayerPosition),
-      role: this.getPlayerRoleLabel(pt.PlayerRole)
-    }));
+    return this.playerTactics().map(pt => {
+      const playerName = pt.Player?.Person 
+        ? `${pt.Player.Person.Name || ''} ${pt.Player.Person.Surname || ''}`.trim() 
+        : 'Unknown Player';
+      
+      return {
+        playerName,
+        position: this.getPlayerPositionLabel(pt.PlayerPosition),
+        role: this.getPlayerRoleLabel(pt.PlayerRole)
+      };
+    });
   }
 }

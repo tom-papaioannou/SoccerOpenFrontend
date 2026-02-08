@@ -64,6 +64,17 @@ export interface PlayerTactic {
   PlayerTacticID?: string;
   TacticID: string;
   PlayerID?: string;
+  Player?: {
+    PlayerID: string;
+    PersonID: string;
+    Person?: {
+      PersonID: string;
+      Name?: string;
+      Surname?: string;
+      DateOfBirth?: string;
+      PlaceOfBirth?: string;
+    };
+  };
   PlayerPosition: number;
   PlayerRole: number;
 }
