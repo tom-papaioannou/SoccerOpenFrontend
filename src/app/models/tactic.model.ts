@@ -61,10 +61,22 @@ export interface CreateTacticRequest {
  * PlayerTactic model for player positioning within a tactic
  */
 export interface PlayerTactic {
-  PlayerTacticID?: string;
-  TacticID: string;
-  PlayerID?: string;
-  PlayerPosition: string;
+  playerTacticID?: string;
+  tacticID: string;
+  playerID?: string;
+  player?: {
+    playerID: string;
+    personID: string;
+    person?: {
+      personID: string;
+      name?: string;
+      surname?: string;
+      dateOfBirth?: string;
+      placeOfBirth?: string;
+    };
+  };
+  playerPosition: number;
+  playerRole: number;
 }
 
 /**
@@ -73,5 +85,6 @@ export interface PlayerTactic {
 export interface AddPlayerTacticRequest {
   TacticID: string;
   PlayerID?: string;
-  PlayerPosition: string;
+  PlayerPosition: number;
+  PlayerRole: number;
 }

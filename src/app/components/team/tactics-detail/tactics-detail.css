@@ -1,0 +1,71 @@
+.tactics-detail-container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.content-grid {
+  display: grid;
+  grid-template-columns: 350px 1fr;
+  gap: 2rem;
+  margin-top: 1rem;
+}
+
+/* Responsive layout */
+@media (max-width: 968px) {
+  .content-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.tactic-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.players-section {
+  display: flex;
+  flex-direction: column;
+  max-width: 500px;
+}
+
+/* Tactic Card Styles */
+.tactic-card {
+  cursor: default;
+  transition: all 0.3s ease;
+  height: fit-content;
+}
+
+.tactic-card-content {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.tactic-name {
+  font-size: 1.25rem;
+  font-weight: 600;
+  text-align: center;
+  color: #1f2937;
+}
+
+.tactic-image {
+  width: 100%;
+  max-width: 280px;
+  height: auto;
+  border-radius: 8px;
+}
+
+.main-tactic {
+  border: 2px solid #10b981;
+  box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.2);
+}
+
+.main-asterisk {
+  color: #10b981;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-left: 0.5rem;
+  line-height: 1;
+}

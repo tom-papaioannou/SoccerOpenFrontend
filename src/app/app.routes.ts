@@ -5,6 +5,7 @@ import { authenticationGuard } from './guards/authentication.guard';
 import { Team } from './components/team/team';
 import { Squad } from './components/team/squad/squad';
 import { Tactics } from './components/team/tactics/tactics';
+import { TacticsDetail } from './components/team/tactics-detail/tactics-detail';
 import { Fixtures } from './components/team/fixtures/fixtures';
 import { Competitions } from './components/competitions/competitions';
 import { CompetitionsManagement } from './components/competitions-management/competitions-management';
@@ -25,6 +26,7 @@ export const routes: Routes = [
             { path: '', redirectTo: 'squad', pathMatch: "prefix" },
             { path: 'squad', component: Squad },
             { path: 'tactics', component: Tactics },
+            { path: 'tactics/:id', component: TacticsDetail },
             { path: 'fixtures', component: Fixtures }
         ]
     },

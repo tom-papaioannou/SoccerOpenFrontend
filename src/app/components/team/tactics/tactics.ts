@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, signal, computed, DestroyRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { MatCard, MatCardHeader, MatCardTitle, MatCardContent } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -38,7 +39,7 @@ export class Tactics implements OnInit {
   
   // TODO: Get team ID from route params or auth service
   // For now using a placeholder that needs to be set
-  private teamId = 'dc31837f-b9bc-4ae3-a65f-883fff1a4498';
+  private teamId = '96ca7aa8-9a53-4a71-8d4c-041d4084373d';
   
   // State signals
   tactics = signal<Tactic[]>([]);
@@ -94,7 +95,8 @@ export class Tactics implements OnInit {
   constructor(
     private readonly tacticsService: TacticsService,
     private readonly fb: FormBuilder,
-    private readonly cdr: ChangeDetectorRef
+    private readonly cdr: ChangeDetectorRef,
+    private readonly router: Router
   ) {
     this.tacticForm = this.fb.group({
       Name: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(30)]],
@@ -223,5 +225,14 @@ export class Tactics implements OnInit {
 
     // defaults to 4-4-2 image
     return 'assets/images/tactics/4-4-2.png';
+  }
+
+  viewTacticDetails(tactic: Tactic): void {
+    if (!tactic.tacticID) {
+      this.error.set('Cannot view tactic: missing ID');
+      return;
+    }
+
+    this.router.navigate(['/team/tactics', tactic.tacticID]);
   }
 }

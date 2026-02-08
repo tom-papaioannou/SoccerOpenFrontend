@@ -16,11 +16,17 @@ import { MatTableModule } from '@angular/material/table';
 export class DataTable<T> implements OnChanges{
   ngOnChanges(changes: SimpleChanges): void {
     this.renderedData = [...this.data];
+    // Apply initial sort if provided and not yet set
+    if (changes['initialSort'] && this.initialSort && !this.active) {
+      this.active = this.initialSort.active;
+      this.direction = this.initialSort.direction;
+    }
     this.applySort();
   }
   @Input() data: T[] = [];
   @Input() columns: ColumnDef<T>[] = [];
   @Input() tableClass = 'app-table';
+  @Input() initialSort?: { active: string; direction: 'asc' | 'desc' };
   private active = '';
   private direction: 'asc' | 'desc' | '' = '';
   renderedData: T[] = [];
