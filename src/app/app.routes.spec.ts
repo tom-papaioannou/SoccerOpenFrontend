@@ -39,16 +39,18 @@ describe('App Routes', () => {
   });
 
   it('should have all routes except login and register protected', () => {
-    const unprotectedRoutes = routes.filter(r => 
+    const routesWithComponents = routes.filter(r => 
+      r.component !== undefined && 
       r.path !== 'login' && 
-      r.path !== 'register' && 
-      r.path !== '**' && 
-      !r.canActivate?.includes(authenticationGuard)
+      r.path !== 'register'
     );
     
-    // Should only be empty or contain routes with no components (like redirects)
-    unprotectedRoutes.forEach(route => {
-      expect(route.component).toBeUndefined();
+    // All routes with components (except login and register) should have authenticationGuard
+    routesWithComponents.forEach(route => {
+      expect(route.canActivate).toContain(authenticationGuard);
     });
+    
+    // Verify we're checking the expected number of protected routes
+    expect(routesWithComponents.length).toBeGreaterThan(0);
   });
 });
