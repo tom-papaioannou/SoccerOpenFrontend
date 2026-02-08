@@ -69,7 +69,7 @@ export class AuthService {
     this.authenticationChange.emit();
   }
 
-  afterSuccessfullLogin(result: any){
+  afterSuccessfulLogin(result: any){
     this.loggedIn = true;
     this.emitChange();
   }

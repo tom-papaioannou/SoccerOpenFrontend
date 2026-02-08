@@ -67,11 +67,11 @@ describe('AuthService', () => {
     });
   });
 
-  describe('afterSuccessfullLogin', () => {
+  describe('afterSuccessfulLogin', () => {
     it('should not store role in localStorage', () => {
       const result = { role: 'admin', token: 'some-token' };
       
-      service.afterSuccessfullLogin(result);
+      service.afterSuccessfulLogin(result);
       
       expect(localStorage.getItem('role')).toBeNull();
     });
@@ -79,7 +79,7 @@ describe('AuthService', () => {
     it('should set loggedIn to true', () => {
       const result = { role: 'admin', token: 'some-token' };
       
-      service.afterSuccessfullLogin(result);
+      service.afterSuccessfulLogin(result);
       
       expect(service.loggedIn).toBe(true);
     });
@@ -92,7 +92,7 @@ describe('AuthService', () => {
         done();
       });
       
-      service.afterSuccessfullLogin(result);
+      service.afterSuccessfulLogin(result);
     });
   });
 
