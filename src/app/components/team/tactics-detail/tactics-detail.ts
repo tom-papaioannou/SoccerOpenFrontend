@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, signal, computed, DestroyRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MatCard, MatCardHeader, MatCardTitle, MatCardContent } from '@angular/material/card';
+import { MatCard, MatCardContent } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -23,8 +23,6 @@ interface PlayerWithTactic extends Player {
   imports: [
     CommonModule,
     MatCard,
-    MatCardHeader,
-    MatCardTitle,
     MatCardContent,
     MatButtonModule,
     MatIconModule,
@@ -52,7 +50,7 @@ export class TacticsDetail implements OnInit {
   displayedColumns = [
     { key: 'name', header: 'Name', width: '30%', sortable: true },
     { key: 'position', header: 'Position', sortable: true },
-    { key: 'age', header: 'Age', align: 'end' as const, headerClass:'text-end', cellClass:'text-end', sortable: true },
+    { key: 'age', header: 'Age', align: 'right' as const, headerClass:'text-end', cellClass:'text-end', sortable: true },
     { key: 'role', header: 'Role', sortable: true }
   ];
 
