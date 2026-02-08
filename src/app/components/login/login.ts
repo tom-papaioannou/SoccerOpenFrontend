@@ -53,7 +53,7 @@ export class Login{
     this.authService.login(this.loginForm.value.username, this.loginForm.value.password).subscribe({
       next: (result) => {
         this.authService.afterSuccessfullLogin(result);
-        this.role = this.authService.role;
+        this.role = this.authService.getRole();
         this.router.navigate(['/home']);
       },
       error: (error) => {

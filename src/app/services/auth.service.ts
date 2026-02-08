@@ -12,7 +12,6 @@ type JwtPayload = { exp?: number; role?: string; };
 export class AuthService {
   authenticationChange = new EventEmitter<any>();
   loggedIn = localStorage.getItem("token") !== null;
-  role = "";
   private tokenSubject = new BehaviorSubject<string | null>(localStorage.getItem('token'));
   token$ = this.tokenSubject.asObservable();
 
@@ -71,9 +70,7 @@ export class AuthService {
   }
 
   afterSuccessfullLogin(result: any){
-    this.role = result.role;
     this.loggedIn = true;
-    localStorage.setItem('role', this.role);
     this.emitChange();
   }
 
@@ -90,6 +87,7 @@ export class AuthService {
 
   public clearToken() {
     localStorage.removeItem('token');
+    localStorage.removeItem('role');
     this.tokenSubject.next(null);
     this.emitChange();
   }
