@@ -177,7 +177,7 @@ export class TacticsDetail implements OnInit {
   get tableData() {
     return this.playerTactics().map(pt => {
       const playerName = pt.Player?.Person 
-        ? `${pt.Player.Person.Name || ''} ${pt.Player.Person.Surname || ''}`.trim() 
+        ? `${pt.Player.Person.Name || ''} ${pt.Player.Person.Surname || ''}`.trim() || 'Unknown Player'
         : 'Unknown Player';
       
       return {
