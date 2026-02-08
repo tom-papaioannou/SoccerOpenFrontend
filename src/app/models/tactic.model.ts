@@ -64,7 +64,8 @@ export interface PlayerTactic {
   PlayerTacticID?: string;
   TacticID: string;
   PlayerID?: string;
-  PlayerPosition: string;
+  PlayerPosition: number;
+  PlayerRole: number;
 }
 
 /**
@@ -73,5 +74,6 @@ export interface PlayerTactic {
 export interface AddPlayerTacticRequest {
   TacticID: string;
   PlayerID?: string;
-  PlayerPosition: string;
+  PlayerPosition: number;
+  PlayerRole: number;
 }

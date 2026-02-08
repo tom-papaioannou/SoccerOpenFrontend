@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, signal, computed, DestroyRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { MatCard, MatCardHeader, MatCardTitle, MatCardContent } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -94,7 +95,8 @@ export class Tactics implements OnInit {
   constructor(
     private readonly tacticsService: TacticsService,
     private readonly fb: FormBuilder,
-    private readonly cdr: ChangeDetectorRef
+    private readonly cdr: ChangeDetectorRef,
+    private readonly router: Router
   ) {
     this.tacticForm = this.fb.group({
       Name: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(30)]],
@@ -223,5 +225,17 @@ export class Tactics implements OnInit {
 
     // defaults to 4-4-2 image
     return 'assets/images/tactics/4-4-2.png';
+  }
+
+  viewTacticDetails(tactic: Tactic, event: Event): void {
+    // Prevent delete button click from triggering
+    event.stopPropagation();
+    
+    if (!tactic.tacticID) {
+      this.error.set('Cannot view tactic: missing ID');
+      return;
+    }
+
+    this.router.navigate(['/team/tactics', tactic.tacticID]);
   }
 }

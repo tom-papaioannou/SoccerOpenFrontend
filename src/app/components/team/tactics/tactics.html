@@ -72,7 +72,7 @@
     <div class="tactics-grid">
       <!-- Existing Tactics Cards -->
       @for (tactic of sortedTactics(); track tactic.tacticID) {
-        <mat-card class="tactic-card" [class.main-tactic]="tactic.isMain">
+        <mat-card class="tactic-card" [class.main-tactic]="tactic.isMain" (click)="viewTacticDetails(tactic, $event)">
           @if (tactics().length > 1) {
             <button 
               mat-icon-button 
