@@ -61,13 +61,10 @@
   box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.2);
 }
 
-.main-badge {
-  background-color: #10b981;
-  color: white;
-  padding: 0.25rem 0.75rem;
-  border-radius: 9999px;
-  font-size: 0.875rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+.main-asterisk {
+  color: #10b981;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-left: 0.5rem;
+  line-height: 1;
 }

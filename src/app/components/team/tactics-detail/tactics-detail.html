@@ -31,7 +31,7 @@
             <div class="tactic-name flex">
               {{ tactic()?.name }}
               @if (tactic()?.isMain) {
-                <div class="main-badge mx-4">Main</div>
+                <span class="main-asterisk">*</span>
               }
             </div>
             <img [src]="getFormationImagePath(tactic()?.formation)" alt="Tactics formation" class="tactic-image" />
