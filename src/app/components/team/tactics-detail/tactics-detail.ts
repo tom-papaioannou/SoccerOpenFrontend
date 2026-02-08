@@ -119,12 +119,124 @@ export class TacticsDetail implements OnInit {
     }
     
     switch(role) {
-      case PlayerRole.Starter:
-        return 'Starter';
-      case PlayerRole.Substitute:
-        return 'Substitute';
-      case PlayerRole.Reserve:
-        return 'Reserve';
+      // Goalkeepers
+      case PlayerRole.Goalkeeper:
+        return 'Goalkeeper';
+      case PlayerRole.SweeperKeeper:
+        return 'Sweeper Keeper';
+
+      // Defenders
+      case PlayerRole.CenterBack:
+        return 'Center Back';
+      case PlayerRole.BallPlayingDefender:
+        return 'Ball-Playing Defender';
+      case PlayerRole.NoNonsenseCenterBack:
+        return 'No-Nonsense Center Back';
+      case PlayerRole.Libero:
+        return 'Libero';
+      case PlayerRole.Stopper:
+        return 'Stopper';
+      case PlayerRole.Cover:
+        return 'Cover';
+      case PlayerRole.FullBack:
+        return 'Full Back';
+      case PlayerRole.WingBack:
+        return 'Wing Back';
+      case PlayerRole.CompleteWingBack:
+        return 'Complete Wing Back';
+      case PlayerRole.InvertedWingBack:
+        return 'Inverted Wing Back';
+      case PlayerRole.WideCenterBack:
+        return 'Wide Center Back';
+
+      // Defensive Midfielders
+      case PlayerRole.DefensiveMidfielder:
+        return 'Defensive Midfielder';
+      case PlayerRole.Anchorman:
+        return 'Anchorman';
+      case PlayerRole.HalfBack:
+        return 'Half Back';
+      case PlayerRole.DeepLyingPlaymaker:
+        return 'Deep-Lying Playmaker';
+      case PlayerRole.Regista:
+        return 'Regista';
+      case PlayerRole.Volante:
+        return 'Volante';
+      case PlayerRole.SegundoVolante:
+        return 'Segundo Volante';
+      case PlayerRole.BallWinningMidfielder:
+        return 'Ball-Winning Midfielder';
+
+      // Central Midfielders
+      case PlayerRole.CentralMidfielder:
+        return 'Central Midfielder';
+      case PlayerRole.BoxToBoxMidfielder:
+        return 'Box-to-Box Midfielder';
+      case PlayerRole.Mezzala:
+        return 'Mezzala';
+      case PlayerRole.Carrilero:
+        return 'Carrilero';
+      case PlayerRole.AdvancedPlaymaker:
+        return 'Advanced Playmaker';
+      case PlayerRole.RoamingPlaymaker:
+        return 'Roaming Playmaker';
+
+      // Wide Midfielders & Wingers
+      case PlayerRole.WideMidfielder:
+        return 'Wide Midfielder';
+      case PlayerRole.WidePlaymaker:
+        return 'Wide Playmaker';
+      case PlayerRole.Winger:
+        return 'Winger';
+      case PlayerRole.InvertedWinger:
+        return 'Inverted Winger';
+      case PlayerRole.InsideForward:
+        return 'Inside Forward';
+      case PlayerRole.InvertedForward:
+        return 'Inverted Forward';
+      case PlayerRole.Raumdeuter:
+        return 'Raumdeuter';
+      case PlayerRole.WideTargetMan:
+        return 'Wide Target Man';
+      case PlayerRole.DefensiveWinger:
+        return 'Defensive Winger';
+
+      // Attacking Midfielders
+      case PlayerRole.AttackingMidfielder:
+        return 'Attacking Midfielder';
+      case PlayerRole.ShadowStriker:
+        return 'Shadow Striker';
+      case PlayerRole.Enganche:
+        return 'Enganche';
+      case PlayerRole.Trequartista:
+        return 'Trequartista';
+      case PlayerRole.SecondStriker:
+        return 'Second Striker';
+      case PlayerRole.FalseTen:
+        return 'False 10';
+      case PlayerRole.CentralWinger:
+        return 'Central Winger';
+
+      // Forwards
+      case PlayerRole.AdvancedForward:
+        return 'Advanced Forward';
+      case PlayerRole.CompleteForward:
+        return 'Complete Forward';
+      case PlayerRole.Poacher:
+        return 'Poacher';
+      case PlayerRole.TargetMan:
+        return 'Target Man';
+      case PlayerRole.DeepLyingForward:
+        return 'Deep-Lying Forward';
+      case PlayerRole.PressingForward:
+        return 'Pressing Forward';
+      case PlayerRole.DefensiveForward:
+        return 'Defensive Forward';
+      case PlayerRole.FalseNine:
+        return 'False 9';
+      case PlayerRole.TrequartistaForward:
+        return 'Trequartista Forward';
+
       default:
         return 'None';
     }

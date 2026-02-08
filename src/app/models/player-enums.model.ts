@@ -24,9 +24,72 @@ export enum PlayerPosition {
  */
 export enum PlayerRole {
   None = 0,
-  Starter = 1,
-  Substitute = 2,
-  Reserve = 3
+
+  // Goalkeepers
+  Goalkeeper = 1,
+  SweeperKeeper = 2,
+
+  // Defenders
+  CenterBack = 10,
+  BallPlayingDefender = 11,
+  NoNonsenseCenterBack = 12,
+  Libero = 13,
+  Stopper = 14,
+  Cover = 15,
+  FullBack = 20,
+  WingBack = 21,
+  CompleteWingBack = 22,
+  InvertedWingBack = 23,
+  WideCenterBack = 24,
+
+  // Defensive Midfielders
+  DefensiveMidfielder = 30,
+  Anchorman = 31,
+  HalfBack = 32,
+  DeepLyingPlaymaker = 33,
+  Regista = 34,
+  Volante = 35,
+  SegundoVolante = 36,
+  BallWinningMidfielder = 37,
+
+  // Central Midfielders
+  CentralMidfielder = 40,
+  BoxToBoxMidfielder = 41,
+  Mezzala = 42,
+  Carrilero = 43,
+  AdvancedPlaymaker = 44,
+  RoamingPlaymaker = 45,
+
+  // Wide Midfielders & Wingers
+  WideMidfielder = 50,
+  WidePlaymaker = 51,
+  Winger = 52,
+  InvertedWinger = 53,
+  InsideForward = 54,
+  InvertedForward = 55,
+  Raumdeuter = 56,
+  WideTargetMan = 57,
+  DefensiveWinger = 58,
+
+  // Attacking Midfielders
+  AttackingMidfielder = 60,
+  ShadowStriker = 61,
+  Enganche = 62,
+  Trequartista = 63,
+  SecondStriker = 64,
+  FalseTen = 65,
+  CentralWinger = 66,
+
+  // Forwards
+  AdvancedForward = 70,
+  CompleteForward = 71,
+  Poacher = 72,
+  TargetMan = 73,
+  DeepLyingForward = 74,
+  PressingForward = 75,
+  DefensiveForward = 76,
+  FalseNine = 77,
+  TrequartistaForward = 78
 }
 
 /**
