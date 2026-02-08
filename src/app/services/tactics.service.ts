@@ -24,6 +24,13 @@ export class TacticsService {
     );
   }
 
+  getTeamTactic(tacticID: string): Observable<Tactic[]> {
+    return this.http.get<Tactic[]>(`${this.apiUrl}/getTeamTactic/${tacticID}`).pipe(
+      catchError(this.handleError),
+      shareReplay(1)
+    );
+  }
+
   /**
    * Create a new team tactic
    * Backend endpoint: POST /api/tactics/createTeamTactic

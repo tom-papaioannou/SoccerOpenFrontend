@@ -39,7 +39,7 @@ export class Tactics implements OnInit {
   
   // TODO: Get team ID from route params or auth service
   // For now using a placeholder that needs to be set
-  private teamId = 'dc31837f-b9bc-4ae3-a65f-883fff1a4498';
+  private teamId = '96ca7aa8-9a53-4a71-8d4c-041d4084373d';
   
   // State signals
   tactics = signal<Tactic[]>([]);
