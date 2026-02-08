@@ -41,15 +41,6 @@ export class Login{
   }
 
   login(){
-    // //just for testing purposes
-    // let result = {
-    //   //role: "Admin"
-    //   //role: "Host"
-    //   role: "User"
-    // };
-    // this.authService.afterSuccessfulLogin(result);
-    // this.role = this.authService.role;
-    // this.router.navigate(['/home']);
     this.authService.login(this.loginForm.value.username, this.loginForm.value.password).subscribe({
       next: (result) => {
         this.authService.afterSuccessfulLogin(result);
