@@ -31,9 +31,6 @@ export class TacticsDetail implements OnInit {
   private readonly route: ActivatedRoute;
   private readonly router: Router;
   
-  // TODO: Get team ID from route params or auth service
-  private teamId = 'dc31837f-b9bc-4ae3-a65f-883fff1a4498';
-  
   // State signals
   tactic = signal<Tactic | null>(null);
   playerTactics = signal<PlayerTactic[]>([]);
@@ -74,22 +71,13 @@ export class TacticsDetail implements OnInit {
     this.error.set(null);
 
     forkJoin({
-      tactics: this.tacticsService.getTeamTactics(this.teamId),
+      tactic: this.tacticsService.getTeamTactic(tacticId),
       playerTactics: this.tacticsService.getPlayerTactics(tacticId)
     })
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: ({ tactics, playerTactics }) => {
-          // Find the specific tactic
-          const currentTactic = tactics.find(t => t.tacticID === tacticId);
-          if (!currentTactic) {
-            this.error.set('Tactic not found');
-            this.loading.set(false);
-            this.cdr.markForCheck();
-            return;
-          }
-          
-          this.tactic.set(currentTactic);
+        next: ({ tactic, playerTactics }) => {
+          this.tactic.set(tactic);
           this.playerTactics.set(playerTactics);
           this.loading.set(false);
           this.cdr.markForCheck();

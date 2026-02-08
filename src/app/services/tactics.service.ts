@@ -24,8 +24,12 @@ export class TacticsService {
     );
   }
 
-  getTeamTactic(tacticID: string): Observable<Tactic[]> {
-    return this.http.get<Tactic[]>(`${this.apiUrl}/getTeamTactic/${tacticID}`).pipe(
+  /**
+   * Get a specific tactic by ID
+   * Backend endpoint: GET /api/tactics/getTeamTactic/{tacticID}
+   */
+  getTeamTactic(tacticID: string): Observable<Tactic> {
+    return this.http.get<Tactic>(`${this.apiUrl}/getTeamTactic/${tacticID}`).pipe(
       catchError(this.handleError),
       shareReplay(1)
     );
