@@ -88,7 +88,6 @@ describe('AuthService', () => {
       const result = { role: 'admin', token: 'some-token' };
       
       service.authenticationChange.subscribe(() => {
-        expect(true).toBe(true);
         done();
       });
       
@@ -116,7 +115,6 @@ describe('AuthService', () => {
 
     it('should emit authentication change', (done) => {
       service.authenticationChange.subscribe(() => {
-        expect(true).toBe(true);
         done();
       });
       
