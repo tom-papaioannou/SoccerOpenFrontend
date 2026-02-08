@@ -227,10 +227,7 @@ export class Tactics implements OnInit {
     return 'assets/images/tactics/4-4-2.png';
   }
 
-  viewTacticDetails(tactic: Tactic, event: Event): void {
-    // Prevent delete button click from triggering
-    event.stopPropagation();
-    
+  viewTacticDetails(tactic: Tactic): void {
     if (!tactic.tacticID) {
       this.error.set('Cannot view tactic: missing ID');
       return;

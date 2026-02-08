@@ -50,7 +50,7 @@ export class TacticsDetail implements OnInit {
   displayedColumns = [
     { key: 'name', header: 'Name', width: '30%', sortable: true },
     { key: 'position', header: 'Position', sortable: true },
-    { key: 'age', header: 'Age', align: 'right' as const, headerClass:'text-end', cellClass:'text-end', sortable: true },
+    { key: 'age', header: 'Age', align: 'right' as const, headerClass: 'text-end', cellClass: 'text-end', sortable: true },
     { key: 'role', header: 'Role', sortable: true }
   ];
 
