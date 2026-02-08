@@ -77,6 +77,13 @@ export class TacticsDetail implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: ({ tactic, playerTactics }) => {
+          if (!tactic) {
+            this.error.set('Tactic not found');
+            this.loading.set(false);
+            this.cdr.markForCheck();
+            return;
+          }
+          
           this.tactic.set(tactic);
           this.playerTactics.set(playerTactics);
           this.loading.set(false);
