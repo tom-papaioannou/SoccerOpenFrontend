@@ -39,9 +39,9 @@ export class TacticsDetail implements OnInit {
   
   // Table columns for player tactics
   displayedColumns = [
-    { key: 'position', header: 'Position', sortable: true },
-    { key: 'playerName', header: 'Player Name', width: '40%', sortable: true },
-    { key: 'role', header: 'Role', sortable: true }
+    { key: 'position', width: '10%', header: 'Position', sortable: true },
+    { key: 'playerName', header: 'Name', width: '80%', sortable: true },
+    { key: 'role', width: '10%', header: 'Role', sortable: true }
   ];
 
   constructor(
@@ -121,124 +121,124 @@ export class TacticsDetail implements OnInit {
     switch(role) {
       // Goalkeepers
       case PlayerRole.Goalkeeper:
-        return 'Goalkeeper';
+        return 'GK';
       case PlayerRole.SweeperKeeper:
-        return 'Sweeper Keeper';
+        return 'SK';
 
       // Defenders
       case PlayerRole.CenterBack:
-        return 'Center Back';
+        return 'CB';
       case PlayerRole.BallPlayingDefender:
-        return 'Ball-Playing Defender';
+        return 'BPD';
       case PlayerRole.NoNonsenseCenterBack:
-        return 'No-Nonsense Center Back';
+        return 'NCB';
       case PlayerRole.Libero:
-        return 'Libero';
+        return 'LIB';
       case PlayerRole.Stopper:
-        return 'Stopper';
+        return 'S';
       case PlayerRole.Cover:
-        return 'Cover';
+        return 'C';
       case PlayerRole.FullBack:
-        return 'Full Back';
+        return 'FB';
       case PlayerRole.WingBack:
-        return 'Wing Back';
+        return 'WB';
       case PlayerRole.CompleteWingBack:
-        return 'Complete Wing Back';
+        return 'CWB';
       case PlayerRole.InvertedWingBack:
-        return 'Inverted Wing Back';
+        return 'IWB';
       case PlayerRole.WideCenterBack:
-        return 'Wide Center Back';
+        return 'WCB';
 
       // Defensive Midfielders
       case PlayerRole.DefensiveMidfielder:
-        return 'Defensive Midfielder';
+        return 'DM';
       case PlayerRole.Anchorman:
-        return 'Anchorman';
+        return 'A';
       case PlayerRole.HalfBack:
-        return 'Half Back';
+        return 'HB';
       case PlayerRole.DeepLyingPlaymaker:
-        return 'Deep-Lying Playmaker';
+        return 'DLP';
       case PlayerRole.Regista:
-        return 'Regista';
+        return 'REG';
       case PlayerRole.Volante:
-        return 'Volante';
+        return 'VOL';
       case PlayerRole.SegundoVolante:
-        return 'Segundo Volante';
+        return 'SVOL';
       case PlayerRole.BallWinningMidfielder:
-        return 'Ball-Winning Midfielder';
+        return 'BWM';
 
       // Central Midfielders
       case PlayerRole.CentralMidfielder:
-        return 'Central Midfielder';
+        return 'CM';
       case PlayerRole.BoxToBoxMidfielder:
-        return 'Box-to-Box Midfielder';
+        return 'BTBM';
       case PlayerRole.Mezzala:
-        return 'Mezzala';
+        return 'MEZ';
       case PlayerRole.Carrilero:
-        return 'Carrilero';
+        return 'C';
       case PlayerRole.AdvancedPlaymaker:
-        return 'Advanced Playmaker';
+        return 'AP';
       case PlayerRole.RoamingPlaymaker:
-        return 'Roaming Playmaker';
+        return 'RP';
 
       // Wide Midfielders & Wingers
       case PlayerRole.WideMidfielder:
-        return 'Wide Midfielder';
+        return 'WM';
       case PlayerRole.WidePlaymaker:
-        return 'Wide Playmaker';
+        return 'WP';
       case PlayerRole.Winger:
-        return 'Winger';
+        return 'W';
       case PlayerRole.InvertedWinger:
-        return 'Inverted Winger';
+        return 'IW';
       case PlayerRole.InsideForward:
-        return 'Inside Forward';
+        return 'IF';
       case PlayerRole.InvertedForward:
-        return 'Inverted Forward';
+        return 'IF';
       case PlayerRole.Raumdeuter:
-        return 'Raumdeuter';
+        return 'RAU';
       case PlayerRole.WideTargetMan:
-        return 'Wide Target Man';
+        return 'WTM';
       case PlayerRole.DefensiveWinger:
-        return 'Defensive Winger';
+        return 'DW';
 
       // Attacking Midfielders
       case PlayerRole.AttackingMidfielder:
-        return 'Attacking Midfielder';
+        return 'AM';
       case PlayerRole.ShadowStriker:
-        return 'Shadow Striker';
+        return 'SS';
       case PlayerRole.Enganche:
-        return 'Enganche';
+        return 'ENG';
       case PlayerRole.Trequartista:
-        return 'Trequartista';
+        return 'T';
       case PlayerRole.SecondStriker:
-        return 'Second Striker';
+        return 'SES';
       case PlayerRole.FalseTen:
-        return 'False 10';
+        return 'F10';
       case PlayerRole.CentralWinger:
-        return 'Central Winger';
+        return 'CW';
 
       // Forwards
       case PlayerRole.AdvancedForward:
-        return 'Advanced Forward';
+        return 'AF';
       case PlayerRole.CompleteForward:
-        return 'Complete Forward';
+        return 'CF';
       case PlayerRole.Poacher:
-        return 'Poacher';
+        return 'P';
       case PlayerRole.TargetMan:
-        return 'Target Man';
+        return 'TM';
       case PlayerRole.DeepLyingForward:
-        return 'Deep-Lying Forward';
+        return 'DLF';
       case PlayerRole.PressingForward:
-        return 'Pressing Forward';
+        return 'PF';
       case PlayerRole.DefensiveForward:
-        return 'Defensive Forward';
+        return 'DF';
       case PlayerRole.FalseNine:
-        return 'False 9';
+        return 'F9';
       case PlayerRole.TrequartistaForward:
-        return 'Trequartista Forward';
+        return 'T';
 
       default:
-        return 'None';
+        return '-';
     }
   }
 
@@ -249,33 +249,33 @@ export class TacticsDetail implements OnInit {
     
     switch(position) {
       case PlayerPosition.Goalkeeper:
-        return 'Goalkeeper';
+        return 'GK';
       case PlayerPosition.RightBack:
-        return 'Right Back';
+        return 'RB';
       case PlayerPosition.LeftBack:
-        return 'Left Back';
+        return 'LB';
       case PlayerPosition.CenterBack:
-        return 'Center Back';
+        return 'CB';
       case PlayerPosition.DefensiveMidfielder:
-        return 'Defensive Midfielder';
+        return 'DM';
       case PlayerPosition.RightWingBack:
-        return 'Right Wing Back';
+        return 'RWB';
       case PlayerPosition.LeftWingBack:
-        return 'Left Wing Back';
+        return 'LWB';
       case PlayerPosition.CentralMidfielder:
-        return 'Central Midfielder';
+        return 'CM';
       case PlayerPosition.RightMidfielder:
-        return 'Right Midfielder';
+        return 'RM';
       case PlayerPosition.LeftMidfielder:
-        return 'Left Midfielder';
+        return 'LM';
       case PlayerPosition.AttackingMidfielder:
-        return 'Attacking Midfielder';
+        return 'AM';
       case PlayerPosition.RightWinger:
-        return 'Right Winger';
+        return 'RW';
       case PlayerPosition.LeftWinger:
-        return 'Left Winger';
+        return 'LW';
       case PlayerPosition.Striker:
-        return 'Striker';
+        return 'ST';
       default:
         return '-';
     }
