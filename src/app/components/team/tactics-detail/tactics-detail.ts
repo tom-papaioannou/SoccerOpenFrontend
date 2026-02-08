@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, signal, DestroyRef, inject } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, signal, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatCard, MatCardContent } from '@angular/material/card';
@@ -9,28 +9,8 @@ import { forkJoin } from 'rxjs';
 
 import { TacticsService } from '../../../services/tactics.service';
 import { Tactic, Formation, PlayerTactic } from '../../../models/tactic.model';
+import { PlayerPosition, PlayerRole } from '../../../models/player-enums.model';
 import { DataTable } from '../../shared/tables/data-table/data-table';
-
-// Enums for PlayerPosition and PlayerRole (matching backend)
-export enum PlayerPosition {
-  None = 0,
-  GK = 1,
-  CD = 2,
-  DL = 3,
-  DR = 4,
-  DM = 5,
-  MC = 6,
-  ML = 7,
-  MR = 8,
-  CF = 9
-}
-
-export enum PlayerRole {
-  None = 0,
-  Starter = 1,
-  Substitute = 2,
-  Reserve = 3
-}
 
 @Component({
   selector: 'app-tactics-detail',
@@ -47,9 +27,9 @@ export enum PlayerRole {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TacticsDetail implements OnInit {
-  private readonly destroyRef = inject(DestroyRef);
-  private readonly route = inject(ActivatedRoute);
-  private readonly router = inject(Router);
+  private readonly destroyRef: DestroyRef;
+  private readonly route: ActivatedRoute;
+  private readonly router: Router;
   
   // TODO: Get team ID from route params or auth service
   private teamId = 'dc31837f-b9bc-4ae3-a65f-883fff1a4498';
@@ -69,8 +49,15 @@ export class TacticsDetail implements OnInit {
 
   constructor(
     private readonly tacticsService: TacticsService,
-    private readonly cdr: ChangeDetectorRef
-  ) {}
+    private readonly cdr: ChangeDetectorRef,
+    route: ActivatedRoute,
+    router: Router,
+    destroyRef: DestroyRef
+  ) {
+    this.route = route;
+    this.router = router;
+    this.destroyRef = destroyRef;
+  }
 
   ngOnInit(): void {
     const tacticId = this.route.snapshot.paramMap.get('id');
