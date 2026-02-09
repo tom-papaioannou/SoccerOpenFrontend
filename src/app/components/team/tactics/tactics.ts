@@ -104,7 +104,17 @@ export class Tactics implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadTactics();
+    // Wait for CurrentTeam to be set before loading tactics
+    this.teamsService.currentTeamObservable
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (team) => {
+          // Only load tactics when we have a valid team
+          if (team) {
+            this.loadTactics();
+          }
+        }
+      });
   }
 
   loadTactics(): void {
