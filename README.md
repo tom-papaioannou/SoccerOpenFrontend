@@ -9,7 +9,7 @@ This project was generated using [Angular CLI](https://github.com/angular/angula
 
 ## Project Overview
 
-FootballOpenFrontend represents the **frontend part** of the FootballOpen project.  
+FootballOpenFrontend represents the **frontend part** of the Football Open project.  
 Its main goal is to offer a clean and intuitive UI for managing football tactics and team configurations.
 
 The application allows users to:
@@ -31,7 +31,7 @@ The backend is built with **.NET** and provides:
 - Tactical and team-related business logic  
 - REST API endpoints consumed by this Angular application  
 
-Running both projects together allows you to explore the **full scope of the FootballOpen project**, with a clear separation between frontend UI and backend logic.
+Running both projects together allows you to explore the **full scope of the Football Open project**, with a clear separation between frontend UI and backend logic.
 
 ---
 
@@ -39,8 +39,6 @@ Running both projects together allows you to explore the **full scope of the Foo
 
 Below are some screenshots showcasing the application UI and its main features.
 
-> 📸 Replace the image paths with real screenshots from your project  
-> (for example, stored in a `screenshots/` folder in the repository).
 
 ### Tactics Management
 
