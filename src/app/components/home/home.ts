@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { DataTable } from '../shared/tables/data-table/data-table';
+import { TeamsService } from '../../services/teams.service';
 
 @Component({
   selector: 'app-home',
@@ -10,6 +11,12 @@ import { DataTable } from '../shared/tables/data-table/data-table';
   styleUrl: './home.css'
 })
 export class Home {
+  teamName: string = "";
+
+  constructor(private readonly teamsService: TeamsService){
+    this.teamName = this.teamsService.CurrentTeam?.name ?? "Unknown Team";
+  }
+
   displayedColumnsFixtures = [
     { key: 'date', header: 'Date', width: '15%', sortable: undefined },
     { key: 'homeaway', width: '5%', sortable: false },

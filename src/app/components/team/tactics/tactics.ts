@@ -12,6 +12,7 @@ import { ActionButton } from '../../shared/buttons/action-button/action-button';
 import { TacticsService } from '../../../services/tactics.service';
 import { Tactic, CreateTacticRequest, Formation } from '../../../models/tactic.model';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { TeamsService } from '../../../services/teams.service';
 
 @Component({
   selector: 'app-tactics',
@@ -36,10 +37,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 export class Tactics implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
   private readonly MAX_TACTICS = 3;
-  
-  // TODO: Get team ID from route params or auth service
-  // For now using a placeholder that needs to be set
-  private teamId = '96ca7aa8-9a53-4a71-8d4c-041d4084373d';
   
   // State signals
   tactics = signal<Tactic[]>([]);
@@ -94,6 +91,7 @@ export class Tactics implements OnInit {
 
   constructor(
     private readonly tacticsService: TacticsService,
+    private readonly teamsService: TeamsService,
     private readonly fb: FormBuilder,
     private readonly cdr: ChangeDetectorRef,
     private readonly router: Router
@@ -113,7 +111,7 @@ export class Tactics implements OnInit {
     this.loading.set(true);
     this.error.set(null);
 
-    this.tacticsService.getTeamTactics(this.teamId)
+    this.tacticsService.getTeamTactics(this.teamsService.CurrentTeam?.teamID ?? "")
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (tactics) => {
@@ -151,7 +149,7 @@ export class Tactics implements OnInit {
     const formValue = this.tacticForm.value;
     
     const createRequest: CreateTacticRequest = {
-      TeamID: this.teamId,
+      TeamID: this.teamsService.CurrentTeam?.teamID ?? "",
       Name: formValue.Name,
       isMain: formValue.isMain ?? false,
       Formation: formValue.Formation

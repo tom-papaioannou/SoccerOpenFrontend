@@ -9,6 +9,7 @@ import { NavbarComponent } from './components/navbar/navbar';
 import { AuthService } from './services/auth.service';
 import { Subject, takeUntil } from 'rxjs';
 import { DeviceService } from './services/device.service';
+import { TeamsService } from './services/teams.service';
 
 @Component({
   selector: 'app-root',
@@ -36,6 +37,7 @@ export class App {
   constructor(
     private readonly authService: AuthService,
     private deviceService: DeviceService,
+    private readonly teamsService: TeamsService,
     private router: Router,
     private readonly cdr: ChangeDetectorRef
   ) {
@@ -49,12 +51,32 @@ export class App {
     this.signedIn = this.authService.isLoggedIn();
     if(this.signedIn){
       this.role = this.authService.getRole();
+      if(this.role === "User"){
+        this.teamsService.getCurrentTeam().subscribe({
+          next: (result) => {
+            this.teamsService.CurrentTeam = result;
+          },
+          error: (error) => {
+            debugger
+          }
+        });
+      }
     }
 
     this.authService.authenticationChange?.subscribe({
       next:() => {
         this.signedIn = this.authService.isLoggedIn();
         this.role = this.authService.getRole();
+        if(this.role === "User"){
+          this.teamsService.getCurrentTeam().subscribe({
+            next: (result) => {
+              this.teamsService.CurrentTeam = result;
+            },
+            error: (error) => {
+              debugger
+            }
+          });
+        }
         this.cdr.detectChanges();
       }
     });

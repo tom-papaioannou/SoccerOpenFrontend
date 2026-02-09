@@ -17,7 +17,7 @@ export const routes: Routes = [
     { path: 'home', canActivate: [authenticationGuard], component: Home },
     // { path: 'error', component: Home },
     { path: 'login', canActivate: [guestsGuard], component: Login },
-    { path: 'register', canActivate: [guestsGuard], component: Register },
+    { path: 'register', canActivate: [authenticationGuard], component: Register },
     { path: 'competitions-management', canActivate: [authenticationGuard], component: CompetitionsManagement },
     { path: 'competition/:id', canActivate: [authenticationGuard], component: CompetitionDetails },
     { path: 'competitions', canActivate: [authenticationGuard], component: Competitions },
