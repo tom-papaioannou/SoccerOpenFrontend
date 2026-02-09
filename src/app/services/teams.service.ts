@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment.development';
-import { Observable } from 'rxjs';
+import { Observable, ReplaySubject } from 'rxjs';
 import { Team } from '../models/competition.model';
 
 @Injectable({
@@ -10,6 +10,7 @@ import { Team } from '../models/competition.model';
 export class TeamsService {
   private readonly apiUrl = `${environment.apiUrl}/api/tactics`;
   private currentTeam: Team | undefined;
+  private currentTeam$ = new ReplaySubject<Team>(1);
 
   get CurrentTeam(){
     return this.currentTeam;
@@ -17,6 +18,13 @@ export class TeamsService {
 
   set CurrentTeam(team: Team | undefined){
     this.currentTeam = team;
+    if (team) {
+      this.currentTeam$.next(team);
+    }
+  }
+
+  get currentTeamObservable(): Observable<Team> {
+    return this.currentTeam$.asObservable();
   }
 
   constructor(private readonly http: HttpClient) {}

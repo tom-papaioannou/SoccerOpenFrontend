@@ -6,10 +6,13 @@ import { By } from '@angular/platform-browser';
 
 import { Tactics } from './tactics';
 import { Tactic, Formation } from '../../../models/tactic.model';
+import { TeamsService } from '../../../services/teams.service';
+import { Team } from '../../../models/competition.model';
 
 describe('Tactics', () => {
   let component: Tactics;
   let fixture: ComponentFixture<Tactics>;
+  let teamsService: TeamsService;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -23,6 +26,7 @@ describe('Tactics', () => {
 
     fixture = TestBed.createComponent(Tactics);
     component = fixture.componentInstance;
+    teamsService = TestBed.inject(TeamsService);
     fixture.detectChanges();
   });
 
@@ -111,6 +115,35 @@ describe('Tactics', () => {
       // Assert: Delete buttons should be present (one for each tactic)
       const deleteButtons = fixture.debugElement.queryAll(By.css('.delete-button'));
       expect(deleteButtons.length).toBe(3);
+    });
+  });
+
+  describe('ngOnInit behavior with CurrentTeam', () => {
+    it('should call loadTactics when CurrentTeam is set', (done) => {
+      // Arrange: Spy on loadTactics
+      spyOn(component, 'loadTactics');
+      
+      // Create a mock team
+      const mockTeam: Team = {
+        teamID: 'test-team-123',
+        name: 'Test Team'
+      } as Team;
+
+      // Act: Trigger ngOnInit by recreating the component
+      const newFixture = TestBed.createComponent(Tactics);
+      const newComponent = newFixture.componentInstance;
+      
+      // Set the team which should trigger loadTactics
+      teamsService.CurrentTeam = mockTeam;
+      
+      // Trigger ngOnInit
+      newFixture.detectChanges();
+
+      // Assert: Wait a bit for the observable to emit
+      setTimeout(() => {
+        expect(newComponent.loadTactics).toHaveBeenCalled();
+        done();
+      }, 100);
     });
   });
 });
