@@ -1,59 +1,64 @@
-# FootballOpenFrontend
+# FootballOpenFrontend ⚽
+
+FootballOpenFrontend is a web application built with **Angular** that focuses on **football tactic and team management**.  
+It provides a visual and interactive interface for setting up formations, adjusting tactical approaches, and managing team-related data.
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.5.
 
-## Development server
+---
+
+## Project Overview
+
+FootballOpenFrontend represents the **frontend part** of the FootballOpen project.  
+Its main goal is to offer a clean and intuitive UI for managing football tactics and team configurations.
+
+The application allows users to:
+- Configure team formations  
+- Adjust tactical setups  
+- Manage team-related information  
+- Interact with football data through a modern web interface  
+
+---
+
+## Backend Integration
+
+This frontend can be used in combination with the **FootballOpenServer** backend:
+
+🔗 https://github.com/tom-papaioannou/FootballOpenServer
+
+The backend is built with **.NET** and provides:
+- Data storage and retrieval  
+- Tactical and team-related business logic  
+- REST API endpoints consumed by this Angular application  
+
+Running both projects together allows you to explore the **full scope of the FootballOpen project**, with a clear separation between frontend UI and backend logic.
+
+---
+
+## Screenshots
+
+Below are some screenshots showcasing the application UI and its main features.
+
+> 📸 Replace the image paths with real screenshots from your project  
+> (for example, stored in a `screenshots/` folder in the repository).
+
+### Tactics Management
+
+![Tactics Management](screenshots/tactics.png)
+
+### Formation Setup
+
+![Formation Setup](screenshots/formation.png)
+
+### Team Configuration
+
+![Team Configuration](screenshots/team-configuration.png)
+
+---
+
+## Development Server
 
 To start a local development server, run:
 
 ```bash
 ng serve
-```
-
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
