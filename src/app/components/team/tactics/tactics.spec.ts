@@ -119,9 +119,13 @@ describe('Tactics', () => {
   });
 
   describe('ngOnInit behavior with CurrentTeam', () => {
-    it('should call loadTactics when CurrentTeam is set', (done) => {
-      // Arrange: Spy on loadTactics
-      spyOn(component, 'loadTactics');
+    it('should call loadTactics when CurrentTeam is set', () => {
+      // Arrange: Create a new component without triggering initial detectChanges
+      const newFixture = TestBed.createComponent(Tactics);
+      const newComponent = newFixture.componentInstance;
+      
+      // Spy on loadTactics before initialization
+      spyOn(newComponent, 'loadTactics');
       
       // Create a mock team
       const mockTeam: Team = {
@@ -129,21 +133,14 @@ describe('Tactics', () => {
         name: 'Test Team'
       } as Team;
 
-      // Act: Trigger ngOnInit by recreating the component
-      const newFixture = TestBed.createComponent(Tactics);
-      const newComponent = newFixture.componentInstance;
-      
-      // Set the team which should trigger loadTactics
+      // Act: Set the team which should trigger the observable
       teamsService.CurrentTeam = mockTeam;
       
-      // Trigger ngOnInit
+      // Trigger ngOnInit by calling detectChanges
       newFixture.detectChanges();
 
-      // Assert: Wait a bit for the observable to emit
-      setTimeout(() => {
-        expect(newComponent.loadTactics).toHaveBeenCalled();
-        done();
-      }, 100);
+      // Assert: loadTactics should have been called
+      expect(newComponent.loadTactics).toHaveBeenCalled();
     });
   });
 });

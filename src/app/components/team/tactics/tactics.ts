@@ -108,8 +108,11 @@ export class Tactics implements OnInit {
     this.teamsService.currentTeamObservable
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: () => {
-          this.loadTactics();
+        next: (team) => {
+          // Only load tactics when we have a valid team
+          if (team) {
+            this.loadTactics();
+          }
         }
       });
   }
