@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors } from '@angular/forms';
 import { MatCard } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -43,11 +43,30 @@ export class Register {
     this.registerForm = this.fb.group({
       username: [''],
       password: [''],
+      confirmPassword: [''],
       role: ['']
-    });
+    }, { validators: this.passwordMatchValidator });
+  }
+
+  passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
+    const password = control.get('password');
+    const confirmPassword = control.get('confirmPassword');
+    
+    if (!password || !confirmPassword) {
+      return null;
+    }
+    
+    return password.value === confirmPassword.value ? null : { passwordMismatch: true };
   }
 
   register(){
+    // Check if passwords match before sending request
+    if (this.registerForm.hasError('passwordMismatch')) {
+      console.error('Passwords do not match');
+      return;
+    }
+
+    // Do not send confirmPassword to backend
     let data = {
       username: this.registerForm.value.username,
       password: this.registerForm.value.password,
