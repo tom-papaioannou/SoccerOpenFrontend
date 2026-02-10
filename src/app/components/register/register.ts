@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 import { ActionButton } from '../shared/buttons/action-button/action-button';
 import { FormTextfield } from '../shared/textfields/form-textfield/form-textfield';
 import { LinkButton } from '../shared/buttons/link-button/link-button';
+import { FormDropdown } from '../shared/dropdowns/form-dropdown/form-dropdown';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -20,7 +21,8 @@ import { AuthService } from '../../services/auth.service';
     CommonModule,
     ActionButton,
     LinkButton,
-    FormTextfield
+    FormTextfield,
+    FormDropdown
   ],
   templateUrl: './register.html',
   styleUrl: './register.css'
@@ -28,6 +30,11 @@ import { AuthService } from '../../services/auth.service';
 export class Register {
   registerForm: FormGroup;
   role = "";
+  roleOptions = [
+    { value: 'Admin', label: 'Admin' },
+    { value: 'Host', label: 'Host' },
+    { value: 'User', label: 'User' }
+  ];
 
   constructor(
     private readonly fb: FormBuilder,
