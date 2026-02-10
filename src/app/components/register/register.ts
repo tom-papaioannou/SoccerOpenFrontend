@@ -60,14 +60,15 @@ export class Register {
   };
 
   get passwordMismatch(): boolean {
+    const confirmPassword = this.registerForm.get('confirmPassword');
     return this.registerForm.hasError('passwordMismatch') && 
-           (this.registerForm.get('confirmPassword')?.touched || false);
+           (confirmPassword?.touched || false) &&
+           (confirmPassword?.value?.length > 0);
   }
 
   register(){
-    // Check if passwords match before sending request
-    if (this.registerForm.hasError('passwordMismatch')) {
-      console.error('Passwords do not match');
+    // Validate form before sending request
+    if (!this.registerForm.valid) {
       return;
     }
 
