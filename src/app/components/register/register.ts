@@ -48,7 +48,7 @@ export class Register {
     }, { validators: this.passwordMatchValidator });
   }
 
-  passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
+  passwordMatchValidator = (control: AbstractControl): ValidationErrors | null => {
     const password = control.get('password');
     const confirmPassword = control.get('confirmPassword');
     
@@ -57,6 +57,11 @@ export class Register {
     }
     
     return password.value === confirmPassword.value ? null : { passwordMismatch: true };
+  };
+
+  get passwordMismatch(): boolean {
+    return this.registerForm.hasError('passwordMismatch') && 
+           (this.registerForm.get('confirmPassword')?.touched || false);
   }
 
   register(){

@@ -6,6 +6,11 @@
                     <app-form-textfield class="w-full px-8" formControlName="username" labelText="Username" placeHolderText="Username"></app-form-textfield>
                     <app-form-textfield class="w-full px-8" formControlName="password" type="password" [showToggle]="true" labelText="Password" placeHolderText="Password"></app-form-textfield>
                     <app-form-textfield class="w-full px-8" formControlName="confirmPassword" type="password" [showToggle]="true" labelText="Confirm Password" placeHolderText="Confirm Password"></app-form-textfield>
+                    @if (passwordMismatch) {
+                        <div class="w-full px-8 text-red-600 text-sm">
+                            Passwords do not match
+                        </div>
+                    }
                     <app-form-dropdown class="w-full px-8" formControlName="role" labelText="Role" placeHolderText="Select Role" [options]="roleOptions"></app-form-dropdown>
                 </div>
             </form>
