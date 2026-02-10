@@ -29,7 +29,6 @@ import { AuthService } from '../../services/auth.service';
 })
 export class Register {
   registerForm: FormGroup;
-  role = "";
   roleOptions = [
     { value: 'Admin', label: 'Admin' },
     { value: 'Host', label: 'Host' },
