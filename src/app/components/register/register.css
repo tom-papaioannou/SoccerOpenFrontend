@@ -3,3 +3,18 @@
   color: white;
   text-align: center;
 }
+
+::ng-deep .success-snackbar {
+  background-color: #4caf50 !important;
+  color: white !important;
+}
+
+::ng-deep .error-snackbar {
+  background-color: #f44336 !important;
+  color: white !important;
+}
+
+::ng-deep .success-snackbar .mat-mdc-button,
+::ng-deep .error-snackbar .mat-mdc-button {
+  color: white !important;
+}

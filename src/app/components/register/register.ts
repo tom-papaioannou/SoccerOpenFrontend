@@ -1,9 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
-import { MatCard } from '@angular/material/card';
+import { MatCard, MatCardHeader, MatCardTitle, MatCardContent } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { ActionButton } from '../shared/buttons/action-button/action-button';
 import { FormTextfield } from '../shared/textfields/form-textfield/form-textfield';
@@ -15,6 +16,9 @@ import { AuthService } from '../../services/auth.service';
   selector: 'app-register',
   imports: [
     MatCard,
+    MatCardHeader,
+    MatCardTitle,
+    MatCardContent,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
@@ -38,7 +42,8 @@ export class Register {
   constructor(
     private readonly fb: FormBuilder,
     private readonly router: Router,
-    private readonly authService: AuthService
+    private readonly authService: AuthService,
+    private readonly snackBar: MatSnackBar
   ) {
     this.registerForm = this.fb.group({
       username: ['', Validators.required],
@@ -85,11 +90,26 @@ export class Register {
     };
     this.authService.register(data).subscribe({
       next: (result) => {
-        debugger
-        // this.router.navigate(['/login']);
+        this.snackBar.open('Registration successful!', 'Close', {
+          duration: 5000,
+          horizontalPosition: 'center',
+          verticalPosition: 'top',
+          panelClass: ['success-snackbar']
+        });
+        // Navigate to login after successful registration
+        setTimeout(() => {
+          this.router.navigate(['/login']);
+        }, 2000);
       },
       error: (error) => {
         console.error(error);
+        const errorMessage = error?.error?.message || error?.message || 'Registration failed. Please try again.';
+        this.snackBar.open(errorMessage, 'Close', {
+          duration: 5000,
+          horizontalPosition: 'center',
+          verticalPosition: 'top',
+          panelClass: ['error-snackbar']
+        });
       }
     });
   }
