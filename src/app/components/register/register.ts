@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { MatCard } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -41,10 +41,10 @@ export class Register {
     private readonly authService: AuthService
   ) {
     this.registerForm = this.fb.group({
-      username: [''],
-      password: [''],
-      confirmPassword: [''],
-      role: ['']
+      username: ['', Validators.required],
+      password: ['', Validators.required],
+      confirmPassword: ['', Validators.required],
+      role: ['', Validators.required]
     }, { validators: this.passwordMatchValidator });
   }
 
@@ -67,6 +67,11 @@ export class Register {
   }
 
   register(){
+    // Mark all fields as touched to show validation errors
+    Object.keys(this.registerForm.controls).forEach(key => {
+      this.registerForm.get(key)?.markAsTouched();
+    });
+
     // Validate form before sending request
     if (!this.registerForm.valid) {
       return;

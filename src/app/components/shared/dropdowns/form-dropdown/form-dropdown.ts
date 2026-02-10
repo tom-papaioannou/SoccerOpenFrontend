@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, forwardRef, Input } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
+import { Component, forwardRef, Injector, Input, OnInit } from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR, NgControl, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule, MatLabel } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 
@@ -23,7 +23,7 @@ import { MatSelectModule } from '@angular/material/select';
     },
   ],
 })
-export class FormDropdown implements ControlValueAccessor {
+export class FormDropdown implements ControlValueAccessor, OnInit {
   // Input properties for customization
   @Input() labelText = '';
   @Input() placeHolderText = '';
@@ -36,6 +36,29 @@ export class FormDropdown implements ControlValueAccessor {
   // Internal value
   value: any = null;
   disabled = false;
+  
+  ngControl: NgControl | null = null;
+
+  constructor(private injector: Injector) {}
+
+  ngOnInit() {
+    try {
+      this.ngControl = this.injector.get(NgControl);
+    } catch {
+      this.ngControl = null;
+    }
+  }
+
+  get hasError(): boolean {
+    return !!(this.ngControl?.invalid && this.ngControl?.touched);
+  }
+
+  get errorMessage(): string {
+    if (this.ngControl?.errors?.['required']) {
+      return 'This field is required';
+    }
+    return '';
+  }
 
   // ControlValueAccessor callbacks
   private onChange: (value: any) => void = () => {};

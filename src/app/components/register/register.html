@@ -2,16 +2,36 @@
     <mat-card class="overlay" appearance="outlined">
         <div class="py-8">
             <form [formGroup]="registerForm" (ngSubmit)="register()">
-                <div class="w-96 h-62 flex flex-col justify-center items-center">
+                <div class="w-96 flex flex-col justify-center items-center" style="min-height: 450px;">
                     <app-form-textfield class="w-full px-8" formControlName="username" labelText="Username" placeHolderText="Username"></app-form-textfield>
+                    @if (registerForm.get('username')?.invalid && registerForm.get('username')?.touched) {
+                        <div class="w-full px-8 text-red-600 text-sm -mt-2 mb-2">
+                            Username is required
+                        </div>
+                    }
                     <app-form-textfield class="w-full px-8" formControlName="password" type="password" [showToggle]="true" labelText="Password" placeHolderText="Password"></app-form-textfield>
+                    @if (registerForm.get('password')?.invalid && registerForm.get('password')?.touched) {
+                        <div class="w-full px-8 text-red-600 text-sm -mt-2 mb-2">
+                            Password is required
+                        </div>
+                    }
                     <app-form-textfield class="w-full px-8" formControlName="confirmPassword" type="password" [showToggle]="true" labelText="Confirm Password" placeHolderText="Confirm Password"></app-form-textfield>
+                    @if (registerForm.get('confirmPassword')?.invalid && registerForm.get('confirmPassword')?.touched) {
+                        <div class="w-full px-8 text-red-600 text-sm -mt-2 mb-2">
+                            Confirm Password is required
+                        </div>
+                    }
                     @if (passwordMismatch) {
-                        <div class="w-full px-8 text-red-600 text-sm">
+                        <div class="w-full px-8 text-red-600 text-sm -mt-2 mb-2">
                             Passwords do not match
                         </div>
                     }
                     <app-form-dropdown class="w-full px-8" formControlName="role" labelText="Role" placeHolderText="Select Role" [options]="roleOptions"></app-form-dropdown>
+                    @if (registerForm.get('role')?.invalid && registerForm.get('role')?.touched) {
+                        <div class="w-full px-8 text-red-600 text-sm -mt-2 mb-2">
+                            Role is required
+                        </div>
+                    }
                 </div>
             </form>
         </div>

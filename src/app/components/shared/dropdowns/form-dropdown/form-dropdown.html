@@ -16,7 +16,11 @@
         }
     </mat-select>
 
-    @if (hintText) {
+    @if (hasError && errorMessage) {
+        <mat-error>{{ errorMessage }}</mat-error>
+    }
+
+    @if (hintText && !hasError) {
         <mat-hint>{{ hintText }}</mat-hint>
     }
 </mat-form-field>
