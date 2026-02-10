@@ -38,6 +38,9 @@ export class Register {
     { value: 'Host', label: 'Host' },
     { value: 'User', label: 'User' }
   ];
+  
+  private readonly SNACKBAR_DURATION_MS = 3000;
+  private readonly REDIRECT_DELAY_MS = 2000;
 
   constructor(
     private readonly fb: FormBuilder,
@@ -91,7 +94,7 @@ export class Register {
     this.authService.register(data).subscribe({
       next: (result) => {
         this.snackBar.open('Registration successful!', 'Close', {
-          duration: 5000,
+          duration: this.SNACKBAR_DURATION_MS,
           horizontalPosition: 'center',
           verticalPosition: 'top',
           panelClass: ['success-snackbar']
@@ -99,13 +102,13 @@ export class Register {
         // Navigate to login after successful registration
         setTimeout(() => {
           this.router.navigate(['/login']);
-        }, 2000);
+        }, this.REDIRECT_DELAY_MS);
       },
       error: (error) => {
         console.error(error);
         const errorMessage = error?.error?.message || error?.message || 'Registration failed. Please try again.';
         this.snackBar.open(errorMessage, 'Close', {
-          duration: 5000,
+          duration: this.SNACKBAR_DURATION_MS,
           horizontalPosition: 'center',
           verticalPosition: 'top',
           panelClass: ['error-snackbar']
