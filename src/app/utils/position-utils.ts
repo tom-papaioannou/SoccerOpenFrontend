@@ -52,6 +52,12 @@ export function getPlayerPositionLabel(position?: PlayerPosition): string {
  * Get the display label for a player role
  * @param role The PlayerRole enum value
  * @returns The abbreviated role label (e.g., 'GK', 'CB', 'AF')
+ * 
+ * Note: Some abbreviations are used for multiple roles:
+ * - 'C' is used for both Cover and Carrilero
+ * - 'IF' is used for both InsideForward and InvertedForward
+ * - 'T' is used for both Trequartista and TrequartistaForward
+ * This matches the original implementation from tactics-detail.ts
  */
 export function getPlayerRoleLabel(role?: PlayerRole): string {
   if (role === undefined || role === null) {
