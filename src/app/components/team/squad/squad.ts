@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { DataTable } from "../../shared/tables/data-table/data-table";
 import { TeamsService } from '../../../services/teams.service';
 import { Player } from '../../../models/player-enums.model';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-squad',
@@ -11,13 +12,14 @@ import { Player } from '../../../models/player-enums.model';
   templateUrl: './squad.html',
   styleUrl: './squad.css'
 })
-export class Squad implements OnInit {
+export class Squad implements OnInit, OnDestroy {
   displayedColumns = [
     { key: 'name', header: 'Name', width: '30%', sortable: true },
     { key: 'position', header: 'Position' },
     { key: 'age', header: 'Age', align: 'end', headerClass:'text-end', cellClass:'text-end' }
   ];
   people: any[] = [];
+  private subscription?: Subscription;
 
   constructor(private readonly teamsService: TeamsService) {}
 
@@ -25,10 +27,14 @@ export class Squad implements OnInit {
     this.loadPlayers();
   }
 
+  ngOnDestroy(): void {
+    this.subscription?.unsubscribe();
+  }
+
   private loadPlayers(): void {
     const currentTeam = this.teamsService.CurrentTeam;
     if (currentTeam?.teamID) {
-      this.teamsService.getTeamPlayers(currentTeam.teamID).subscribe({
+      this.subscription = this.teamsService.getTeamPlayers(currentTeam.teamID).subscribe({
         next: (players: Player[]) => {
           this.people = this.transformPlayers(players);
         },
@@ -58,8 +64,14 @@ export class Squad implements OnInit {
     });
   }
 
-  private calculateAge(dateOfBirth: string): number {
+  private calculateAge(dateOfBirth: string): number | null {
     const birthDate = new Date(dateOfBirth);
+    
+    // Validate the date
+    if (isNaN(birthDate.getTime())) {
+      return null;
+    }
+    
     const today = new Date();
     let age = today.getFullYear() - birthDate.getFullYear();
     const monthDiff = today.getMonth() - birthDate.getMonth();
