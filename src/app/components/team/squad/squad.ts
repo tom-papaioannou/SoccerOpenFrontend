@@ -5,6 +5,13 @@ import { Player, PlayerPosition } from '../../../models/player-enums.model';
 import { Subscription } from 'rxjs';
 import { getPlayerPositionLabel } from '../../../utils/position-utils';
 
+interface TransformedPlayer {
+  name: string;
+  position: string;
+  positionValue?: PlayerPosition;
+  age: number | string;
+}
+
 @Component({
   selector: 'app-squad',
   imports: [
@@ -45,12 +52,12 @@ export class Squad implements OnInit, OnDestroy {
       key: 'position', 
       header: 'Position',
       sortable: true,
-      sortAccessor: (row: any) => row.positionValue,
+      sortAccessor: (row: TransformedPlayer) => row.positionValue,
       comparator: this.positionComparator
     },
     { key: 'age', header: 'Age', align: 'end', headerClass:'text-end', cellClass:'text-end' }
   ];
-  people: any[] = [];
+  people: TransformedPlayer[] = [];
   private subscription?: Subscription;
 
   constructor(private readonly teamsService: TeamsService) {}
@@ -79,7 +86,7 @@ export class Squad implements OnInit, OnDestroy {
     }
   }
 
-  private transformPlayers(players: Player[]): any[] {
+  private transformPlayers(players: Player[]): TransformedPlayer[] {
     return players.map(player => {
       const person = player.person;
       let name = 'Unknown';
