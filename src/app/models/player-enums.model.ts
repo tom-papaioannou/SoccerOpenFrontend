@@ -96,19 +96,35 @@ export enum PlayerRole {
  * Person model representing a person's basic information
  */
 export interface Person {
-  PersonID: string;
-  Name?: string;
-  Surname?: string;
-  DateOfBirth?: string;
-  PlaceOfBirth?: string;
-  ContractID?: string;
+  personID: string;
+  name?: string;
+  surname?: string;
+  dateOfBirth?: string;
+  placeOfBirth?: string;
+  contractID?: string;
 }
 
 /**
  * Player model representing a player
  */
 export interface Player {
-  PlayerID: string;
-  PersonID: string;
-  Person?: Person;
+  playerID: string;
+  person?: Person;
+  playerTrainedPositions?: PlayerTrainedPosition[];
+  playerTrainedRoles?: PlayerTrainedRole[];
+  playerStats?: PlayerStats;
+}
+
+export interface PlayerTrainedPosition{
+  playerPosition: PlayerPosition;
+  playerTrainedPositionAdaptation: number;
+}
+
+export interface PlayerTrainedRole{
+  playerRole: PlayerRole;
+  playerTrainedRoleAdaptation: number;
+}
+
+export interface PlayerStats{
+  
 }

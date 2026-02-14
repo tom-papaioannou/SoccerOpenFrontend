@@ -34,7 +34,7 @@ export class Squad implements OnInit, OnDestroy {
   private loadPlayers(): void {
     const currentTeam = this.teamsService.CurrentTeam;
     if (currentTeam?.teamID) {
-      this.subscription = this.teamsService.getTeamPlayers(currentTeam.teamID).subscribe({
+      this.subscription = this.teamsService.getTeamSquad(currentTeam.teamID).subscribe({
         next: (players: Player[]) => {
           this.people = this.transformPlayers(players);
         },
@@ -49,12 +49,12 @@ export class Squad implements OnInit, OnDestroy {
 
   private transformPlayers(players: Player[]): any[] {
     return players.map(player => {
-      const person = player.Person;
+      const person = player.person;
       let name = 'Unknown';
-      if (person && (person.Name || person.Surname)) {
-        name = `${person.Name || ''} ${person.Surname || ''}`.trim();
+      if (person && (person.name || person.surname)) {
+        name = `${person.name || ''} ${person.surname || ''}`.trim();
       }
-      const age = person?.DateOfBirth ? this.calculateAge(person.DateOfBirth) : null;
+      const age = person?.dateOfBirth ? this.calculateAge(person.dateOfBirth) : null;
       
       return {
         name,
