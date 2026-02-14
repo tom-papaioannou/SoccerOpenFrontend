@@ -1,0 +1,66 @@
+<div class="p-4">
+  <div class="flex items-center mb-4">
+    <button mat-icon-button (click)="goBack()" class="mr-2">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <h1 class="text-2xl font-bold">{{ playerName || 'Player Details' }}</h1>
+  </div>
+
+  @if (loading) {
+    <div class="text-center p-8">
+      <p>Loading player details...</p>
+    </div>
+  }
+
+  @if (error) {
+    <div class="text-center p-8 text-red-500">
+      <p>{{ error }}</p>
+    </div>
+  }
+
+  @if (!loading && !error && playerDetails) {
+    <div class="space-y-6">
+      <!-- Positions Section -->
+      @if (transformedPositions.length > 0) {
+        <mat-card>
+          <mat-card-content>
+            <h2 class="text-xl font-semibold mb-4">Trained Positions</h2>
+            <app-data-table
+              [data]="transformedPositions"
+              [columns]="$any(positionsColumns)"
+              class="players-theme">
+            </app-data-table>
+          </mat-card-content>
+        </mat-card>
+      }
+
+      <!-- Roles Section -->
+      @if (transformedRoles.length > 0) {
+        <mat-card>
+          <mat-card-content>
+            <h2 class="text-xl font-semibold mb-4">Trained Roles</h2>
+            <app-data-table
+              [data]="transformedRoles"
+              [columns]="$any(rolesColumns)"
+              class="players-theme">
+            </app-data-table>
+          </mat-card-content>
+        </mat-card>
+      }
+
+      <!-- Contracts Section -->
+      @if (transformedContracts.length > 0) {
+        <mat-card>
+          <mat-card-content>
+            <h2 class="text-xl font-semibold mb-4">Contract History</h2>
+            <app-data-table
+              [data]="transformedContracts"
+              [columns]="$any(contractsColumns)"
+              class="players-theme">
+            </app-data-table>
+          </mat-card-content>
+        </mat-card>
+      }
+    </div>
+  }
+</div>

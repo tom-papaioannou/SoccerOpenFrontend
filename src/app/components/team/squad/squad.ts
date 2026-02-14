@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Router } from '@angular/router';
 import { DataTable } from "../../shared/tables/data-table/data-table";
 import { TeamsService } from '../../../services/teams.service';
 import { Player, PlayerPosition } from '../../../models/player-enums.model';
@@ -6,6 +7,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { getPlayerPositionLabel } from '../../../utils/position-utils';
 
 interface TransformedPlayer {
+  playerID: string;
   name: string;
   position: string;
   positionValue?: PlayerPosition;
@@ -61,7 +63,7 @@ export class Squad implements OnInit, OnDestroy {
   people: TransformedPlayer[] = [];
   private destroy$ = new Subject<void>();
 
-  constructor(private readonly teamsService: TeamsService, private readonly cdr: ChangeDetectorRef) {}
+  constructor(private readonly teamsService: TeamsService, private readonly cdr: ChangeDetectorRef, private readonly router: Router) {}
 
   ngOnInit(): void {
     // Subscribe to currentTeamObservable to wait for team to be set
@@ -113,6 +115,7 @@ export class Squad implements OnInit, OnDestroy {
       const bestPosition = this.getBestPlayerPosition(player);
       
       return {
+        playerID: player.playerID,
         name,
         position: getPlayerPositionLabel(bestPosition),
         positionValue: bestPosition, // Include raw enum value for sorting
@@ -151,5 +154,9 @@ export class Squad implements OnInit, OnDestroy {
     }
     
     return age;
+  }
+
+  onPlayerClick(player: TransformedPlayer): void {
+    this.router.navigate(['/team/player', player.playerID]);
   }
 }

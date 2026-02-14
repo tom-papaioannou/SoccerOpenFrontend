@@ -3,6 +3,7 @@
         [data]="people"
         class="players-theme"
         [columns]="$any(displayedColumns)"
-        [initialSort]="{ active: 'position', direction: 'asc' }">
+        [initialSort]="{ active: 'position', direction: 'asc' }"
+        (rowClick)="onPlayerClick($event)">
     </app-data-table>
 </div>

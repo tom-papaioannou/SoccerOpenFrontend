@@ -37,4 +37,8 @@ export class TeamsService {
   getTeamSquad(teamID: string): Observable<Player[]> {
     return this.http.get<Player[]>(`${environment.apiUrl}/api/teams/getTeamSquad/${teamID}`);
   }
+
+  getPlayerDetails(playerID: string): Observable<any> {
+    return this.http.get(`${environment.apiUrl}/api/teams/getPlayerDetails/${playerID}`);
+  }
 }

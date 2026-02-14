@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnChanges, SimpleChanges, TemplateRef } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges, TemplateRef, Output, EventEmitter } from '@angular/core';
 import { MatSortModule, Sort } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 
@@ -27,10 +27,15 @@ export class DataTable<T> implements OnChanges{
   @Input() columns: ColumnDef<T>[] = [];
   @Input() tableClass = 'app-table';
   @Input() initialSort?: { active: string; direction: 'asc' | 'desc' };
+  @Output() rowClick = new EventEmitter<T>();
   private active = '';
   private direction: 'asc' | 'desc' | '' = '';
   renderedData: T[] = [];
   get displayed() { return this.columns.map(c => c.key); }
+
+  onRowClick(row: T): void {
+    this.rowClick.emit(row);
+  }
 
   onSort(e: Sort) {
     this.active = e.active;
