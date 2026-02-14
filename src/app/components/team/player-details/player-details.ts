@@ -9,6 +9,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { TeamsService } from '../../../services/teams.service';
 import { DataTable } from '../../shared/tables/data-table/data-table';
 import { getPlayerPositionLabel, getPlayerRoleLabel } from '../../../utils/position-utils';
+import { PlayerStats } from '../../../models/player-enums.model';
 
 interface PlayerDetailsResponse {
   person: {
@@ -22,7 +23,7 @@ interface PlayerDetailsResponse {
       };
     }>;
   };
-  playerStats: any;
+  playerStats: PlayerStats | null;
   playerTrainedPositions: Array<{
     playerPosition: number;
     playerTrainedPositionAdaptation: number;
@@ -47,6 +48,11 @@ interface TransformedContract {
   team: string;
   startDate: string;
   endDate: string;
+}
+
+interface TransformedStat {
+  category: string;
+  stats: Array<{ name: string; value: number }>;
 }
 
 @Component({
@@ -88,6 +94,7 @@ export class PlayerDetails implements OnInit, OnDestroy {
   transformedPositions: TransformedPosition[] = [];
   transformedRoles: TransformedRole[] = [];
   transformedContracts: TransformedContract[] = [];
+  transformedStats: TransformedStat[] = [];
 
   private destroy$ = new Subject<void>();
 
@@ -125,6 +132,7 @@ export class PlayerDetails implements OnInit, OnDestroy {
           this.transformPositions();
           this.transformRoles();
           this.transformContracts();
+          this.transformStats();
           this.loading = false;
           this.cdr.detectChanges();
         },
@@ -167,6 +175,57 @@ export class PlayerDetails implements OnInit, OnDestroy {
           startDate: this.formatDate(c.startDate),
           endDate: this.formatDate(c.endDate)
         }));
+    }
+  }
+
+  private transformStats(): void {
+    if (this.playerDetails?.playerStats) {
+      const stats = this.playerDetails.playerStats;
+      
+      this.transformedStats = [
+        {
+          category: 'Technical',
+          stats: [
+            { name: 'Shooting', value: stats.shooting },
+            { name: 'Passing', value: stats.passing },
+            { name: 'Crossing', value: stats.crossing },
+            { name: 'Dribbling', value: stats.dribbling },
+            { name: 'Control', value: stats.control },
+            { name: 'Kicking', value: stats.kicking }
+          ]
+        },
+        {
+          category: 'Physical',
+          stats: [
+            { name: 'Speed', value: stats.speed },
+            { name: 'Acceleration', value: stats.acceleration },
+            { name: 'Strength', value: stats.strength },
+            { name: 'Jumping', value: stats.jumping },
+            { name: 'Stamina', value: stats.stamina }
+          ]
+        },
+        {
+          category: 'Mental',
+          stats: [
+            { name: 'Teamwork', value: stats.teamwork },
+            { name: 'Creativity', value: stats.creativity },
+            { name: 'Decisions', value: stats.decisions },
+            { name: 'Positioning', value: stats.positioning }
+          ]
+        },
+        {
+          category: 'Defensive',
+          stats: [
+            { name: 'Tackling', value: stats.tackling }
+          ]
+        },
+        {
+          category: 'Goalkeeping',
+          stats: [
+            { name: 'Goalkeeping', value: stats.goalkeeping }
+          ]
+        }
+      ];
     }
   }
 
