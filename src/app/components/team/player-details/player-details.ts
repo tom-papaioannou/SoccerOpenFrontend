@@ -50,9 +50,14 @@ interface TransformedContract {
   endDate: string;
 }
 
+interface StatValue {
+  name: string;
+  value: number;
+}
+
 interface TransformedStat {
   category: string;
-  stats: Array<{ name: string; value: number }>;
+  stats: StatValue[];
 }
 
 @Component({
@@ -226,6 +231,8 @@ export class PlayerDetails implements OnInit, OnDestroy {
           ]
         }
       ];
+    } else {
+      this.transformedStats = [];
     }
   }
 
