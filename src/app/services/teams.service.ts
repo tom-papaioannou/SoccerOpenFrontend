@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment.development';
 import { Observable, ReplaySubject } from 'rxjs';
 import { Team } from '../models/competition.model';
+import { Player } from '../models/player-enums.model';
 
 @Injectable({
   providedIn: 'root'
@@ -31,5 +32,9 @@ export class TeamsService {
 
   getCurrentTeam(): Observable<any>{
     return this.http.get(`${environment.apiUrl}/api/teams/getCurrentTeam`);
+  }
+
+  getTeamSquad(teamID: string): Observable<Player[]> {
+    return this.http.get<Player[]>(`${environment.apiUrl}/api/teams/getTeamSquad/${teamID}`);
   }
 }

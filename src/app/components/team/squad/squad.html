@@ -2,6 +2,7 @@
     <app-data-table
         [data]="people"
         class="players-theme"
-        [columns]="$any(displayedColumns)">
+        [columns]="$any(displayedColumns)"
+        [initialSort]="{ active: 'position', direction: 'asc' }">
     </app-data-table>
 </div>
