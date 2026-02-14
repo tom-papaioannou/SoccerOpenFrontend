@@ -44,13 +44,16 @@ export class Squad implements OnInit {
   private transformPlayers(players: Player[]): any[] {
     return players.map(player => {
       const person = player.Person;
-      const name = person ? `${person.Name || ''} ${person.Surname || ''}`.trim() : 'Unknown';
-      const age = person?.DateOfBirth ? this.calculateAge(person.DateOfBirth) : 0;
+      let name = 'Unknown';
+      if (person && (person.Name || person.Surname)) {
+        name = `${person.Name || ''} ${person.Surname || ''}`.trim();
+      }
+      const age = person?.DateOfBirth ? this.calculateAge(person.DateOfBirth) : null;
       
       return {
         name,
         position: 'N/A', // Position info might need to come from PlayerTactic
-        age
+        age: age !== null ? age : '-'
       };
     });
   }
