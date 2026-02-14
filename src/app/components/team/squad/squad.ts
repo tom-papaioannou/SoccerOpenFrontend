@@ -3,6 +3,7 @@ import { DataTable } from "../../shared/tables/data-table/data-table";
 import { TeamsService } from '../../../services/teams.service';
 import { Player, PlayerPosition } from '../../../models/player-enums.model';
 import { Subscription } from 'rxjs';
+import { getPlayerPositionLabel } from '../../../utils/position-utils';
 
 @Component({
   selector: 'app-squad',
@@ -61,7 +62,7 @@ export class Squad implements OnInit, OnDestroy {
       
       return {
         name,
-        position: this.getPlayerPositionLabel(bestPosition),
+        position: getPlayerPositionLabel(bestPosition),
         age: age !== null ? age : '-'
       };
     });
@@ -78,45 +79,6 @@ export class Squad implements OnInit, OnDestroy {
     );
     
     return sorted[0].playerPosition;
-  }
-
-  private getPlayerPositionLabel(position?: PlayerPosition): string {
-    if (position === undefined || position === null) {
-      return '-';
-    }
-    
-    switch(position) {
-      case PlayerPosition.Goalkeeper:
-        return 'GK';
-      case PlayerPosition.RightBack:
-        return 'RB';
-      case PlayerPosition.LeftBack:
-        return 'LB';
-      case PlayerPosition.CenterBack:
-        return 'CB';
-      case PlayerPosition.DefensiveMidfielder:
-        return 'DM';
-      case PlayerPosition.RightWingBack:
-        return 'RWB';
-      case PlayerPosition.LeftWingBack:
-        return 'LWB';
-      case PlayerPosition.CentralMidfielder:
-        return 'CM';
-      case PlayerPosition.RightMidfielder:
-        return 'RM';
-      case PlayerPosition.LeftMidfielder:
-        return 'LM';
-      case PlayerPosition.AttackingMidfielder:
-        return 'AM';
-      case PlayerPosition.RightWinger:
-        return 'RW';
-      case PlayerPosition.LeftWinger:
-        return 'LW';
-      case PlayerPosition.Striker:
-        return 'ST';
-      default:
-        return '-';
-    }
   }
 
   private calculateAge(dateOfBirth: string): number | null {
