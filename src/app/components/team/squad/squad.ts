@@ -14,9 +14,40 @@ import { getPlayerPositionLabel } from '../../../utils/position-utils';
   styleUrl: './squad.css'
 })
 export class Squad implements OnInit, OnDestroy {
+  // Position sort order map - defines the tactical field layout order
+  private readonly positionSortOrder: Record<number, number> = {
+    [PlayerPosition.Goalkeeper]: 1,
+    [PlayerPosition.LeftBack]: 2,
+    [PlayerPosition.CenterBack]: 3,
+    [PlayerPosition.RightBack]: 4,
+    [PlayerPosition.LeftWingBack]: 5,
+    [PlayerPosition.DefensiveMidfielder]: 6,
+    [PlayerPosition.RightWingBack]: 7,
+    [PlayerPosition.LeftMidfielder]: 8,
+    [PlayerPosition.CentralMidfielder]: 9,
+    [PlayerPosition.RightMidfielder]: 10,
+    [PlayerPosition.LeftWinger]: 11,
+    [PlayerPosition.AttackingMidfielder]: 12,
+    [PlayerPosition.RightWinger]: 13,
+    [PlayerPosition.Striker]: 14
+  };
+
+  // Custom comparator for position sorting
+  private positionComparator = (a: unknown, b: unknown): number => {
+    const aOrder = this.positionSortOrder[a as number] ?? 999;
+    const bOrder = this.positionSortOrder[b as number] ?? 999;
+    return aOrder - bOrder;
+  };
+
   displayedColumns = [
     { key: 'name', header: 'Name', width: '30%', sortable: true },
-    { key: 'position', header: 'Position' },
+    { 
+      key: 'position', 
+      header: 'Position',
+      sortable: true,
+      sortAccessor: (row: any) => row.positionValue,
+      comparator: this.positionComparator
+    },
     { key: 'age', header: 'Age', align: 'end', headerClass:'text-end', cellClass:'text-end' }
   ];
   people: any[] = [];
@@ -63,6 +94,7 @@ export class Squad implements OnInit, OnDestroy {
       return {
         name,
         position: getPlayerPositionLabel(bestPosition),
+        positionValue: bestPosition, // Include raw enum value for sorting
         age: age !== null ? age : '-'
       };
     });
