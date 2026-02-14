@@ -59,31 +59,40 @@ export class Squad implements OnInit, OnDestroy {
   ];
   people: TransformedPlayer[] = [];
   private subscription?: Subscription;
+  private teamSubscription?: Subscription;
 
   constructor(private readonly teamsService: TeamsService) {}
 
   ngOnInit(): void {
-    this.loadPlayers();
+    // Subscribe to currentTeamObservable to wait for team to be set
+    this.teamSubscription = this.teamsService.currentTeamObservable.subscribe({
+      next: (team) => {
+        if (team?.teamID) {
+          this.loadPlayers(team.teamID);
+        }
+      },
+      error: (error) => {
+        console.error('Error getting current team:', error);
+      }
+    });
   }
 
   ngOnDestroy(): void {
     this.subscription?.unsubscribe();
+    this.teamSubscription?.unsubscribe();
   }
 
-  private loadPlayers(): void {
-    const currentTeam = this.teamsService.CurrentTeam;
-    if (currentTeam?.teamID) {
-      this.subscription = this.teamsService.getTeamSquad(currentTeam.teamID).subscribe({
-        next: (players: Player[]) => {
-          this.people = this.transformPlayers(players);
-        },
-        error: (error) => {
-          console.error('Error fetching players:', error);
-          // Keep empty array on error
-          this.people = [];
-        }
-      });
-    }
+  private loadPlayers(teamID: string): void {
+    this.subscription = this.teamsService.getTeamSquad(teamID).subscribe({
+      next: (players: Player[]) => {
+        this.people = this.transformPlayers(players);
+      },
+      error: (error) => {
+        console.error('Error fetching players:', error);
+        // Keep empty array on error
+        this.people = [];
+      }
+    });
   }
 
   private transformPlayers(players: Player[]): TransformedPlayer[] {
