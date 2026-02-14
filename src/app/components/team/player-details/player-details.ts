@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatCard, MatCardContent } from '@angular/material/card';
@@ -63,7 +63,7 @@ interface TransformedContract {
   styleUrl: './player-details.css',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PlayerDetails implements OnInit {
+export class PlayerDetails implements OnInit, OnDestroy {
   playerDetails: PlayerDetailsResponse | null = null;
   playerName = '';
   loading = true;
