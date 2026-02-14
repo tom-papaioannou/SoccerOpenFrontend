@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { DataTable } from "../../shared/tables/data-table/data-table";
 import { TeamsService } from '../../../services/teams.service';
 import { Player, PlayerPosition } from '../../../models/player-enums.model';
@@ -18,7 +18,8 @@ interface TransformedPlayer {
     DataTable
   ],
   templateUrl: './squad.html',
-  styleUrl: './squad.css'
+  styleUrl: './squad.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class Squad implements OnInit, OnDestroy {
   // Position sort order map - defines the tactical field layout order
@@ -60,7 +61,7 @@ export class Squad implements OnInit, OnDestroy {
   people: TransformedPlayer[] = [];
   private destroy$ = new Subject<void>();
 
-  constructor(private readonly teamsService: TeamsService) {}
+  constructor(private readonly teamsService: TeamsService, private readonly cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     // Subscribe to currentTeamObservable to wait for team to be set
@@ -89,6 +90,7 @@ export class Squad implements OnInit, OnDestroy {
       .subscribe({
         next: (players: Player[]) => {
           this.people = this.transformPlayers(players);
+          this.cdr.detectChanges();
         },
         error: (error) => {
           console.error('Error fetching players:', error);
