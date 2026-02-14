@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { DataTable } from "../../shared/tables/data-table/data-table";
 import { TeamsService } from '../../../services/teams.service';
-import { Player } from '../../../models/player-enums.model';
+import { Player, PlayerPosition } from '../../../models/player-enums.model';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -56,12 +56,67 @@ export class Squad implements OnInit, OnDestroy {
       }
       const age = person?.dateOfBirth ? this.calculateAge(person.dateOfBirth) : null;
       
+      // Get the player's best position (highest adaptation)
+      const bestPosition = this.getBestPlayerPosition(player);
+      
       return {
         name,
-        position: 'N/A', // Position info might need to come from PlayerTactic
+        position: this.getPlayerPositionLabel(bestPosition),
         age: age !== null ? age : '-'
       };
     });
+  }
+
+  private getBestPlayerPosition(player: Player): PlayerPosition | undefined {
+    if (!player.playerTrainedPositions || player.playerTrainedPositions.length === 0) {
+      return undefined;
+    }
+
+    // Sort by adaptation (descending) and get the first one
+    const sorted = [...player.playerTrainedPositions].sort(
+      (a, b) => b.playerTrainedPositionAdaptation - a.playerTrainedPositionAdaptation
+    );
+    
+    return sorted[0].playerPosition;
+  }
+
+  private getPlayerPositionLabel(position?: PlayerPosition): string {
+    if (position === undefined || position === null) {
+      return '-';
+    }
+    
+    switch(position) {
+      case PlayerPosition.Goalkeeper:
+        return 'GK';
+      case PlayerPosition.RightBack:
+        return 'RB';
+      case PlayerPosition.LeftBack:
+        return 'LB';
+      case PlayerPosition.CenterBack:
+        return 'CB';
+      case PlayerPosition.DefensiveMidfielder:
+        return 'DM';
+      case PlayerPosition.RightWingBack:
+        return 'RWB';
+      case PlayerPosition.LeftWingBack:
+        return 'LWB';
+      case PlayerPosition.CentralMidfielder:
+        return 'CM';
+      case PlayerPosition.RightMidfielder:
+        return 'RM';
+      case PlayerPosition.LeftMidfielder:
+        return 'LM';
+      case PlayerPosition.AttackingMidfielder:
+        return 'AM';
+      case PlayerPosition.RightWinger:
+        return 'RW';
+      case PlayerPosition.LeftWinger:
+        return 'LW';
+      case PlayerPosition.Striker:
+        return 'ST';
+      default:
+        return '-';
+    }
   }
 
   private calculateAge(dateOfBirth: string): number | null {
