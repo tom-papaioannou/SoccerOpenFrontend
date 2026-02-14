@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { DataTable } from "../../shared/tables/data-table/data-table";
 import { TeamsService } from '../../../services/teams.service';
 import { Player, PlayerPosition } from '../../../models/player-enums.model';
-import { Subscription } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import { getPlayerPositionLabel } from '../../../utils/position-utils';
 
 interface TransformedPlayer {
@@ -58,41 +58,44 @@ export class Squad implements OnInit, OnDestroy {
     { key: 'age', header: 'Age', align: 'end', headerClass:'text-end', cellClass:'text-end' }
   ];
   people: TransformedPlayer[] = [];
-  private subscription?: Subscription;
-  private teamSubscription?: Subscription;
+  private destroy$ = new Subject<void>();
 
   constructor(private readonly teamsService: TeamsService) {}
 
   ngOnInit(): void {
     // Subscribe to currentTeamObservable to wait for team to be set
-    this.teamSubscription = this.teamsService.currentTeamObservable.subscribe({
-      next: (team) => {
-        if (team?.teamID) {
-          this.loadPlayers(team.teamID);
+    this.teamsService.currentTeamObservable
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (team) => {
+          if (team?.teamID) {
+            this.loadPlayers(team.teamID);
+          }
+        },
+        error: (error) => {
+          console.error('Error getting current team:', error);
         }
-      },
-      error: (error) => {
-        console.error('Error getting current team:', error);
-      }
-    });
+      });
   }
 
   ngOnDestroy(): void {
-    this.subscription?.unsubscribe();
-    this.teamSubscription?.unsubscribe();
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   private loadPlayers(teamID: string): void {
-    this.subscription = this.teamsService.getTeamSquad(teamID).subscribe({
-      next: (players: Player[]) => {
-        this.people = this.transformPlayers(players);
-      },
-      error: (error) => {
-        console.error('Error fetching players:', error);
-        // Keep empty array on error
-        this.people = [];
-      }
-    });
+    this.teamsService.getTeamSquad(teamID)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (players: Player[]) => {
+          this.people = this.transformPlayers(players);
+        },
+        error: (error) => {
+          console.error('Error fetching players:', error);
+          // Keep empty array on error
+          this.people = [];
+        }
+      });
   }
 
   private transformPlayers(players: Player[]): TransformedPlayer[] {
