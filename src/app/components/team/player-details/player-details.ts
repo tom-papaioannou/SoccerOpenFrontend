@@ -15,6 +15,8 @@ interface PlayerDetailsResponse {
   person: {
     name: string;
     surname: string;
+    dateOfBirth?: string;
+    placeOfBirth?: string;
     contracts: Array<{
       startDate: string;
       endDate: string;
@@ -77,6 +79,9 @@ interface TransformedStat {
 export class PlayerDetails implements OnInit, OnDestroy {
   playerDetails: PlayerDetailsResponse | null = null;
   playerName = '';
+  dateOfBirth = '';
+  age: number | null = null;
+  placeOfBirth = '';
   loading = true;
   error: string | null = null;
 
@@ -134,6 +139,9 @@ export class PlayerDetails implements OnInit, OnDestroy {
         next: (data: PlayerDetailsResponse) => {
           this.playerDetails = data;
           this.playerName = `${data.person?.name || ''} ${data.person?.surname || ''}`.trim();
+          this.dateOfBirth = this.formatDateOfBirth(data.person?.dateOfBirth);
+          this.age = this.calculateAge(data.person?.dateOfBirth);
+          this.placeOfBirth = data.person?.placeOfBirth || '';
           this.transformPositions();
           this.transformRoles();
           this.transformContracts();
@@ -241,6 +249,35 @@ export class PlayerDetails implements OnInit, OnDestroy {
     const date = new Date(dateString);
     if (isNaN(date.getTime())) return '-';
     return date.toLocaleDateString();
+  }
+
+  private formatDateOfBirth(dateString: string | undefined): string {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return '';
+    
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    
+    return `${day}/${month}/${year}`;
+  }
+
+  private calculateAge(dateString: string | undefined): number | null {
+    if (!dateString) return null;
+    const birthDate = new Date(dateString);
+    
+    if (isNaN(birthDate.getTime())) return null;
+    
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    
+    return age;
   }
 
   goBack(): void {

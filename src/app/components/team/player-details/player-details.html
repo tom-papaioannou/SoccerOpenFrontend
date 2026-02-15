@@ -29,8 +29,12 @@
                 <div class="flex justify-between px-4">
                   <div class="flex-1 flex flex-col items-start">
                     <span>{{transformedPositions[0].position}}</span>
-                    <span>dateofbirth (age)</span>
-                    <span>placeofbirth</span>
+                    @if (dateOfBirth) {
+                      <span>{{ dateOfBirth }}@if (age !== null) { ({{ age }})} </span>
+                    }
+                    @if (placeOfBirth) {
+                      <span>{{ placeOfBirth }}</span>
+                    }
                   </div>
                   <div class="flex-1 flex flex-col items-end">
                     Cella
