@@ -256,9 +256,9 @@ export class PlayerDetails implements OnInit, OnDestroy {
     const date = new Date(dateString);
     if (isNaN(date.getTime())) return '';
     
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const year = date.getFullYear();
+    const day = String(date.getUTCDate()).padStart(2, '0');
+    const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+    const year = date.getUTCFullYear();
     
     return `${day}/${month}/${year}`;
   }
@@ -270,10 +270,21 @@ export class PlayerDetails implements OnInit, OnDestroy {
     if (isNaN(birthDate.getTime())) return null;
     
     const today = new Date();
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const monthDiff = today.getMonth() - birthDate.getMonth();
+    const birthUTC = new Date(Date.UTC(
+      birthDate.getUTCFullYear(),
+      birthDate.getUTCMonth(),
+      birthDate.getUTCDate()
+    ));
+    const todayUTC = new Date(Date.UTC(
+      today.getUTCFullYear(),
+      today.getUTCMonth(),
+      today.getUTCDate()
+    ));
     
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+    let age = todayUTC.getUTCFullYear() - birthUTC.getUTCFullYear();
+    const monthDiff = todayUTC.getUTCMonth() - birthUTC.getUTCMonth();
+    
+    if (monthDiff < 0 || (monthDiff === 0 && todayUTC.getUTCDate() < birthUTC.getUTCDate())) {
       age--;
     }
     
