@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 Tom Papaioannou. All rights reserved.
+ * Licensed under the MIT License
+ */
+
 import { routes } from './app.routes';
 import { authenticationGuard } from './guards/authentication.guard';
 import { guestsGuard } from './guards/guests-guard';

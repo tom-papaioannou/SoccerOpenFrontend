@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 Tom Papaioannou. All rights reserved.
+ * Licensed under the MIT License
+ */
+
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnChanges, SimpleChanges, TemplateRef, Output, EventEmitter } from '@angular/core';
 import { MatSortModule, Sort } from '@angular/material/sort';
