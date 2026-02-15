@@ -48,8 +48,7 @@ interface TransformedRole {
 
 interface TransformedContract {
   team: string;
-  startDate: string;
-  endDate: string;
+  period: string;
 }
 
 interface StatValue {
@@ -96,9 +95,8 @@ export class PlayerDetails implements OnInit, OnDestroy {
   ];
 
   contractsColumns = [
-    { key: 'team', header: 'Team', width: '40%' },
-    { key: 'startDate', header: 'Start Date', width: '30%' },
-    { key: 'endDate', header: 'End Date', width: '30%' }
+    { key: 'team', header: 'Team', width: '50%' },
+    { key: 'period', header: 'Period', width: '50%' }
   ];
 
   transformedPositions: TransformedPosition[] = [];
@@ -185,8 +183,7 @@ export class PlayerDetails implements OnInit, OnDestroy {
       this.transformedContracts = this.playerDetails.person.contracts
         .map(c => ({
           team: c.team?.name || 'Unknown',
-          startDate: this.formatDate(c.startDate),
-          endDate: this.formatDate(c.endDate)
+          period: this.formatContractPeriod(c.startDate, c.endDate)
         }));
     }
   }
@@ -289,6 +286,33 @@ export class PlayerDetails implements OnInit, OnDestroy {
     }
     
     return age;
+  }
+
+  private formatContractPeriod(startDateString: string, endDateString: string): string {
+    if (!startDateString || !endDateString) return '-';
+    
+    const startDate = new Date(startDateString);
+    const endDate = new Date(endDateString);
+    const now = new Date();
+    
+    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) return '-';
+    
+    const startYear = startDate.getUTCFullYear();
+    const endYear = endDate.getUTCFullYear();
+    
+    // Check if end date is after now (current/active contract)
+    if (endDate > now) {
+      return `${startYear} -`;
+    }
+    
+    // End date is before now (past contract)
+    if (startYear === endYear) {
+      // Same year
+      return `${startYear}`;
+    } else {
+      // Different years
+      return `${startYear} - ${endYear}`;
+    }
   }
 
   goBack(): void {
