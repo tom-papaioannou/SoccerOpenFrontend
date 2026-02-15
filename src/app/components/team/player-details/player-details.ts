@@ -300,12 +300,16 @@ export class PlayerDetails implements OnInit, OnDestroy {
     const startYear = startDate.getUTCFullYear();
     const endYear = endDate.getUTCFullYear();
     
+    // Compare using UTC date-only (without time) to avoid time-of-day issues
+    const endDateOnly = new Date(Date.UTC(endYear, endDate.getUTCMonth(), endDate.getUTCDate()));
+    const nowDateOnly = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+    
     // Check if end date is after now (current/active contract)
-    if (endDate > now) {
+    if (endDateOnly > nowDateOnly) {
       return `${startYear} -`;
     }
     
-    // End date is before now (past contract)
+    // End date is before or equal to now (past contract)
     if (startYear === endYear) {
       // Same year
       return `${startYear}`;
