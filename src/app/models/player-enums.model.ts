@@ -125,6 +125,24 @@ export interface PlayerTrainedRole{
   playerTrainedRoleAdaptation: number;
 }
 
-export interface PlayerStats{
-  
+export interface PlayerStats {
+  playerStatsID?: string;
+  playerID?: string;
+  shooting: number;
+  passing: number;
+  crossing: number;
+  tackling: number;
+  dribbling: number;
+  control: number;
+  kicking: number;
+  goalkeeping: number;
+  teamwork: number;
+  creativity: number;
+  decisions: number;
+  positioning: number;
+  speed: number;
+  acceleration: number;
+  strength: number;
+  jumping: number;
+  stamina: number;
 }

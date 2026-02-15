@@ -25,6 +25,10 @@
   cursor: pointer;
 }
 
+.mat-mdc-row.clickable {
+  cursor: pointer;
+}
+
 .mat-mdc-cell {
   color: var(--dt-cell-color, white);
   background-color: transparent;
