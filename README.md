@@ -60,3 +60,20 @@ To start a local development server, run:
 
 ```bash
 ng serve
+```
+
+Once the server is running, you can access the application in your browser at:
+
+```
+http://localhost:4200/
+```
+
+---
+
+## License
+
+This project is licensed under the **MIT License**.
+
+Copyright (c) 2026 Tom Papaioannou
+
+See the [LICENSE](LICENSE) file for more details.
