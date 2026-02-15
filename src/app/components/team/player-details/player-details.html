@@ -3,7 +3,7 @@
     <button mat-icon-button (click)="goBack()" class="mr-2">
       <mat-icon>arrow_back</mat-icon>
     </button>
-    <h1 class="text-2xl font-bold">{{ playerName || 'Player Details' }}</h1>
+    <h1 class="text-2xl font-bold">Player Details</h1>
   </div>
 
   @if (loading) {
@@ -19,12 +19,41 @@
   }
 
   @if (!loading && !error && playerDetails) {
-    <div class="space-y-6">
+    <div class="flex flex-col sm:flex-row space-x-6 space-y-6">
+      <!-- Personal Information -->
+        <div class="space-y-6">
+          @if (transformedPositions.length > 0) {
+            <mat-card>
+              <mat-card-content>
+                <h2 class="text-xl font-semibold mb-4">{{playerName}}</h2>
+                <div class="flex justify-between px-4">
+                  <div class="flex-1 flex flex-col items-start">
+                    <span>{{transformedPositions[0].position}}</span>
+                    <span>dateofbirth (age)</span>
+                    <span>placeofbirth</span>
+                  </div>
+                  <div class="flex-1 flex flex-col items-end">
+                    Cella
+                  </div>
+                </div>
+                @if (transformedContracts.length > 0) {
+                  <h2 class="text-xl font-semibold my-4">History</h2>
+                  <app-data-table
+                    [data]="transformedContracts"
+                    [columns]="$any(contractsColumns)"
+                    class="players-theme">
+                  </app-data-table>
+                }
+              </mat-card-content>
+            </mat-card>
+          }
+      </div>
+
       <!-- Player Stats Section -->
       @if (transformedStats.length > 0) {
         <mat-card>
           <mat-card-content>
-            <h2 class="text-xl font-semibold mb-4">Player Stats</h2>
+            <h2 class="text-xl font-semibold mb-4">Stats</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               @for (category of transformedStats; track category.category) {
                 <div>
@@ -48,48 +77,6 @@
                 </div>
               }
             </div>
-          </mat-card-content>
-        </mat-card>
-      }
-
-      <!-- Positions Section -->
-      @if (transformedPositions.length > 0) {
-        <mat-card>
-          <mat-card-content>
-            <h2 class="text-xl font-semibold mb-4">Trained Positions</h2>
-            <app-data-table
-              [data]="transformedPositions"
-              [columns]="$any(positionsColumns)"
-              class="players-theme">
-            </app-data-table>
-          </mat-card-content>
-        </mat-card>
-      }
-
-      <!-- Roles Section -->
-      @if (transformedRoles.length > 0) {
-        <mat-card>
-          <mat-card-content>
-            <h2 class="text-xl font-semibold mb-4">Trained Roles</h2>
-            <app-data-table
-              [data]="transformedRoles"
-              [columns]="$any(rolesColumns)"
-              class="players-theme">
-            </app-data-table>
-          </mat-card-content>
-        </mat-card>
-      }
-
-      <!-- Contracts Section -->
-      @if (transformedContracts.length > 0) {
-        <mat-card>
-          <mat-card-content>
-            <h2 class="text-xl font-semibold mb-4">Contract History</h2>
-            <app-data-table
-              [data]="transformedContracts"
-              [columns]="$any(contractsColumns)"
-              class="players-theme">
-            </app-data-table>
           </mat-card-content>
         </mat-card>
       }
