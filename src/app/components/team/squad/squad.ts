@@ -50,7 +50,7 @@ export class Squad implements OnInit, OnDestroy {
   };
 
   displayedColumns = [
-    { key: 'name', header: 'Name', width: '30%', sortable: true },
+    { key: 'name', header: 'Name', width: '60%', sortable: true },
     { 
       key: 'position', 
       header: 'Position',

@@ -77,6 +77,7 @@ interface TransformedStat {
 })
 export class PlayerDetails implements OnInit, OnDestroy {
   playerDetails: PlayerDetailsResponse | null = null;
+  currentPlayerTeam = '-';
   playerName = '';
   dateOfBirth = '';
   age: number | null = null;
@@ -95,8 +96,8 @@ export class PlayerDetails implements OnInit, OnDestroy {
   ];
 
   contractsColumns = [
-    { key: 'team', header: 'Team', width: '50%' },
-    { key: 'period', header: 'Period', width: '50%' }
+    { key: 'team', header: 'Team', width: '60%' },
+    { key: 'period', header: 'Period', width: '40%' }
   ];
 
   transformedPositions: TransformedPosition[] = [];
@@ -180,6 +181,9 @@ export class PlayerDetails implements OnInit, OnDestroy {
 
   private transformContracts(): void {
     if (this.playerDetails?.person?.contracts) {
+      if(new Date(this.playerDetails.person.contracts[0].endDate) > new Date()){
+        this.currentPlayerTeam = this.playerDetails.person.contracts[0].team?.name;
+      }
       this.transformedContracts = this.playerDetails.person.contracts
         .map(c => ({
           team: c.team?.name || 'Unknown',
