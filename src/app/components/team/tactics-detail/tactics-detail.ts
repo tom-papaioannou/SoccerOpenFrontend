@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 Tom Papaioannou. All rights reserved.
+ * Licensed under the MIT License
+ */
+
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, signal, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';

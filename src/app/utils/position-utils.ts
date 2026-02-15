@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 Tom Papaioannou. All rights reserved.
+ * Licensed under the MIT License
+ */
+
 import { PlayerPosition, PlayerRole } from '../models/player-enums.model';
 
 /**

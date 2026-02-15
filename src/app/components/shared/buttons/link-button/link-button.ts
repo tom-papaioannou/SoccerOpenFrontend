@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 Tom Papaioannou. All rights reserved.
+ * Licensed under the MIT License
+ */
+
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 

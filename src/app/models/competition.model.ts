@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 Tom Papaioannou. All rights reserved.
+ * Licensed under the MIT License
+ */
+
 // Competition enums matching backend
 export enum CompetitionTeamsType {
   Clubs = 0,

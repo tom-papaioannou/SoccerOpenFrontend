@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 Tom Papaioannou. All rights reserved.
+ * Licensed under the MIT License
+ */
+
 import { TestBed } from '@angular/core/testing';
 import { App } from './app';
 import { AuthService } from './services/auth.service';
