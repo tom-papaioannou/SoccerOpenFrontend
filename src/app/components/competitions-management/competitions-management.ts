@@ -266,7 +266,7 @@ export class CompetitionsManagement implements OnInit {
 
     if (this.selectedType() === 'nation') {
       payload.NationID = this.selectedId()!;
-    } else {
+    } else if (this.selectedType() === 'continent') {
       payload.ContinentID = this.selectedId()!;
     }
 
@@ -281,7 +281,7 @@ export class CompetitionsManagement implements OnInit {
           });
           if (this.selectedType() === 'nation') {
             this.loadCompetitionsForNation(this.selectedId()!);
-          } else {
+          } else if (this.selectedType() === 'continent') {
             this.loadCompetitionsForContinent(this.selectedId()!);
           }
         },
@@ -310,7 +310,7 @@ export class CompetitionsManagement implements OnInit {
         next: () => {
           if (this.selectedType() === 'nation') {
             this.loadCompetitionsForNation(this.selectedId()!);
-          } else {
+          } else if (this.selectedType() === 'continent') {
             this.loadCompetitionsForContinent(this.selectedId()!);
           }
         },
