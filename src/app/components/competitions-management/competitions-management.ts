@@ -17,7 +17,6 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { FormTextfield } from '../shared/textfields/form-textfield/form-textfield';
 import { FormDropdown } from '../shared/dropdowns/form-dropdown/form-dropdown';
 import { ContinentService } from '../../services/continent.service';
-import { NationService } from '../../services/nation.service';
 import { CompetitionService } from '../../services/competition.service';
 import { DeviceService } from '../../services/device.service';
 import { IContinent } from '../../models/continent.model';
@@ -95,7 +94,6 @@ export class CompetitionsManagement implements OnInit {
 
   constructor(
     private continentSvc: ContinentService,
-    private nationSvc: NationService,
     private competitionSvc: CompetitionService,
     private deviceSvc: DeviceService,
     private fb: FormBuilder,
@@ -152,34 +150,19 @@ export class CompetitionsManagement implements OnInit {
       .subscribe({
         next: (data) => {
           this.continents.set(data);
+          // Extract nations from the continent response
+          const nationsMap: Record<string, INation[]> = {};
+          for (const continent of data) {
+            nationsMap[continent.continentID] = continent.nations || [];
+          }
+          this.nationsByContinent.set(nationsMap);
           this.busy.set(false);
           this.cdr.markForCheck();
-          // Load nations for each continent
-          for (const continent of data) {
-            this.loadNations(continent.continentID);
-          }
         },
         error: (err) => {
           this.errorMsg.set(err.message || 'Failed to load continents');
           this.busy.set(false);
           this.cdr.markForCheck();
-        }
-      });
-  }
-
-  loadNations(continentId: string): void {
-    this.nationSvc.getByContinent(continentId)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (nations) => {
-          this.nationsByContinent.update(current => ({
-            ...current,
-            [continentId]: nations
-          }));
-          this.cdr.markForCheck();
-        },
-        error: (err) => {
-          console.error('Failed to load nations for continent', continentId, err);
         }
       });
   }

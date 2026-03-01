@@ -3,7 +3,12 @@
  * Licensed under the MIT License
  */
 
+import { INation } from './nation.model';
+
 export interface IContinent {
   continentID: string;
   name: string;
+  code: string | null;
+  symbolUrl: string | null;
+  nations: INation[];
 }
