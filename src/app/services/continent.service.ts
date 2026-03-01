@@ -14,7 +14,7 @@ export class ContinentService {
   constructor(private http: HttpClient) {}
 
   private buildUrl(segment?: string): string {
-    const base = `${environment.apiUrl}/api/Continent`;
+    const base = `${environment.apiUrl}/api/Continents`;
     return segment ? `${base}/${segment}` : base;
   }
 
