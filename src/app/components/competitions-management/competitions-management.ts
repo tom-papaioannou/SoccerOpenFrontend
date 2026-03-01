@@ -7,7 +7,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DestroyRef, inje
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { MatCardModule, MatCardHeader, MatCardTitle, MatCardContent } from '@angular/material/card';
+import { MatCardModule, MatCardContent } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
@@ -16,10 +16,12 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { FormTextfield } from '../shared/textfields/form-textfield/form-textfield';
 import { FormDropdown } from '../shared/dropdowns/form-dropdown/form-dropdown';
-import { CompetitionParentService } from '../../services/competition-parent.service';
+import { ContinentService } from '../../services/continent.service';
+import { NationService } from '../../services/nation.service';
 import { CompetitionService } from '../../services/competition.service';
 import { DeviceService } from '../../services/device.service';
-import { IParentOrganization, IParentOrgPayload, parentOrgScopes } from '../../models/competition-parent.model';
+import { IContinent } from '../../models/continent.model';
+import { INation } from '../../models/nation.model';
 import { Competition, CompetitionPayload, CompetitionTeamsType, CompetitionType } from '../../models/competition.model';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
@@ -29,8 +31,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     CommonModule,
     ReactiveFormsModule,
     MatCardModule,
-    MatCardHeader,
-    MatCardTitle,
     MatCardContent,
     MatButtonModule,
     MatIconModule,
@@ -48,21 +48,20 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 export class CompetitionsManagement implements OnInit {
   private destroyRef = inject(DestroyRef);
   
-  orgs = signal<IParentOrganization[]>([]);
+  continents = signal<IContinent[]>([]);
+  nationsByContinent = signal<Record<string, INation[]>>({});
   busy = signal(false);
   errorMsg = signal<string | null>(null);
-  isCreating = signal(false);
   
   // Drawer state
   drawerOpen = signal(false);
-  selectedParent = signal<IParentOrganization | null>(null);
+  selectedName = signal<string | null>(null);
+  selectedType = signal<'continent' | 'nation' | null>(null);
+  selectedId = signal<string | null>(null);
   competitions = signal<Competition[]>([]);
   competitionsBusy = signal(false);
 
-  form: FormGroup;
   competitionForm: FormGroup;
-  scopeOptions = [...parentOrgScopes];
-  scopeOptionsForDropdown = parentOrgScopes.map(scope => ({ value: scope, label: scope }));
   isMobile = false;
 
   // Enum options for dropdowns
@@ -95,18 +94,14 @@ export class CompetitionsManagement implements OnInit {
   CompetitionType = CompetitionType;
 
   constructor(
-    private svc: CompetitionParentService,
+    private continentSvc: ContinentService,
+    private nationSvc: NationService,
     private competitionSvc: CompetitionService,
     private deviceSvc: DeviceService,
     private fb: FormBuilder,
     private cdr: ChangeDetectorRef,
     private router: Router
   ) {
-    this.form = this.fb.group({
-      Name: ['', [Validators.required, Validators.maxLength(100)]],
-      Type: [this.scopeOptions[0], Validators.required]
-    });
-
     this.competitionForm = this.fb.group({
       CompetitionName: ['', [Validators.required, Validators.maxLength(100)]],
       Priority: [1, [Validators.required, Validators.min(1)]],
@@ -152,96 +147,66 @@ export class CompetitionsManagement implements OnInit {
     this.busy.set(true);
     this.errorMsg.set(null);
 
-    this.svc.loadAll()
+    this.continentSvc.loadAll()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (data) => {
-          this.orgs.set(data);
+          this.continents.set(data);
           this.busy.set(false);
           this.cdr.markForCheck();
+          // Load nations for each continent
+          for (const continent of data) {
+            this.loadNations(continent.continentID);
+          }
         },
         error: (err) => {
-          this.errorMsg.set(err.message || 'Failed to load organizations');
+          this.errorMsg.set(err.message || 'Failed to load continents');
           this.busy.set(false);
           this.cdr.markForCheck();
         }
       });
   }
 
-  startCreate(): void {
-    this.isCreating.set(true);
-    this.form.reset({ Type: this.scopeOptions[0] });
-    this.cdr.markForCheck();
-  }
-
-  submitForm(): void {
-    if (!this.form.valid) return;
-
-    this.busy.set(true);
-    this.errorMsg.set(null);
-
-    const payload: IParentOrgPayload = this.form.value;
-
-    this.svc.save(payload)
+  loadNations(continentId: string): void {
+    this.nationSvc.getByContinent(continentId)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: () => {
-          this.isCreating.set(false);
-          this.form.reset({ Type: this.scopeOptions[0] });
-          this.refresh();
+        next: (nations) => {
+          this.nationsByContinent.update(current => ({
+            ...current,
+            [continentId]: nations
+          }));
+          this.cdr.markForCheck();
         },
         error: (err) => {
-          this.errorMsg.set(err.message || 'Failed to create organization');
-          this.busy.set(false);
-          this.cdr.markForCheck();
+          console.error('Failed to load nations for continent', continentId, err);
         }
       });
   }
 
-  cancelForm(): void {
-    this.isCreating.set(false);
-    this.form.reset({ Type: this.scopeOptions[0] });
-    this.cdr.markForCheck();
-  }
-
-  removeOrg(org: IParentOrganization, evt: Event): void {
-    evt.stopPropagation();
-    
-    if (!confirm(`Delete "${org.name}"?`)) return;
-    if (!org.competitionParentID) {
-      this.errorMsg.set('Cannot delete: missing ID');
-      return;
-    }
-
-    this.busy.set(true);
-    this.errorMsg.set(null);
-    
-    this.svc.destroy(org.competitionParentID)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: () => {
-          this.busy.set(false);
-          this.refresh();
-          this.cdr.markForCheck();
-        },
-        error: (err) => {
-          this.errorMsg.set(err.message || 'Failed to delete organization');
-          this.busy.set(false);
-          this.cdr.markForCheck();
-        }
-      });
-  }
-
-  openDrawer(org: IParentOrganization): void {
-    this.selectedParent.set(org);
+  openDrawerForContinent(continent: IContinent): void {
+    this.selectedName.set(continent.name);
+    this.selectedType.set('continent');
+    this.selectedId.set(continent.continentID);
     this.drawerOpen.set(true);
-    this.loadCompetitions(org.competitionParentID!);
+    this.loadCompetitionsForContinent(continent.continentID);
+    this.cdr.markForCheck();
+  }
+
+  openDrawerForNation(nation: INation): void {
+    this.selectedName.set(nation.name);
+    this.selectedType.set('nation');
+    this.selectedId.set(nation.nationID);
+    this.drawerOpen.set(true);
+    this.loadCompetitionsForNation(nation.nationID);
     this.cdr.markForCheck();
   }
 
   closeDrawer(): void {
     this.drawerOpen.set(false);
-    this.selectedParent.set(null);
+    this.selectedName.set(null);
+    this.selectedType.set(null);
+    this.selectedId.set(null);
     this.competitions.set([]);
     this.competitionForm.reset({ 
       Priority: 1,
@@ -251,9 +216,27 @@ export class CompetitionsManagement implements OnInit {
     this.cdr.markForCheck();
   }
 
-  loadCompetitions(parentId: string): void {
+  loadCompetitionsForContinent(continentId: string): void {
     this.competitionsBusy.set(true);
-    this.competitionSvc.getByParent(parentId)
+    this.competitionSvc.getByContinent(continentId)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (data) => {
+          this.competitions.set(data);
+          this.competitionsBusy.set(false);
+          this.cdr.markForCheck();
+        },
+        error: (err) => {
+          console.error('Failed to load competitions', err);
+          this.competitionsBusy.set(false);
+          this.cdr.markForCheck();
+        }
+      });
+  }
+
+  loadCompetitionsForNation(nationId: string): void {
+    this.competitionsBusy.set(true);
+    this.competitionSvc.getByNation(nationId)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (data) => {
@@ -270,17 +253,22 @@ export class CompetitionsManagement implements OnInit {
   }
 
   addCompetition(): void {
-    if (!this.competitionForm.valid || !this.selectedParent()?.competitionParentID) return;
+    if (!this.competitionForm.valid || !this.selectedId()) return;
 
     this.competitionsBusy.set(true);
 
     const payload: CompetitionPayload = {
       CompetitionName: this.competitionForm.value.CompetitionName,
-      ParentID: this.selectedParent()!.competitionParentID!,
       Priority: this.competitionForm.value.Priority,
       CompetitionTeamsType: this.competitionForm.value.CompetitionTeamsType,
       CompetitionType: this.competitionForm.value.CompetitionType
     };
+
+    if (this.selectedType() === 'nation') {
+      payload.NationID = this.selectedId()!;
+    } else {
+      payload.ContinentID = this.selectedId()!;
+    }
 
     this.competitionSvc.create(payload)
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -291,7 +279,11 @@ export class CompetitionsManagement implements OnInit {
             CompetitionTeamsType: CompetitionTeamsType.Clubs,
             CompetitionType: CompetitionType.League
           });
-          this.loadCompetitions(this.selectedParent()!.competitionParentID!);
+          if (this.selectedType() === 'nation') {
+            this.loadCompetitionsForNation(this.selectedId()!);
+          } else {
+            this.loadCompetitionsForContinent(this.selectedId()!);
+          }
         },
         error: (err) => {
           console.error('Failed to create competition', err);
@@ -316,7 +308,11 @@ export class CompetitionsManagement implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
-          this.loadCompetitions(this.selectedParent()!.competitionParentID!);
+          if (this.selectedType() === 'nation') {
+            this.loadCompetitionsForNation(this.selectedId()!);
+          } else {
+            this.loadCompetitionsForContinent(this.selectedId()!);
+          }
         },
         error: (err) => {
           console.error('Failed to delete competition', err);

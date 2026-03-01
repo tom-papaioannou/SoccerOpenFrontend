@@ -15,11 +15,12 @@ export enum CompetitionType {
   Continental = 2
 }
 
-// Competition model for managing competitions under parent organizations
+// Competition model for managing competitions under nations or continents
 export interface Competition {
   competitionID?: string;
   competitionName: string;
-  competitionParentID: string;
+  nationID?: string;
+  continentID?: string;
   priority?: number;
   competitionTeamsType?: CompetitionTeamsType;
   competitionType?: CompetitionType;
@@ -36,7 +37,8 @@ export interface Team {
 
 export interface CompetitionPayload {
   CompetitionName: string;
-  ParentID: string;
+  NationID?: string;
+  ContinentID?: string;
   CompetitionTeamsType: CompetitionTeamsType;
   Priority: number;
   CompetitionType: CompetitionType;

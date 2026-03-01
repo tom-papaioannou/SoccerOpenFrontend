@@ -15,8 +15,12 @@ export class CompetitionService {
 
   constructor(private http: HttpClient) {}
 
-  getByParent(parentId: string): Observable<Competition[]> {
-    return this.http.get<Competition[]>(`${this.apiUrl}/getAllCompetitions/${parentId}`);
+  getByNation(nationId: string): Observable<Competition[]> {
+    return this.http.get<Competition[]>(`${this.apiUrl}/getByNation/${nationId}`);
+  }
+
+  getByContinent(continentId: string): Observable<Competition[]> {
+    return this.http.get<Competition[]>(`${this.apiUrl}/getByContinent/${continentId}`);
   }
 
   getById(competitionId: string): Observable<Competition> {
