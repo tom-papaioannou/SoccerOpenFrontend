@@ -72,6 +72,12 @@ export class Register implements OnInit {
       },
       error: (err) => {
         console.error('Failed to load servers', err);
+        this.snackBar.open('Failed to load servers. Please try again later.', 'Close', {
+          duration: this.SNACKBAR_DURATION_MS,
+          horizontalPosition: 'center',
+          verticalPosition: 'top',
+          panelClass: ['error-snackbar']
+        });
       }
     });
   }
