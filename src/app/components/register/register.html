@@ -36,6 +36,12 @@
                                 Role is required
                             </div>
                         }
+                        <app-form-dropdown class="w-full px-8" formControlName="serverID" labelText="Server" placeHolderText="Select Server" [options]="serverOptions"></app-form-dropdown>
+                        @if (registerForm.get('serverID')?.invalid && registerForm.get('serverID')?.touched) {
+                            <div class="w-full px-8 text-red-600 text-sm -mt-2 mb-2">
+                                Server is required
+                            </div>
+                        }
                     </div>
                 </form>
             </div>

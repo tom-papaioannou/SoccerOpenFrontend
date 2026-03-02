@@ -1,0 +1,9 @@
+/*
+ * Copyright (c) 2026 Tom Papaioannou. All rights reserved.
+ * Licensed under the MIT License
+ */
+
+export interface IServer {
+  serverID: string;
+  name: string;
+}
