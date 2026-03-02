@@ -4,6 +4,9 @@
  */
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
 import { CompetitionsManagement } from './competitions-management';
 
@@ -13,7 +16,12 @@ describe('CompetitionsManagement', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CompetitionsManagement]
+      imports: [CompetitionsManagement],
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideAnimationsAsync()
+      ]
     })
     .compileComponents();
 

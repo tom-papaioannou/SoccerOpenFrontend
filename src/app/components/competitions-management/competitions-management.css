@@ -15,6 +15,14 @@
   margin-top: 0.5rem;
 }
 
+.continent-card {
+  border-left: 4px solid #1976d2;
+}
+
+.nation-card {
+  border-left: 4px solid #66bb6a;
+}
+
 /* Drawer styles */
 .drawer-container {
   position: fixed;
