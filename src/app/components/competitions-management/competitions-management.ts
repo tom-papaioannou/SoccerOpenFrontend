@@ -172,7 +172,7 @@ export class CompetitionsManagement implements OnInit {
     this.selectedType.set('continent');
     this.selectedId.set(continent.continentID);
     this.drawerOpen.set(true);
-    this.loadCompetitionsForContinent(continent.continentID);
+    this.loadCompetitions(continent.continentID);
     this.cdr.markForCheck();
   }
 
@@ -181,7 +181,7 @@ export class CompetitionsManagement implements OnInit {
     this.selectedType.set('nation');
     this.selectedId.set(nation.nationID);
     this.drawerOpen.set(true);
-    this.loadCompetitionsForNation(nation.nationID);
+    this.loadCompetitions(nation.nationID);
     this.cdr.markForCheck();
   }
 
@@ -199,27 +199,9 @@ export class CompetitionsManagement implements OnInit {
     this.cdr.markForCheck();
   }
 
-  loadCompetitionsForContinent(continentId: string): void {
+  loadCompetitions(competitionParentID: string): void {
     this.competitionsBusy.set(true);
-    this.competitionSvc.getByContinent(continentId)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (data) => {
-          this.competitions.set(data);
-          this.competitionsBusy.set(false);
-          this.cdr.markForCheck();
-        },
-        error: (err) => {
-          console.error('Failed to load competitions', err);
-          this.competitionsBusy.set(false);
-          this.cdr.markForCheck();
-        }
-      });
-  }
-
-  loadCompetitionsForNation(nationId: string): void {
-    this.competitionsBusy.set(true);
-    this.competitionSvc.getByNation(nationId)
+    this.competitionSvc.getAllCompetitions(competitionParentID)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (data) => {
@@ -263,9 +245,9 @@ export class CompetitionsManagement implements OnInit {
             CompetitionType: CompetitionType.League
           });
           if (this.selectedType() === 'nation') {
-            this.loadCompetitionsForNation(this.selectedId()!);
+            this.loadCompetitions(this.selectedId()!);
           } else if (this.selectedType() === 'continent') {
-            this.loadCompetitionsForContinent(this.selectedId()!);
+            this.loadCompetitions(this.selectedId()!);
           }
         },
         error: (err) => {
@@ -292,9 +274,9 @@ export class CompetitionsManagement implements OnInit {
       .subscribe({
         next: () => {
           if (this.selectedType() === 'nation') {
-            this.loadCompetitionsForNation(this.selectedId()!);
+            this.loadCompetitions(this.selectedId()!);
           } else if (this.selectedType() === 'continent') {
-            this.loadCompetitionsForContinent(this.selectedId()!);
+            this.loadCompetitions(this.selectedId()!);
           }
         },
         error: (err) => {
