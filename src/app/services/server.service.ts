@@ -21,4 +21,8 @@ export class ServerService {
   getAllServers(): Observable<IServer[]> {
     return this.http.get<IServer[]>(this.buildUrl('getAllServers'));
   }
+
+  getUserServer(userID: string): Observable<string> {
+    return this.http.get<string>(this.buildUrl(`getUserServer/${userID}`));
+  }
 }

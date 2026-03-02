@@ -8,6 +8,7 @@ import { EventEmitter, Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { environment } from '../../environments/environment.development';
 import { jwtDecode } from 'jwt-decode';
+import { ServerService } from './server.service';
 
 type JwtPayload = { exp?: number; role?: string; };
 
@@ -19,8 +20,12 @@ export class AuthService {
   loggedIn = localStorage.getItem("token") !== null;
   private tokenSubject = new BehaviorSubject<string | null>(localStorage.getItem('token'));
   token$ = this.tokenSubject.asObservable();
+  currentServerID: string | null = null;
 
-  constructor(private readonly http: HttpClient) {}
+  constructor(
+    private readonly http: HttpClient,
+    private readonly serverService: ServerService
+  ) {}
 
   get token(): string | null {
     return this.tokenSubject.value;
@@ -40,6 +45,26 @@ export class AuthService {
     const payload = jwtDecode<any>(t);
     const role = payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
     return (role as any) ?? '';
+  }
+
+  getUserID(): string {
+    const t = this.token;
+    if (!t) return '';
+    const payload = jwtDecode<any>(t);
+    return payload['sub'] ?? '';
+  }
+
+  fetchAndStoreServerID(): void {
+    const userID = this.getUserID();
+    if (!userID) return;
+    this.serverService.getUserServer(userID).subscribe({
+      next: (serverID) => {
+        this.currentServerID = serverID;
+      },
+      error: (err) => {
+        console.error('Failed to fetch user server', err);
+      }
+    });
   }
 
   private isTokenExpired(token: string): boolean {
