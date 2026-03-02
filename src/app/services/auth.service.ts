@@ -5,7 +5,7 @@
 
 import { HttpClient } from '@angular/common/http';
 import { EventEmitter, Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { BehaviorSubject, Observable, take, tap } from 'rxjs';
 import { environment } from '../../environments/environment.development';
 import { jwtDecode } from 'jwt-decode';
 import { ServerService } from './server.service';
@@ -57,7 +57,7 @@ export class AuthService {
   fetchAndStoreServerID(): void {
     const userID = this.getUserID();
     if (!userID) return;
-    this.serverService.getUserServer(userID).subscribe({
+    this.serverService.getUserServer(userID).pipe(take(1)).subscribe({
       next: (serverID) => {
         this.currentServerID = serverID;
       },
