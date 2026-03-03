@@ -48,7 +48,7 @@
   } @else {
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
       @for (server of servers(); track server.serverID) {
-        <mat-card class="server-card">
+        <mat-card class="server-card cursor-pointer hover:shadow-lg transition-shadow" (click)="viewServer(server)">
           <mat-card-content class="p-4">
             <div class="flex items-center gap-3">
               <mat-icon class="text-blue-500">dns</mat-icon>

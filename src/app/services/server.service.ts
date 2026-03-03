@@ -7,7 +7,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment.development';
-import { IServer } from '../models/server.model';
+import { IServer, IServerInfo } from '../models/server.model';
 
 @Injectable({ providedIn: 'root' })
 export class ServerService {
@@ -28,5 +28,9 @@ export class ServerService {
 
   createNewServer(name: string): Observable<IServer> {
     return this.http.post<IServer>(this.buildUrl('createNewServer'), { name });
+  }
+
+  getServerInformation(serverID: string): Observable<IServerInfo> {
+    return this.http.get<IServerInfo>(this.buildUrl(`getServerInformation/${serverID}`));
   }
 }

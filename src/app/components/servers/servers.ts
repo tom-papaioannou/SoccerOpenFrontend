@@ -6,6 +6,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { MatCardModule, MatCardContent } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -45,7 +46,8 @@ export class Servers implements OnInit {
   constructor(
     private serverService: ServerService,
     private fb: FormBuilder,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private router: Router
   ) {
     this.serverForm = this.fb.group({
       name: ['', [Validators.required, Validators.maxLength(100)]]
@@ -95,5 +97,9 @@ export class Servers implements OnInit {
           this.cdr.markForCheck();
         }
       });
+  }
+
+  viewServer(server: IServer): void {
+    this.router.navigate(['/server', server.serverID]);
   }
 }

@@ -7,3 +7,18 @@ export interface IServer {
   serverID: string;
   name: string;
 }
+
+export interface IServerInfo extends IServer {
+  persons: IServerPerson[];
+  competitions: IServerCompetition[];
+}
+
+export interface IServerPerson {
+  personID: string;
+  name?: string;
+}
+
+export interface IServerCompetition {
+  competitionID: string;
+  competitionName?: string;
+}
