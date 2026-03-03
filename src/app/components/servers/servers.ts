@@ -80,6 +80,7 @@ export class Servers implements OnInit {
     if (!this.serverForm.valid) return;
 
     this.busy.set(true);
+    this.errorMsg.set(null);
 
     this.serverService.createNewServer(this.serverForm.value.name)
       .pipe(takeUntilDestroyed(this.destroyRef))
