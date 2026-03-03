@@ -20,7 +20,7 @@
         @else if(role === "Admin"){
           <a routerLink="" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
           <a routerLink="register" routerLinkActive="active">Users</a>
-          <a routerLink="about" routerLinkActive="active">Servers</a>
+          <a routerLink="servers" routerLinkActive="active">Servers</a>
           <a routerLink="about" routerLinkActive="active">Logs</a>
         }
         <a (click)="logOut()" class="cursor-pointer">Sign Out</a>

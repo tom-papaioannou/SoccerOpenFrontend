@@ -17,6 +17,7 @@ import { Competitions } from './components/competitions/competitions';
 import { CompetitionsManagement } from './components/competitions-management/competitions-management';
 import { CompetitionDetails } from './components/competition-details/competition-details';
 import { Register } from './components/register/register';
+import { Servers } from './components/servers/servers';
 import { guestsGuard } from './guards/guests-guard';
 
 export const routes: Routes = [
@@ -24,6 +25,7 @@ export const routes: Routes = [
     // { path: 'error', component: Home },
     { path: 'login', canActivate: [guestsGuard], component: Login },
     { path: 'register', canActivate: [authenticationGuard], component: Register },
+    { path: 'servers', canActivate: [authenticationGuard], component: Servers },
     { path: 'competitions-management', canActivate: [authenticationGuard], component: CompetitionsManagement },
     { path: 'competition/:id', canActivate: [authenticationGuard], component: CompetitionDetails },
     { path: 'competitions', canActivate: [authenticationGuard], component: Competitions },

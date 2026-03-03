@@ -1,0 +1,12 @@
+.servers-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.space-y-3 > * + * {
+  margin-top: 0.75rem;
+}
+
+.server-card {
+  border-left: 4px solid #1976d2;
+}

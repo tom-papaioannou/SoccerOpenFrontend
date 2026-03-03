@@ -25,4 +25,8 @@ export class ServerService {
   getUserServer(userID: string): Observable<string> {
     return this.http.get<string>(this.buildUrl(`getUserServer/${userID}`));
   }
+
+  createNewServer(name: string): Observable<IServer> {
+    return this.http.post<IServer>(this.buildUrl('createNewServer'), { name });
+  }
 }
