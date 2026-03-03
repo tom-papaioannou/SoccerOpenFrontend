@@ -23,6 +23,7 @@ import { IContinent } from '../../models/continent.model';
 import { INation } from '../../models/nation.model';
 import { Competition, CompetitionPayload, CompetitionTeamsType, CompetitionType } from '../../models/competition.model';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-competitions-management',
@@ -98,7 +99,8 @@ export class CompetitionsManagement implements OnInit {
     private deviceSvc: DeviceService,
     private fb: FormBuilder,
     private cdr: ChangeDetectorRef,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) {
     this.competitionForm = this.fb.group({
       CompetitionName: ['', [Validators.required, Validators.maxLength(100)]],
@@ -226,7 +228,8 @@ export class CompetitionsManagement implements OnInit {
       CompetitionName: this.competitionForm.value.CompetitionName,
       Priority: this.competitionForm.value.Priority,
       CompetitionTeamsType: this.competitionForm.value.CompetitionTeamsType,
-      CompetitionType: this.competitionForm.value.CompetitionType
+      CompetitionType: this.competitionForm.value.CompetitionType,
+      ServerID: this.authService.currentServerID
     };
 
     if (this.selectedType() === 'nation') {
