@@ -38,6 +38,7 @@ export class App {
   private destroy$ = new Subject<void>();
   role: string | null | undefined;
   signedIn = false;
+  currentServerID: string = '';
 
   constructor(
     protected readonly authService: AuthService,
@@ -52,6 +53,11 @@ export class App {
         this.isMobile = v;
         this.cdr.markForCheck();
       });
+
+    this.authService.server$.subscribe((value) => {
+      this.currentServerID = value ?? '';
+      this.cdr.detectChanges();
+    });
 
     this.signedIn = this.authService.isLoggedIn();
     if(this.signedIn){

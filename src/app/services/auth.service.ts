@@ -21,6 +21,8 @@ export class AuthService {
   private tokenSubject = new BehaviorSubject<string | null>(localStorage.getItem('token'));
   token$ = this.tokenSubject.asObservable();
   currentServerID: string | null = null;
+  private serverSubject = new BehaviorSubject<string | null>(localStorage.getItem('serverID'));
+  server$ = this.serverSubject.asObservable();
 
   constructor(
     private readonly http: HttpClient,
@@ -60,6 +62,8 @@ export class AuthService {
     this.serverService.getUserServer(userID).pipe(take(1)).subscribe({
       next: (serverID) => {
         this.currentServerID = serverID;
+        localStorage.setItem('serverID', this.currentServerID);
+        this.serverSubject.next(this.currentServerID);
       },
       error: (err) => {
         console.error('Failed to fetch user server', err);
