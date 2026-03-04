@@ -16,6 +16,7 @@ export interface IServerInfo extends IServer {
 export interface IServerPerson {
   personID: string;
   name?: string;
+  age?: number | null;
 }
 
 export interface IServerCompetition {

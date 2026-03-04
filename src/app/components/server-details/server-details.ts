@@ -13,6 +13,7 @@ import { DataTable } from '../shared/tables/data-table/data-table';
 import { ServerService } from '../../services/server.service';
 import { AuthService } from '../../services/auth.service';
 import { IServerInfo } from '../../models/server.model';
+import { calculateAge } from '../../utils/date-utils';
 
 @Component({
   selector: 'app-server-details',
@@ -33,7 +34,8 @@ export class ServerDetails implements OnInit {
 
   personColumns = [
     { key: 'surname', header: 'Surname', sortable: true },
-    { key: 'name', header: 'Name', sortable: true }
+    { key: 'name', header: 'Name', sortable: true },
+    { key: 'age', header: 'Age', sortable: true }
   ];
 
   competitionColumns = [
@@ -78,6 +80,15 @@ export class ServerDetails implements OnInit {
             }
           }
         }
+
+        if(server.persons){
+          for(let person of server.persons){
+            if((person as any).dateOfBirth){
+              person.age = calculateAge((person as any).dateOfBirth);
+            }
+          }
+        }
+
         this.server.set(server);
         this.loading.set(false);
       },
