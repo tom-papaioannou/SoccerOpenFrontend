@@ -31,13 +31,13 @@ export class ServerDetails implements OnInit {
   error = signal<string | null>(null);
 
   personColumns = [
-    { key: 'personID', header: 'Person ID', sortable: true },
+    { key: 'surname', header: 'Surname', sortable: true },
     { key: 'name', header: 'Name', sortable: true }
   ];
 
   competitionColumns = [
-    { key: 'competitionID', header: 'Competition ID', sortable: true },
-    { key: 'competitionName', header: 'Competition Name', sortable: true }
+    { key: 'competitionName', header: 'Competition Name', sortable: true },
+    { key: 'competitionParentName', header: 'Host', sortable: true }
   ];
 
   constructor(
@@ -62,6 +62,16 @@ export class ServerDetails implements OnInit {
 
     this.serverService.getServerInformation(id).subscribe({
       next: (server) => {
+        if(server.competitions){
+          for(let competition of server.competitions){
+            if((competition as any).nation){
+              competition.competitionParentName = (competition as any).nation.name;
+            }
+            else if((competition as any).continent){
+              competition.competitionParentName = (competition as any).continent.name;
+            }
+          }
+        }
         this.server.set(server);
         this.loading.set(false);
       },

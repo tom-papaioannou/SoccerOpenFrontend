@@ -21,4 +21,5 @@ export interface IServerPerson {
 export interface IServerCompetition {
   competitionID: string;
   competitionName?: string;
+  competitionParentName: string;
 }
