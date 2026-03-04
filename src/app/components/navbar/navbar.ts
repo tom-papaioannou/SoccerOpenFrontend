@@ -32,7 +32,7 @@ export class NavbarComponent {
 
   constructor(
     private router: Router,
-    private readonly authService: AuthService,
+    protected readonly authService: AuthService,
     private readonly cdr: ChangeDetectorRef
   ){
     this.loggedIn = this.authService.isLoggedIn();

@@ -11,6 +11,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { DataTable } from '../shared/tables/data-table/data-table';
 import { ServerService } from '../../services/server.service';
+import { AuthService } from '../../services/auth.service';
 import { IServerInfo } from '../../models/server.model';
 
 @Component({
@@ -40,11 +41,16 @@ export class ServerDetails implements OnInit {
     { key: 'competitionParentName', header: 'Host', sortable: true }
   ];
 
+  showBackButton: boolean;
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private serverService: ServerService
-  ) {}
+    private serverService: ServerService,
+    private authService: AuthService
+  ) {
+    this.showBackButton = this.authService.getRole() !== 'Host';
+  }
 
   ngOnInit(): void {
     const serverID = this.route.snapshot.paramMap.get('id');

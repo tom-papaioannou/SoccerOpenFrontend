@@ -14,6 +14,7 @@
         }
         @else if(role === "Host"){
           <a routerLink="" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Dashboard</a>
+          <a [routerLink]="'/server/' + authService.currentServerID" routerLinkActive="active">Server</a>
           <a routerLink="competitions-management" routerLinkActive="active">Competitions</a>
           <a routerLink="about" routerLinkActive="active">Teams</a>
         }

@@ -40,7 +40,7 @@ export class App {
   signedIn = false;
 
   constructor(
-    private readonly authService: AuthService,
+    protected readonly authService: AuthService,
     private deviceService: DeviceService,
     private readonly teamsService: TeamsService,
     private router: Router,

@@ -1,9 +1,11 @@
 <div class="server-details-container p-4">
   <!-- Header with back button -->
   <div class="mb-4 flex items-center gap-4">
-    <button mat-icon-button (click)="goBack()" aria-label="Go back">
-      <mat-icon>arrow_back</mat-icon>
-    </button>
+    @if (showBackButton) {
+      <button mat-icon-button (click)="goBack()" aria-label="Go back">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+    }
     <h2 class="text-2xl font-bold">Server Details</h2>
   </div>
 
