@@ -17,7 +17,9 @@
       }
       @else if(role === "Host"){
         <button mat-menu-item routerLink="">Dashboard</button>
-        <button mat-menu-item [routerLink]="'/server/' + authService.currentServerID">Server</button>
+        @if (authService.currentServerID) {
+          <button mat-menu-item [routerLink]="'/server/' + authService.currentServerID">Server</button>
+        }
         <button mat-menu-item routerLink="competitions-management">Competitions</button>
         <button mat-menu-item routerLink="about">Teams</button>
       }

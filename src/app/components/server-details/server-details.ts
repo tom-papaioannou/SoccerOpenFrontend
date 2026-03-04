@@ -41,16 +41,16 @@ export class ServerDetails implements OnInit {
     { key: 'competitionParentName', header: 'Host', sortable: true }
   ];
 
-  showBackButton: boolean;
+  get showBackButton(): boolean {
+    return this.authService.getRole() !== 'Host';
+  }
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private serverService: ServerService,
     private authService: AuthService
-  ) {
-    this.showBackButton = this.authService.getRole() !== 'Host';
-  }
+  ) {}
 
   ngOnInit(): void {
     const serverID = this.route.snapshot.paramMap.get('id');
