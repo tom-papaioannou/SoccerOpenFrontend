@@ -32,6 +32,7 @@
 
   @if (pageSize > 0) {
     <mat-paginator
+      class="custom-paginator"
       [length]="data.length"
       [pageSize]="pageSize"
       [pageSizeOptions]="pageSizeOptions"

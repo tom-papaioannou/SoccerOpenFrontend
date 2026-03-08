@@ -16,6 +16,7 @@ import { FormTextfield } from '../shared/textfields/form-textfield/form-textfiel
 import { ServerService } from '../../services/server.service';
 import { IServer } from '../../models/server.model';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ActionButton } from "../shared/buttons/action-button/action-button";
 
 @Component({
   selector: 'app-servers',
@@ -28,8 +29,9 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     MatIconModule,
     MatFormFieldModule,
     MatInputModule,
-    FormTextfield
-  ],
+    FormTextfield,
+    ActionButton
+],
   templateUrl: './servers.html',
   styleUrl: './servers.css',
   changeDetection: ChangeDetectionStrategy.OnPush

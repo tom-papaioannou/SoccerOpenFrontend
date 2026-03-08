@@ -3,11 +3,11 @@
 :root {
   --mat-toolbar-container-background-color: rgb(22, 56, 101);
   --mat-toolbar-container-text-color: white;
-  --mat-sys-primary: #0b57d0;
+  --mat-sys-primary: white;
   --mat-sys-tertiary: #1b6ef3;
   --mat-sys-on-primary: #ffffff;
   --mat-sys-surface: #ffffff;
-  --mat-sys-on-surface: #1f1f1f;
+  --mat-sys-on-surface: rgba(255, 255, 255, 0.9);
   --mat-sys-body-medium: 400 1rem/1.5 "Roboto", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
  
 }
@@ -70,4 +70,27 @@ body {
 .panelBg.mat-mdc-select-panel,
 .panelBg.mat-mdc-select-panel .mdc-menu-surface {
   background: #fff !important;
+}
+
+.custom-paginator .mat-mdc-paginator-page-size-select {
+  width: 90px;
+}
+
+.custom-paginator .mat-mdc-select-value {
+  padding: 0 4px;
+  color: white;
+}
+
+.custom-paginator .mat-mdc-select-arrow {
+  color: white;
+}
+
+.cdk-overlay-container .mat-mdc-option {
+  color: white !important;
+  background-color: rgba(0, 0, 0, 0.4) !important;
+  font-size: 14px !important;
+}
+
+.cdk-overlay-container .mat-mdc-select-panel{
+  padding: 0px;
 }

@@ -12,7 +12,7 @@
   <!-- Add Server Form -->
   <mat-card class="mb-6">
     <mat-card-content class="p-4 bg-gray-300 rounded-xl">
-      <h5 class="font-medium mb-3">Add Server</h5>
+      <h5 class="font-medium text-blue-500 mb-3">Add New Server</h5>
       <form [formGroup]="serverForm" class="space-y-3">
         <app-form-textfield
           [labelText]="'Server Name'"
@@ -20,17 +20,17 @@
           [type]="'text'"
           formControlName="name">
         </app-form-textfield>
-
-        <button
-          mat-raised-button
-          color="primary"
-          type="button"
-          [disabled]="!serverForm.valid || busy()"
-          (click)="addServer()"
-          class="w-full">
-          <mat-icon>add</mat-icon>
-          Add Server
-        </button>
+        
+        <div class="flex-1 flex justify-end">
+          <div class="w-32">
+            <app-action-button
+              (clicked)="addServer()"
+              [variant]="'primary'"
+              [disabled]="!serverForm.valid || busy()"
+              class="w-full" [buttonText]="'Add'">
+            </app-action-button>
+          </div>
+        </div>
       </form>
     </mat-card-content>
   </mat-card>
