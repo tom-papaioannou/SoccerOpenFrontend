@@ -33,7 +33,8 @@
         @if (server()!.persons && server()!.persons.length > 0) {
           <app-data-table
             [data]="server()!.persons"
-            [columns]="$any(personColumns)">
+            [columns]="$any(personColumns)"
+            [pageSize]="10">
           </app-data-table>
         } @else {
           <div class="text-center py-8 text-gray-500">
@@ -52,7 +53,8 @@
         @if (server()!.competitions && server()!.competitions.length > 0) {
           <app-data-table
             [data]="server()!.competitions"
-            [columns]="$any(competitionColumns)">
+            [columns]="$any(competitionColumns)"
+            [pageSize]="10">
           </app-data-table>
         } @else {
           <div class="text-center py-8 text-gray-500">
