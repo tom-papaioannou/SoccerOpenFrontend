@@ -24,6 +24,10 @@ app-navbar {
   min-height: 0;
 }
 
+.app-layout a{
+    color: black !important;
+  }
+
 .sidebar {
   border-right: 1px solid rgba(0,0,0,0.12);
   padding: 16px;

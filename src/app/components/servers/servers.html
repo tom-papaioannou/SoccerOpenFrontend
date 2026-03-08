@@ -1,0 +1,64 @@
+<div class="servers-container p-4">
+  <div class="mb-6">
+    <h2 class="text-2xl font-bold">Servers</h2>
+  </div>
+
+  @if (errorMsg()) {
+    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+      {{ errorMsg() }}
+    </div>
+  }
+
+  <!-- Add Server Form -->
+  <mat-card class="mb-6">
+    <mat-card-content class="p-4 bg-gray-300 rounded-xl">
+      <h5 class="font-medium text-blue-500 mb-3">Add New Server</h5>
+      <form [formGroup]="serverForm" class="space-y-3">
+        <app-form-textfield
+          [labelText]="'Server Name'"
+          [placeHolderText]="'Enter server name'"
+          [type]="'text'"
+          formControlName="name">
+        </app-form-textfield>
+        
+        <div class="flex-1 flex justify-end">
+          <div class="w-32">
+            <app-action-button
+              (clicked)="addServer()"
+              [variant]="'primary'"
+              [disabled]="!serverForm.valid || busy()"
+              class="w-full" [buttonText]="'Add'">
+            </app-action-button>
+          </div>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Servers List -->
+  @if (busy()) {
+    <div class="flex justify-center items-center py-8">
+      <div class="text-lg">Loading...</div>
+    </div>
+  } @else if (servers().length === 0) {
+    <div class="text-center py-8 text-gray-500">
+      <mat-icon class="text-4xl mb-2 opacity-50">dns</mat-icon>
+      <p>No servers yet</p>
+    </div>
+  } @else {
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+      @for (server of servers(); track server.serverID) {
+        <mat-card class="server-card cursor-pointer hover:shadow-lg transition-shadow" (click)="viewServer(server)">
+          <mat-card-content class="p-4">
+            <div class="flex items-center gap-3">
+              <mat-icon class="text-blue-500">dns</mat-icon>
+              <div>
+                <div class="text-lg font-semibold">{{ server.name }}</div>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      }
+    </div>
+  }
+</div>

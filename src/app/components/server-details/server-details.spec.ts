@@ -6,26 +6,26 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { provideRouter } from '@angular/router';
 
-import { Register } from './register';
+import { ServerDetails } from './server-details';
 
-describe('Register', () => {
-  let component: Register;
-  let fixture: ComponentFixture<Register>;
+describe('ServerDetails', () => {
+  let component: ServerDetails;
+  let fixture: ComponentFixture<ServerDetails>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Register],
+      imports: [ServerDetails],
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
-        provideAnimationsAsync()
+        provideRouter([])
       ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(Register);
+    fixture = TestBed.createComponent(ServerDetails);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

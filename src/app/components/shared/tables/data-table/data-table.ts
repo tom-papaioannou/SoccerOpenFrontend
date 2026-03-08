@@ -7,24 +7,30 @@ import { CommonModule } from '@angular/common';
 import { Component, Input, OnChanges, SimpleChanges, TemplateRef, Output, EventEmitter } from '@angular/core';
 import { MatSortModule, Sort } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-data-table',
   imports: [
     MatTableModule,
     CommonModule,
-    MatSortModule
+    MatSortModule,
+    MatPaginatorModule
   ],
   templateUrl: './data-table.html',
   styleUrl: './data-table.scss'
 })
 export class DataTable<T> implements OnChanges{
   ngOnChanges(changes: SimpleChanges): void {
-    this.renderedData = [...this.data];
+    this.sortedData = [...this.data];
     // Apply initial sort if provided and not yet set
     if (changes['initialSort'] && this.initialSort && !this.active) {
       this.active = this.initialSort.active;
       this.direction = this.initialSort.direction;
+    }
+    // Reset to first page when data changes
+    if (changes['data']) {
+      this.pageIndex = 0;
     }
     this.applySort();
   }
@@ -32,10 +38,14 @@ export class DataTable<T> implements OnChanges{
   @Input() columns: ColumnDef<T>[] = [];
   @Input() tableClass = 'app-table';
   @Input() initialSort?: { active: string; direction: 'asc' | 'desc' };
+  @Input() pageSize = 0;
+  @Input() pageSizeOptions: number[] = [5, 10, 25];
   @Output() rowClick = new EventEmitter<T>();
   private active = '';
   private direction: 'asc' | 'desc' | '' = '';
+  private sortedData: T[] = [];
   renderedData: T[] = [];
+  pageIndex = 0;
   get displayed() { return this.columns.map(c => c.key); }
 
   onRowClick(row: T): void {
@@ -48,26 +58,42 @@ export class DataTable<T> implements OnChanges{
     this.applySort();
   }
 
+  onPage(e: PageEvent) {
+    this.pageIndex = e.pageIndex;
+    this.pageSize = e.pageSize;
+    this.applyPage();
+  }
+
   private applySort() {
     if (!this.active || !this.direction) {
-      this.renderedData = [...this.data];
-      return;
+      this.sortedData = [...this.data];
+    } else {
+      const col = this.columns.find(c => c.key === this.active);
+      if (!col) return;
+
+      const accessor = col.sortAccessor
+        ? (row: T) => col.sortAccessor!(row)
+        : (row: T) => (row as any)[this.active];
+
+      const cmp = col.comparator ?? defaultComparator;
+
+      this.sortedData = [...this.data].sort((ra, rb) => {
+        const a = accessor(ra);
+        const b = accessor(rb);
+        const result = cmp(a, b);
+        return this.direction === 'asc' ? result : -result;
+      });
     }
-    const col = this.columns.find(c => c.key === this.active);
-    if (!col) return;
+    this.applyPage();
+  }
 
-    const accessor = col.sortAccessor
-      ? (row: T) => col.sortAccessor!(row)
-      : (row: T) => (row as any)[this.active];
-
-    const cmp = col.comparator ?? defaultComparator;
-
-    this.renderedData = [...this.data].sort((ra, rb) => {
-      const a = accessor(ra);
-      const b = accessor(rb);
-      const result = cmp(a, b);
-      return this.direction === 'asc' ? result : -result;
-    });
+  private applyPage() {
+    if (this.pageSize > 0) {
+      const start = this.pageIndex * this.pageSize;
+      this.renderedData = this.sortedData.slice(start, start + this.pageSize);
+    } else {
+      this.renderedData = this.sortedData;
+    }
   }
 }
 

@@ -10,6 +10,7 @@ import { TeamsService } from '../../../services/teams.service';
 import { Player, PlayerPosition } from '../../../models/player-enums.model';
 import { Subject, takeUntil } from 'rxjs';
 import { getPlayerPositionLabel } from '../../../utils/position-utils';
+import { calculateAge } from '../../../utils/date-utils';
 
 interface TransformedPlayer {
   playerID: string;
@@ -114,7 +115,7 @@ export class Squad implements OnInit, OnDestroy {
       if (person && (person.name || person.surname)) {
         name = `${person.name || ''} ${person.surname || ''}`.trim();
       }
-      const age = person?.dateOfBirth ? this.calculateAge(person.dateOfBirth) : null;
+      const age = person?.dateOfBirth ? calculateAge(person.dateOfBirth) : null;
       
       // Get the player's best position (highest adaptation)
       const bestPosition = this.getBestPlayerPosition(player);
@@ -140,25 +141,6 @@ export class Squad implements OnInit, OnDestroy {
     );
     
     return sorted[0].playerPosition;
-  }
-
-  private calculateAge(dateOfBirth: string): number | null {
-    const birthDate = new Date(dateOfBirth);
-    
-    // Validate the date
-    if (isNaN(birthDate.getTime())) {
-      return null;
-    }
-    
-    const today = new Date();
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const monthDiff = today.getMonth() - birthDate.getMonth();
-    
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-      age--;
-    }
-    
-    return age;
   }
 
   onPlayerClick(player: TransformedPlayer): void {

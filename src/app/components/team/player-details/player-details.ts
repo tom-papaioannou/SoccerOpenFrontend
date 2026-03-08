@@ -14,6 +14,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { TeamsService } from '../../../services/teams.service';
 import { DataTable } from '../../shared/tables/data-table/data-table';
 import { getPlayerPositionLabel, getPlayerRoleLabel } from '../../../utils/position-utils';
+import { calculateAge } from '../../../utils/date-utils';
 import { PlayerStats } from '../../../models/player-enums.model';
 
 interface PlayerDetailsResponse {
@@ -144,7 +145,7 @@ export class PlayerDetails implements OnInit, OnDestroy {
           this.playerDetails = data;
           this.playerName = `${data.person?.name || ''} ${data.person?.surname || ''}`.trim();
           this.dateOfBirth = this.formatDateOfBirth(data.person?.dateOfBirth);
-          this.age = this.calculateAge(data.person?.dateOfBirth);
+          this.age = calculateAge(data.person?.dateOfBirth);
           this.placeOfBirth = data.person?.placeOfBirth || '';
           this.transformPositions();
           this.transformRoles();
@@ -267,34 +268,6 @@ export class PlayerDetails implements OnInit, OnDestroy {
     const year = date.getUTCFullYear();
     
     return `${day}/${month}/${year}`;
-  }
-
-  private calculateAge(dateString: string | undefined): number | null {
-    if (!dateString) return null;
-    const birthDate = new Date(dateString);
-    
-    if (isNaN(birthDate.getTime())) return null;
-    
-    const today = new Date();
-    const birthUTC = new Date(Date.UTC(
-      birthDate.getUTCFullYear(),
-      birthDate.getUTCMonth(),
-      birthDate.getUTCDate()
-    ));
-    const todayUTC = new Date(Date.UTC(
-      today.getUTCFullYear(),
-      today.getUTCMonth(),
-      today.getUTCDate()
-    ));
-    
-    let age = todayUTC.getUTCFullYear() - birthUTC.getUTCFullYear();
-    const monthDiff = todayUTC.getUTCMonth() - birthUTC.getUTCMonth();
-    
-    if (monthDiff < 0 || (monthDiff === 0 && todayUTC.getUTCDate() < birthUTC.getUTCDate())) {
-      age--;
-    }
-    
-    return age;
   }
 
   private formatContractPeriod(startDateString: string, endDateString: string): string {

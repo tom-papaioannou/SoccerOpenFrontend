@@ -13,14 +13,15 @@
           <a routerLink="about" routerLinkActive="active">Transfers</a>
         }
         @else if(role === "Host"){
-          <a routerLink="" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Dashboard</a>
+          @if (authService.currentServerID) {
+            <a [routerLink]="'/server/' + authService.currentServerID" routerLinkActive="active">Server</a>
+          }
           <a routerLink="competitions-management" routerLinkActive="active">Competitions</a>
-          <a routerLink="about" routerLinkActive="active">Teams</a>
         }
         @else if(role === "Admin"){
           <a routerLink="" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
           <a routerLink="register" routerLinkActive="active">Users</a>
-          <a routerLink="about" routerLinkActive="active">Servers</a>
+          <a routerLink="servers" routerLinkActive="active">Servers</a>
           <a routerLink="about" routerLinkActive="active">Logs</a>
         }
         <a (click)="logOut()" class="cursor-pointer">Sign Out</a>

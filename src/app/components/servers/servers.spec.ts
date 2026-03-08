@@ -8,15 +8,15 @@ import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
-import { Register } from './register';
+import { Servers } from './servers';
 
-describe('Register', () => {
-  let component: Register;
-  let fixture: ComponentFixture<Register>;
+describe('Servers', () => {
+  let component: Servers;
+  let fixture: ComponentFixture<Servers>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Register],
+      imports: [Servers],
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
@@ -25,7 +25,7 @@ describe('Register', () => {
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(Register);
+    fixture = TestBed.createComponent(Servers);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

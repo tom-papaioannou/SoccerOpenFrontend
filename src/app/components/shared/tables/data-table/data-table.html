@@ -29,4 +29,16 @@
     <tr mat-header-row *matHeaderRowDef="displayed"></tr>
     <tr mat-row *matRowDef="let row; columns: displayed" (click)="onRowClick(row)" [class.clickable]="rowClick.observed"></tr>
   </table>
+
+  @if (pageSize > 0) {
+    <mat-paginator
+      class="custom-paginator"
+      [length]="data.length"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="pageSizeOptions"
+      [pageIndex]="pageIndex"
+      (page)="onPage($event)"
+      showFirstLastButtons>
+    </mat-paginator>
+  }
 </div>

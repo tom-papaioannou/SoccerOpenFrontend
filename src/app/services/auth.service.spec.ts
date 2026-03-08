@@ -5,10 +5,12 @@
 
 import { TestBed } from '@angular/core/testing';
 import { AuthService } from './auth.service';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { environment } from '../../environments/environment.development';
 
 describe('AuthService', () => {
   let service: AuthService;
+  let httpMock: HttpTestingController;
 
   beforeEach(() => {
     localStorage.clear();
@@ -17,9 +19,11 @@ describe('AuthService', () => {
       providers: [AuthService]
     });
     service = TestBed.inject(AuthService);
+    httpMock = TestBed.inject(HttpTestingController);
   });
 
   afterEach(() => {
+    httpMock.verify();
     localStorage.clear();
   });
 
@@ -100,6 +104,35 @@ describe('AuthService', () => {
     });
   });
 
+  describe('getUserID', () => {
+    it('should return empty string when no token exists', () => {
+      const userID = service.getUserID();
+      expect(userID).toBe('');
+    });
+
+    it('should extract user ID from JWT sub claim', () => {
+      // Payload: {"sub":"test-user-id-123","exp":9999999999}
+      const mockToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0LXVzZXItaWQtMTIzIiwiZXhwIjo5OTk5OTk5OTk5fQ.placeholder';
+
+      localStorage.setItem('token', mockToken);
+      service = TestBed.inject(AuthService);
+
+      const userID = service.getUserID();
+      expect(userID).toBe('test-user-id-123');
+    });
+
+    it('should return empty string when sub is not in token', () => {
+      // Payload: {"exp":9999999999}
+      const mockToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjk5OTk5OTk5OTl9.placeholder';
+
+      localStorage.setItem('token', mockToken);
+      service = TestBed.inject(AuthService);
+
+      const userID = service.getUserID();
+      expect(userID).toBe('');
+    });
+  });
+
   describe('clearToken', () => {
     it('should remove token from localStorage', () => {
       localStorage.setItem('token', 'some-token');
@@ -124,6 +157,29 @@ describe('AuthService', () => {
       });
       
       service.clearToken();
+    });
+  });
+
+  describe('fetchAndStoreServerID', () => {
+    it('should not make HTTP call when no token exists', () => {
+      service.fetchAndStoreServerID();
+      httpMock.expectNone((req) => req.url.includes('getUserServer'));
+      expect(service.currentServerID).toBeNull();
+    });
+
+    it('should fetch and store server ID for logged-in user', () => {
+      // Payload: {"sub":"user-abc","exp":9999999999}
+      const mockToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyLWFiYyIsImV4cCI6OTk5OTk5OTk5OX0.placeholder';
+      localStorage.setItem('token', mockToken);
+      service = TestBed.inject(AuthService);
+
+      service.fetchAndStoreServerID();
+
+      const req = httpMock.expectOne(`${environment.apiUrl}/api/Servers/getUserServer/user-abc`);
+      expect(req.request.method).toBe('GET');
+      req.flush('server-id-456');
+
+      expect(service.currentServerID).toBe('server-id-456');
     });
   });
 });

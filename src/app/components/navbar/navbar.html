@@ -17,11 +17,14 @@
       }
       @else if(role === "Host"){
         <button mat-menu-item routerLink="">Dashboard</button>
+        @if (authService.currentServerID) {
+          <button mat-menu-item [routerLink]="'/server/' + authService.currentServerID">Server</button>
+        }
         <button mat-menu-item routerLink="competitions-management">Competitions</button>
         <button mat-menu-item routerLink="about">Teams</button>
       }
       @else if(role === "Admin"){
-        <button mat-menu-item routerLink="about">Servers</button>
+        <button mat-menu-item routerLink="servers">Servers</button>
         <button mat-menu-item routerLink="register">Users</button>
         <button mat-menu-item routerLink="about">Logs</button>
       }

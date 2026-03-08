@@ -4,7 +4,7 @@
  */
 
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { MatCard, MatCardHeader, MatCardTitle, MatCardContent } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -16,6 +16,7 @@ import { FormTextfield } from '../shared/textfields/form-textfield/form-textfiel
 import { LinkButton } from '../shared/buttons/link-button/link-button';
 import { FormDropdown } from '../shared/dropdowns/form-dropdown/form-dropdown';
 import { AuthService } from '../../services/auth.service';
+import { ServerService } from '../../services/server.service';
 
 @Component({
   selector: 'app-register',
@@ -36,13 +37,14 @@ import { AuthService } from '../../services/auth.service';
   templateUrl: './register.html',
   styleUrl: './register.css'
 })
-export class Register {
+export class Register implements OnInit {
   registerForm: FormGroup;
   roleOptions = [
     { value: 'Admin', label: 'Admin' },
     { value: 'Host', label: 'Host' },
     { value: 'User', label: 'User' }
   ];
+  serverOptions: { value: string; label: string }[] = [];
   
   private readonly SNACKBAR_DURATION_MS = 3000;
   private readonly REDIRECT_DELAY_MS = 2000;
@@ -51,14 +53,33 @@ export class Register {
     private readonly fb: FormBuilder,
     private readonly router: Router,
     private readonly authService: AuthService,
+    private readonly serverService: ServerService,
     private readonly snackBar: MatSnackBar
   ) {
     this.registerForm = this.fb.group({
       username: ['', Validators.required],
       password: ['', Validators.required],
       confirmPassword: ['', Validators.required],
-      role: ['', Validators.required]
+      role: ['', Validators.required],
+      serverID: ['', Validators.required]
     }, { validators: this.passwordMatchValidator });
+  }
+
+  ngOnInit(): void {
+    this.serverService.getAllServers().subscribe({
+      next: (servers) => {
+        this.serverOptions = servers.map(s => ({ value: s.serverID, label: s.name }));
+      },
+      error: (err) => {
+        console.error('Failed to load servers', err);
+        this.snackBar.open('Failed to load servers. Please try again later.', 'Close', {
+          duration: this.SNACKBAR_DURATION_MS,
+          horizontalPosition: 'center',
+          verticalPosition: 'top',
+          panelClass: ['error-snackbar']
+        });
+      }
+    });
   }
 
   passwordMatchValidator = (control: AbstractControl): ValidationErrors | null => {
@@ -94,7 +115,8 @@ export class Register {
     let data = {
       username: this.registerForm.value.username,
       password: this.registerForm.value.password,
-      role: this.registerForm.value.role
+      role: this.registerForm.value.role,
+      serverID: this.registerForm.value.serverID
     };
     this.authService.register(data).subscribe({
       next: (result) => {

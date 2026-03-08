@@ -44,3 +44,8 @@
 .dt-align-left   { text-align: left; }
 .dt-align-center { text-align: center; }
 .dt-align-right  { text-align: right; }
+
+.mat-mdc-paginator {
+  background: transparent;
+  color: var(--dt-cell-color, white);
+}

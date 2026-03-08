@@ -38,9 +38,10 @@ export class App {
   private destroy$ = new Subject<void>();
   role: string | null | undefined;
   signedIn = false;
+  currentServerID: string = '';
 
   constructor(
-    private readonly authService: AuthService,
+    protected readonly authService: AuthService,
     private deviceService: DeviceService,
     private readonly teamsService: TeamsService,
     private router: Router,
@@ -53,9 +54,15 @@ export class App {
         this.cdr.markForCheck();
       });
 
+    this.authService.server$.subscribe((value) => {
+      this.currentServerID = value ?? '';
+      this.cdr.detectChanges();
+    });
+
     this.signedIn = this.authService.isLoggedIn();
     if(this.signedIn){
       this.role = this.authService.getRole();
+      this.authService.fetchAndStoreServerID();
       if(this.role === "User"){
         this.teamsService.getCurrentTeam().subscribe({
           next: (result) => {
@@ -72,6 +79,9 @@ export class App {
       next:() => {
         this.signedIn = this.authService.isLoggedIn();
         this.role = this.authService.getRole();
+        if(this.signedIn){
+          this.authService.fetchAndStoreServerID();
+        }
         if(this.role === "User"){
           this.teamsService.getCurrentTeam().subscribe({
             next: (result) => {

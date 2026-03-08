@@ -42,5 +42,6 @@ export interface CompetitionPayload {
   CompetitionTeamsType: CompetitionTeamsType;
   Priority: number;
   CompetitionType: CompetitionType;
+  ServerID?: string | null;
 }
 
