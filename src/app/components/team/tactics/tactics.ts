@@ -126,7 +126,7 @@ export class Tactics implements OnInit {
     this.loading.set(true);
     this.error.set(null);
 
-    this.tacticsService.getTeamTactics(this.teamsService.CurrentTeam?.teamID ?? "")
+    this.tacticsService.getTeamTactics()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (tactics) => {

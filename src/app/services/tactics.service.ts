@@ -22,8 +22,8 @@ export class TacticsService {
    * Get all tactics for a team
    * Backend endpoint: GET /api/tactics/getTeamTactics/{teamID}
    */
-  getTeamTactics(teamID: string): Observable<Tactic[]> {
-    return this.http.get<Tactic[]>(`${this.apiUrl}/getTeamTactics/${teamID}`).pipe(
+  getTeamTactics(): Observable<Tactic[]> {
+    return this.http.get<Tactic[]>(`${this.apiUrl}/getTeamTactics`).pipe(
       catchError(this.handleError),
       shareReplay(1)
     );
