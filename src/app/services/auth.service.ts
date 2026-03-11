@@ -22,11 +22,11 @@ export interface RefreshResponse {
 })
 export class AuthService {
   authenticationChange = new EventEmitter<any>();
-  loggedIn = localStorage.getItem("token") !== null;
-  private tokenSubject = new BehaviorSubject<string | null>(localStorage.getItem('token'));
+  loggedIn = sessionStorage.getItem("token") !== null;
+  private tokenSubject = new BehaviorSubject<string | null>(sessionStorage.getItem('token'));
   token$ = this.tokenSubject.asObservable();
   currentServerID: string | null = null;
-  private serverSubject = new BehaviorSubject<string | null>(localStorage.getItem('serverID'));
+  private serverSubject = new BehaviorSubject<string | null>(sessionStorage.getItem('serverID'));
   server$ = this.serverSubject.asObservable();
 
   constructor(
@@ -84,7 +84,7 @@ export class AuthService {
     this.serverService.getUserServer(userID).pipe(take(1)).subscribe({
       next: (serverID) => {
         this.currentServerID = serverID;
-        localStorage.setItem('serverID', this.currentServerID);
+        sessionStorage.setItem('serverID', this.currentServerID);
         this.serverSubject.next(this.currentServerID);
       },
       error: (err) => {
@@ -138,14 +138,16 @@ export class AuthService {
   }
 
   private setToken(token: string) {
-    localStorage.setItem('token', token);
+    sessionStorage.setItem('token', token);
     this.tokenSubject.next(token);
   }
 
   public clearToken() {
-    localStorage.removeItem('token');
-    localStorage.removeItem('role');
+    sessionStorage.removeItem('token');
+    sessionStorage.removeItem('serverID');
     this.tokenSubject.next(null);
+    this.serverSubject.next(null);
+    this.currentServerID = null;
     this.emitChange();
   }
 }
