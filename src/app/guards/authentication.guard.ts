@@ -28,5 +28,5 @@ export const authenticationGuard: CanActivateFn = (route, state) => {
   }
 
   router.navigate(['/login'], { queryParams: { returnUrl: state.url } });
-  return of(false);
+  return false;
 };

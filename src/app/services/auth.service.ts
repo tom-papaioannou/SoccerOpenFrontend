@@ -51,9 +51,11 @@ export class AuthService {
   }
 
   hasRefreshToken(): boolean {
-    // Refresh token is stored as an HTTP-only cookie and cannot be read directly.
-    // If a token (even expired) exists in storage, the user was previously
-    // authenticated and likely has a valid refresh cookie.
+    // The refresh token is stored as an HTTP-only cookie and cannot be read
+    // directly from JavaScript. We use the presence of any access token (even
+    // expired) as a heuristic: if the user previously authenticated, a refresh
+    // cookie likely exists. If the cookie has since expired, the refresh call
+    // will fail and the guard handles that by clearing state and redirecting.
     return this.token !== null;
   }
 

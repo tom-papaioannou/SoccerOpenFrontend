@@ -76,7 +76,7 @@ describe('authenticationGuard', () => {
     });
   });
 
-  it('should redirect to login when no token exists', (done) => {
+  it('should redirect to login when no token exists', () => {
     mockAuthService.hasValidAccessToken.and.returnValue(false);
     mockAuthService.hasRefreshToken.and.returnValue(false);
 
@@ -84,12 +84,9 @@ describe('authenticationGuard', () => {
       authenticationGuard({} as any, { url: '/home' } as any)
     );
 
-    (result as Observable<boolean>).subscribe(value => {
-      expect(value).toBe(false);
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['/login'], {
-        queryParams: { returnUrl: '/home' }
-      });
-      done();
+    expect(result).toBe(false);
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/login'], {
+      queryParams: { returnUrl: '/home' }
     });
   });
 });
