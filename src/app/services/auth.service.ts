@@ -12,6 +12,11 @@ import { ServerService } from './server.service';
 
 type JwtPayload = { exp?: number; role?: string; };
 
+export interface RefreshResponse {
+  token: string;
+  role: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -34,11 +39,28 @@ export class AuthService {
   }
 
   isLoggedIn(): boolean {
+    return this.hasValidAccessToken();
+  }
+
+  hasValidAccessToken(): boolean {
     const t = this.token;
     if (!t){
       return false;
     }
     return !this.isTokenExpired(t);
+  }
+
+  hasRefreshToken(): boolean {
+    // The refresh token is stored as an HTTP-only cookie and cannot be read
+    // directly from JavaScript. We use the presence of any access token (even
+    // expired) as a heuristic: if the user previously authenticated, a refresh
+    // cookie likely exists. If the cookie has since expired, the refresh call
+    // will fail and the guard handles that by clearing state and redirecting.
+    return this.token !== null;
+  }
+
+  refreshToken(): Observable<RefreshResponse> {
+    return this.refresh();
   }
 
   getRole(): string {
@@ -90,8 +112,8 @@ export class AuthService {
     );
   }
 
-  refresh(): Observable<{ token: string; role: string }> {
-    return this.http.post<{ token: string; role: string }>(`${environment.apiUrl}/api/auth/refresh`, {}, { withCredentials: true }).pipe(
+  refresh(): Observable<RefreshResponse> {
+    return this.http.post<RefreshResponse>(`${environment.apiUrl}/api/auth/refresh`, {}, { withCredentials: true }).pipe(
       tap(res => this.setToken(res.token))
     );
   }

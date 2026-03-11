@@ -4,7 +4,7 @@
  */
 
 import { TestBed } from '@angular/core/testing';
-import { AuthService } from './auth.service';
+import { AuthService, RefreshResponse } from './auth.service';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { environment } from '../../environments/environment.development';
 
@@ -180,6 +180,68 @@ describe('AuthService', () => {
       req.flush('server-id-456');
 
       expect(service.currentServerID).toBe('server-id-456');
+    });
+  });
+
+  describe('hasValidAccessToken', () => {
+    it('should return false when no token exists', () => {
+      expect(service.hasValidAccessToken()).toBe(false);
+    });
+
+    it('should return true when token exists and is not expired', () => {
+      // Payload: {"exp":9999999999}
+      const validToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjk5OTk5OTk5OTl9.placeholder';
+
+      service.refreshToken().subscribe();
+      const req = httpMock.expectOne(`${environment.apiUrl}/api/auth/refresh`);
+      req.flush({ token: validToken, role: 'user' });
+
+      expect(service.hasValidAccessToken()).toBe(true);
+    });
+
+    it('should return false when token is expired', () => {
+      // Payload: {"exp":1000000000} (expired in 2001)
+      const expiredToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjEwMDAwMDAwMDB9.placeholder';
+
+      service.refreshToken().subscribe();
+      const req = httpMock.expectOne(`${environment.apiUrl}/api/auth/refresh`);
+      req.flush({ token: expiredToken, role: 'user' });
+
+      expect(service.hasValidAccessToken()).toBe(false);
+    });
+  });
+
+  describe('hasRefreshToken', () => {
+    it('should return false when no token exists', () => {
+      expect(service.hasRefreshToken()).toBe(false);
+    });
+
+    it('should return true when a token exists (even if expired)', () => {
+      // Payload: {"exp":1000000000} (expired)
+      const expiredToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjEwMDAwMDAwMDB9.placeholder';
+
+      service.refreshToken().subscribe();
+      const req = httpMock.expectOne(`${environment.apiUrl}/api/auth/refresh`);
+      req.flush({ token: expiredToken, role: 'user' });
+
+      expect(service.hasRefreshToken()).toBe(true);
+    });
+  });
+
+  describe('refreshToken', () => {
+    it('should call refresh endpoint and update stored token', () => {
+      const mockResponse: RefreshResponse = { token: 'new-jwt-token', role: 'user' };
+
+      service.refreshToken().subscribe(res => {
+        expect(res).toEqual(mockResponse);
+      });
+
+      const req = httpMock.expectOne(`${environment.apiUrl}/api/auth/refresh`);
+      expect(req.request.method).toBe('POST');
+      expect(req.request.withCredentials).toBe(true);
+      req.flush(mockResponse);
+
+      expect(localStorage.getItem('token')).toBe('new-jwt-token');
     });
   });
 });
