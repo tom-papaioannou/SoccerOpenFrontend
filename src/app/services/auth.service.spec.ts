@@ -13,7 +13,7 @@ describe('AuthService', () => {
   let httpMock: HttpTestingController;
 
   beforeEach(() => {
-    localStorage.clear();
+    sessionStorage.clear();
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
       providers: [AuthService]
@@ -24,7 +24,7 @@ describe('AuthService', () => {
 
   afterEach(() => {
     httpMock.verify();
-    localStorage.clear();
+    sessionStorage.clear();
   });
 
   it('should be created', () => {
@@ -44,7 +44,7 @@ describe('AuthService', () => {
       // This is a dummy token for testing purposes only
       const mockToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW4iLCJleHAiOjk5OTk5OTk5OTl9.placeholder';
       
-      localStorage.setItem('token', mockToken);
+      sessionStorage.setItem('token', mockToken);
       service = TestBed.inject(AuthService); // Reinitialize to pick up the token
       
       const role = service.getRole();
@@ -56,7 +56,7 @@ describe('AuthService', () => {
       // Payload: {"role":"user","exp":9999999999}
       const mockToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoidXNlciIsImV4cCI6OTk5OTk5OTk5OX0.placeholder';
       
-      localStorage.setItem('token', mockToken);
+      sessionStorage.setItem('token', mockToken);
       service = TestBed.inject(AuthService);
       
       const role = service.getRole();
@@ -68,7 +68,7 @@ describe('AuthService', () => {
       // Payload: {"exp":9999999999}
       const mockToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjk5OTk5OTk5OTl9.placeholder';
       
-      localStorage.setItem('token', mockToken);
+      sessionStorage.setItem('token', mockToken);
       service = TestBed.inject(AuthService);
       
       const role = service.getRole();
@@ -77,12 +77,12 @@ describe('AuthService', () => {
   });
 
   describe('afterSuccessfulLogin', () => {
-    it('should not store role in localStorage', () => {
+    it('should not store role in sessionStorage', () => {
       const result = { role: 'admin', token: 'some-token' };
       
       service.afterSuccessfulLogin(result);
       
-      expect(localStorage.getItem('role')).toBeNull();
+      expect(sessionStorage.getItem('role')).toBeNull();
     });
 
     it('should set loggedIn to true', () => {
@@ -114,7 +114,7 @@ describe('AuthService', () => {
       // Payload: {"sub":"test-user-id-123","exp":9999999999}
       const mockToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0LXVzZXItaWQtMTIzIiwiZXhwIjo5OTk5OTk5OTk5fQ.placeholder';
 
-      localStorage.setItem('token', mockToken);
+      sessionStorage.setItem('token', mockToken);
       service = TestBed.inject(AuthService);
 
       const userID = service.getUserID();
@@ -125,7 +125,7 @@ describe('AuthService', () => {
       // Payload: {"exp":9999999999}
       const mockToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjk5OTk5OTk5OTl9.placeholder';
 
-      localStorage.setItem('token', mockToken);
+      sessionStorage.setItem('token', mockToken);
       service = TestBed.inject(AuthService);
 
       const userID = service.getUserID();
@@ -134,21 +134,21 @@ describe('AuthService', () => {
   });
 
   describe('clearToken', () => {
-    it('should remove token from localStorage', () => {
-      localStorage.setItem('token', 'some-token');
+    it('should remove token from sessionStorage', () => {
+      sessionStorage.setItem('token', 'some-token');
       
       service.clearToken();
       
-      expect(localStorage.getItem('token')).toBeNull();
+      expect(sessionStorage.getItem('token')).toBeNull();
     });
 
-    it('should remove role from localStorage if it exists', () => {
-      localStorage.setItem('token', 'some-token');
-      localStorage.setItem('role', 'admin');
+    it('should remove serverID from sessionStorage', () => {
+      sessionStorage.setItem('token', 'some-token');
+      sessionStorage.setItem('serverID', 'server-123');
       
       service.clearToken();
       
-      expect(localStorage.getItem('role')).toBeNull();
+      expect(sessionStorage.getItem('serverID')).toBeNull();
     });
 
     it('should emit authentication change', (done) => {
@@ -170,7 +170,7 @@ describe('AuthService', () => {
     it('should fetch and store server ID for logged-in user', () => {
       // Payload: {"sub":"user-abc","exp":9999999999}
       const mockToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyLWFiYyIsImV4cCI6OTk5OTk5OTk5OX0.placeholder';
-      localStorage.setItem('token', mockToken);
+      sessionStorage.setItem('token', mockToken);
       service = TestBed.inject(AuthService);
 
       service.fetchAndStoreServerID();
@@ -241,7 +241,7 @@ describe('AuthService', () => {
       expect(req.request.withCredentials).toBe(true);
       req.flush(mockResponse);
 
-      expect(localStorage.getItem('token')).toBe('new-jwt-token');
+      expect(sessionStorage.getItem('token')).toBe('new-jwt-token');
     });
   });
 });

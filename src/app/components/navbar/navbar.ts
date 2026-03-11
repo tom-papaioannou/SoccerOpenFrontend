@@ -27,7 +27,7 @@ import { AuthService } from '../../services/auth.service';
 })
 export class NavbarComponent {
   @Input() isMobile = false;
-  role = localStorage.getItem("role");
+  role = '';
   loggedIn: boolean;
 
   constructor(
@@ -36,9 +36,10 @@ export class NavbarComponent {
     private readonly cdr: ChangeDetectorRef
   ){
     this.loggedIn = this.authService.isLoggedIn();
+    this.role = this.authService.getRole();
     this.authService.authenticationChange?.subscribe({
       next:() => {
-        this.role = localStorage.getItem("role");
+        this.role = this.authService.getRole();
         this.loggedIn = this.authService.isLoggedIn();
         this.cdr.detectChanges();
       }
