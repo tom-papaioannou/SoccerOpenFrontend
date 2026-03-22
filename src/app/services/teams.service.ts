@@ -46,4 +46,8 @@ export class TeamsService {
   getPlayerDetails(playerID: string): Observable<any> {
     return this.http.get(`${environment.apiUrl}/api/teams/getPlayerDetails/${playerID}`);
   }
+
+  getCurrentTeamDashboard(): Observable<any>{
+    return this.http.get(`${environment.apiUrl}/api/teams/getCurrentTeamDashboard`);
+  }
 }

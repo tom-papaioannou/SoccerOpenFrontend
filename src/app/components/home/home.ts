@@ -20,6 +20,10 @@ export class Home {
 
   constructor(private readonly teamsService: TeamsService){
     this.teamName = this.teamsService.CurrentTeam?.name ?? "Unknown Team";
+    this.teamsService.getCurrentTeamDashboard().subscribe((dashboard) => {
+      console.log(dashboard);
+      debugger
+    });
   }
 
   displayedColumnsFixtures = [
