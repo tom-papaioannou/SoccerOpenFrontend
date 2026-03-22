@@ -86,8 +86,8 @@ export class CompetitionsManagement implements OnInit {
 
   competitionTypes = [
     { value: CompetitionType.League, label: 'League' },
-    { value: CompetitionType.Cup, label: 'Cup' },
-    { value: CompetitionType.Continental, label: 'Continental' }
+    { value: CompetitionType.Knockout, label: 'Cup' },
+    { value: CompetitionType.Mixed, label: 'Continental' }
   ];
 
   // Expose enum to template for conditional rendering

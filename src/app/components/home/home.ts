@@ -3,12 +3,15 @@
  * Licensed under the MIT License
  */
 
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { DataTable } from '../shared/tables/data-table/data-table';
 import { TeamsService } from '../../services/teams.service';
+import { calculateAge } from '../../utils/date-utils';
+import { getPlayerPositionLabel } from '../../utils/position-utils';
 
 @Component({
   selector: 'app-home',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     DataTable
   ],
@@ -17,14 +20,7 @@ import { TeamsService } from '../../services/teams.service';
 })
 export class Home {
   teamName: string = "";
-
-  constructor(private readonly teamsService: TeamsService){
-    this.teamName = this.teamsService.CurrentTeam?.name ?? "Unknown Team";
-    this.teamsService.getCurrentTeamDashboard().subscribe((dashboard) => {
-      console.log(dashboard);
-      debugger
-    });
-  }
+  competitionName: string = "";
 
   displayedColumnsFixtures = [
     { key: 'date', header: 'Date', width: '15%', sortable: undefined },
@@ -42,9 +38,19 @@ export class Home {
     { key: 'position', header: 'Position' },
     { key: 'age', header: 'Age', align: 'end', headerClass:'text-end', cellClass:'text-end' }
   ];
-  people = [
-    { name: 'Alice Johnson', age: 25, position: "CF" },
-    { name: 'Bob Brown', age: 32, position: "CD" },
-    { name: 'Charlie Core', age: 28, position: "GK" },
-  ];
+  people: Array<any> = [];
+  showPlayersTable = false;
+
+  constructor(private readonly teamsService: TeamsService, private readonly cdr: ChangeDetectorRef){
+    this.teamName = this.teamsService.CurrentTeam?.name ?? "Unknown Team";
+    this.teamsService.getCurrentTeamDashboard().subscribe((dashboard) => {
+      this.teamName = dashboard.teamName;
+      this.competitionName = dashboard.competitionName;
+      (dashboard.players as Array<any>).forEach(element => {
+        this.people.push({ name: element.name, age: calculateAge(element.dateOfBirth), position: getPlayerPositionLabel(element.playerTrainedPositions[0].playerPosition) });
+      });
+      this.showPlayersTable = true;
+      this.cdr.detectChanges();
+    });
+  }
 }

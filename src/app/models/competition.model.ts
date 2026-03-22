@@ -10,9 +10,10 @@ export enum CompetitionTeamsType {
 }
 
 export enum CompetitionType {
-  League = 0,
-  Cup = 1,
-  Continental = 2
+  None = 0,
+  League = 1,
+  Knockout = 2,
+  Mixed = 3
 }
 
 // Competition model for managing competitions under nations or continents

@@ -10,7 +10,7 @@
       <div class="flex-col flex-1 flex justify-center">
         <div class="flex flex-col justify-center items-center">
           <span class="font-bold text-lg">{{teamName}}</span>
-          <span class="text-sm">2nd in League 1</span>
+          <span class="text-sm">2nd in {{competitionName}}</span>
         </div>
 
         <div class="flex flex-col">
@@ -59,12 +59,14 @@
     </div>
   </div>
 
-  <div class="p-2 lg:col-span-2 max-w-[600px]">
-    <app-data-table
-      [data]="people"
-      [columns]="$any(displayedColumns)">
-    </app-data-table>
-  </div>
+  @if(showPlayersTable){
+    <div class="p-2 lg:col-span-2 max-w-[600px]">
+      <app-data-table
+        [data]="people"
+        [columns]="$any(displayedColumns)">
+      </app-data-table>
+    </div>
+  }
 
   <div class="p-2 lg:col-span-2 max-w-[600px]">
     <app-data-table
