@@ -8,7 +8,7 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment.development';
 import { Observable, ReplaySubject } from 'rxjs';
 import { Team } from '../models/competition.model';
-import { Player } from '../models/player-enums.model';
+import { Person } from '../models/player-enums.model';
 
 @Injectable({
   providedIn: 'root'
@@ -39,8 +39,8 @@ export class TeamsService {
     return this.http.get(`${environment.apiUrl}/api/teams/getCurrentTeam`);
   }
 
-  getTeamSquad(teamID: string): Observable<Player[]> {
-    return this.http.get<Player[]>(`${environment.apiUrl}/api/teams/getTeamSquad/${teamID}`);
+  getTeamSquad(teamID: string): Observable<Person[]> {
+    return this.http.get<Person[]>(`${environment.apiUrl}/api/teams/getTeamSquad/${teamID}`);
   }
 
   getPlayerDetails(playerID: string): Observable<any> {

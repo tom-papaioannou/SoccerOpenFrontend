@@ -68,18 +68,14 @@ export interface CreateTacticRequest {
 export interface PlayerTactic {
   playerTacticID?: string;
   tacticID: string;
-  playerID?: string;
-  player?: {
-    playerID: string;
-    personID: string;
-    person?: {
+  personID?: string;
+  person?: {
       personID: string;
       name?: string;
       surname?: string;
       dateOfBirth?: string;
       placeOfBirth?: string;
     };
-  };
   playerPosition: number;
   playerRole: number;
 }

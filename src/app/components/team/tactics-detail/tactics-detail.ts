@@ -158,8 +158,8 @@ export class TacticsDetail implements OnInit {
   // Transform playerTactics for table display
   get tableData() {
     return this.playerTactics().map(pt => {
-      const playerName = pt.player?.person
-        ? `${pt.player.person.name || ''} ${pt.player.person.surname || ''}`.trim() || 'Unknown Player'
+      const playerName = pt.person
+        ? `${pt.person.name || ''} ${pt.person.surname || ''}`.trim() || 'Unknown Player'
         : 'Unknown Player';
       return {
         playerName,

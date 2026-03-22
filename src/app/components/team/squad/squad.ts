@@ -7,13 +7,13 @@ import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRe
 import { Router } from '@angular/router';
 import { DataTable } from "../../shared/tables/data-table/data-table";
 import { TeamsService } from '../../../services/teams.service';
-import { Player, PlayerPosition } from '../../../models/player-enums.model';
+import { Person, PlayerPosition } from '../../../models/player-enums.model';
 import { Subject, takeUntil } from 'rxjs';
 import { getPlayerPositionLabel } from '../../../utils/position-utils';
 import { calculateAge } from '../../../utils/date-utils';
 
 interface TransformedPlayer {
-  playerID: string;
+  personID: string;
   name: string;
   position: string;
   positionValue?: PlayerPosition;
@@ -96,7 +96,7 @@ export class Squad implements OnInit, OnDestroy {
     this.teamsService.getTeamSquad(teamID)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (players: Player[]) => {
+        next: (players: Person[]) => {
           this.people = this.transformPlayers(players);
           this.cdr.detectChanges();
         },
@@ -108,20 +108,19 @@ export class Squad implements OnInit, OnDestroy {
       });
   }
 
-  private transformPlayers(players: Player[]): TransformedPlayer[] {
-    return players.map(player => {
-      const person = player.person;
+  private transformPlayers(people: Person[]): TransformedPlayer[] {
+    return people.map(person => {
       let name = 'Unknown';
-      if (person && (person.name || person.surname)) {
+      if (person.name || person.surname) {
         name = `${person.name || ''} ${person.surname || ''}`.trim();
       }
-      const age = person?.dateOfBirth ? calculateAge(person.dateOfBirth) : null;
+      const age = person.dateOfBirth ? calculateAge(person.dateOfBirth) : null;
       
       // Get the player's best position (highest adaptation)
-      const bestPosition = this.getBestPlayerPosition(player);
+      const bestPosition = this.getBestPlayerPosition(person);
       
       return {
-        playerID: player.playerID,
+        personID: person.personID,
         name,
         position: getPlayerPositionLabel(bestPosition),
         positionValue: bestPosition, // Include raw enum value for sorting
@@ -130,20 +129,20 @@ export class Squad implements OnInit, OnDestroy {
     });
   }
 
-  private getBestPlayerPosition(player: Player): PlayerPosition | undefined {
-    if (!player.playerTrainedPositions || player.playerTrainedPositions.length === 0) {
+  private getBestPlayerPosition(person: Person): PlayerPosition | undefined {
+    if (!person.playerTrainedPositions || person.playerTrainedPositions.length === 0) {
       return undefined;
     }
 
     // Sort by adaptation (descending) and get the first one
-    const sorted = [...player.playerTrainedPositions].sort(
+    const sorted = [...person.playerTrainedPositions].sort(
       (a, b) => b.playerTrainedPositionAdaptation - a.playerTrainedPositionAdaptation
     );
     
     return sorted[0].playerPosition;
   }
 
-  onPlayerClick(player: TransformedPlayer): void {
-    this.router.navigate(['/team/player', player.playerID]);
+  onPlayerClick(person: TransformedPlayer): void {
+    this.router.navigate(['/team/player', person.personID]);
   }
 }

@@ -18,19 +18,10 @@ import { calculateAge } from '../../../utils/date-utils';
 import { PlayerStats } from '../../../models/player-enums.model';
 
 interface PlayerDetailsResponse {
-  person: {
-    name: string;
-    surname: string;
-    dateOfBirth?: string;
-    placeOfBirth?: string;
-    contracts: Array<{
-      startDate: string;
-      endDate: string;
-      team: {
-        name: string;
-      };
-    }>;
-  };
+  name: string;
+  surname: string;
+  dateOfBirth?: string;
+  placeOfBirth?: string;
   playerStats: PlayerStats | null;
   playerTrainedPositions: Array<{
     playerPosition: number;
@@ -39,6 +30,13 @@ interface PlayerDetailsResponse {
   playerTrainedRoles: Array<{
     playerRole: number;
     playerTrainedRoleAdaptation: number;
+  }>;
+  contracts: Array<{
+    startDate: string;
+    endDate: string;
+    team: {
+      name: string;
+    };
   }>;
 }
 
@@ -143,10 +141,10 @@ export class PlayerDetails implements OnInit, OnDestroy {
       .subscribe({
         next: (data: PlayerDetailsResponse) => {
           this.playerDetails = data;
-          this.playerName = `${data.person?.name || ''} ${data.person?.surname || ''}`.trim();
-          this.dateOfBirth = this.formatDateOfBirth(data.person?.dateOfBirth);
-          this.age = calculateAge(data.person?.dateOfBirth);
-          this.placeOfBirth = data.person?.placeOfBirth || '';
+          this.playerName = `${data.name || ''} ${data.surname || ''}`.trim();
+          this.dateOfBirth = this.formatDateOfBirth(data.dateOfBirth);
+          this.age = calculateAge(data.dateOfBirth);
+          this.placeOfBirth = data.placeOfBirth || '';
           this.transformPositions();
           this.transformRoles();
           this.transformContracts();
@@ -186,11 +184,11 @@ export class PlayerDetails implements OnInit, OnDestroy {
   }
 
   private transformContracts(): void {
-    if (this.playerDetails?.person?.contracts) {
-      if(new Date(this.playerDetails.person.contracts[0].endDate) > new Date()){
-        this.currentPlayerTeam = this.playerDetails.person.contracts[0].team?.name;
+    if (this.playerDetails?.contracts) {
+      if(new Date(this.playerDetails.contracts[0].endDate) > new Date()){
+        this.currentPlayerTeam = this.playerDetails.contracts[0].team?.name;
       }
-      this.transformedContracts = this.playerDetails.person.contracts
+      this.transformedContracts = this.playerDetails.contracts
         .map(c => ({
           team: c.team?.name || 'Unknown',
           period: this.formatContractPeriod(c.startDate, c.endDate)

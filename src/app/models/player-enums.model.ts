@@ -107,18 +107,14 @@ export interface Person {
   dateOfBirth?: string;
   placeOfBirth?: string;
   contractID?: string;
+  playerTrainedPositions?: PlayerTrainedPosition[];
+  playerTrainedRoles?: PlayerTrainedRole[];
+  playerStats?: PlayerStats;
 }
 
 /**
  * Player model representing a player
  */
-export interface Player {
-  playerID: string;
-  person?: Person;
-  playerTrainedPositions?: PlayerTrainedPosition[];
-  playerTrainedRoles?: PlayerTrainedRole[];
-  playerStats?: PlayerStats;
-}
 
 export interface PlayerTrainedPosition{
   playerPosition: PlayerPosition;
