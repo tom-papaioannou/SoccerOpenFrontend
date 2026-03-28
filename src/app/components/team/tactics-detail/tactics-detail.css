@@ -26,7 +26,23 @@
   display: flex;
   flex-direction: column;
   max-width: 500px;
-  padding: 0px 16px;;
+  padding: 0px 16px;
+}
+
+/* Mobile responsive layout */
+@media (max-width: 767px) {
+  .tactics-detail-container {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .tactic-section,
+  .players-section {
+    width: 100%;
+    max-width: 100%;
+    padding-left: 0;
+    padding-right: 0;
+  }
 }
 
 /* Tactic Card Styles */
@@ -69,4 +85,41 @@
   font-weight: 700;
   margin-left: 0.5rem;
   line-height: 1;
+}
+
+.player-node{
+  min-width: 60px;
+}
+
+.player-shirt{
+  width: 2rem;
+  height: 2rem;
+  border-radius: 9999px;
+  background-color: rgb(207, 73, 73);
+  color: var(--color-on-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-headline);
+  font-weight: 900;
+  font-size: 1.25rem;
+  border: 4px solid rgba(0, 0, 0, 0.6);
+  box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+@media (min-width: 768px) {
+  .player-shirt {
+    width: 3rem;
+    height: 3rem;
+  }
+}
+
+.player-shirt:hover {
+  transform: scale(1.1);
+}
+
+.player-shirt:active {
+  transform: scale(0.95);
+  box-shadow: 0 0 0 4px var(--color-primary / 0.5);
 }
