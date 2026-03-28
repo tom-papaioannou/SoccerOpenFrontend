@@ -26,6 +26,7 @@
   display: flex;
   flex-direction: column;
   max-width: 500px;
+  padding: 0px 16px;;
 }
 
 /* Tactic Card Styles */

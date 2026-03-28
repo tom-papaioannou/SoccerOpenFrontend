@@ -159,7 +159,7 @@ export class TacticsDetail implements OnInit {
   get tableData() {
     return this.playerTactics().map(pt => {
       const playerName = pt.person
-        ? `${pt.person.name || ''} ${pt.person.surname || ''}`.trim() || 'Unknown Player'
+        ? `${pt.person.name?.substring(0, 1) || ''}. ${pt.person.surname || ''}`.trim() || 'Unknown Player'
         : 'Unknown Player';
       return {
         playerName,
@@ -168,5 +168,9 @@ export class TacticsDetail implements OnInit {
         role: getPlayerRoleLabel(pt.playerRole)
       };
     });
+  }
+
+  playerNameInTactics(position: string): string {
+    return this.tableData.find(p => p.position === position)?.playerName || position;
   }
 }

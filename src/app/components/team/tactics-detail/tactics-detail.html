@@ -9,50 +9,153 @@
 
   <!-- Error Message -->
   @if (error()) {
-    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-      {{ error() }}
-    </div>
+  <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+    {{ error() }}
+  </div>
   }
 
   <!-- Loading Indicator -->
   @if (loading()) {
-    <div class="flex justify-center items-center py-8">
-      <div class="text-lg">Loading...</div>
-    </div>
+  <div class="flex justify-center items-center py-8">
+    <div class="text-lg">Loading...</div>
+  </div>
   }
 
   <!-- Content: Tactic Card and Players Table -->
   @if (!loading() && tactic()) {
-    <div class="content-grid">
-      <!-- Left Side: Tactic Card -->
-      <div class="tactic-section">
-        <mat-card class="tactic-card" [class.main-tactic]="tactic()?.isMain">
-          <mat-card-content class="tactic-card-content">
-            <div class="tactic-name flex">
-              {{ tactic()?.name }}
-              @if (tactic()?.isMain) {
-                <span class="main-asterisk">*</span>
-              }
-            </div>
-            <img [src]="getFormationImagePath(tactic()?.formation)" alt="Tactics formation" class="tactic-image" />
-          </mat-card-content>
-        </mat-card>
-      </div>
-
-      <!-- Right Side: Players Table -->
-      <div class="players-section">
-        @if (tableData.length > 0) {
-          <app-data-table
-            [data]="tableData"
-            [columns]="displayedColumns"
-            [initialSort]="{ active: 'position', direction: 'asc' }">
-          </app-data-table>
-        } @else {
-          <div class="text-gray-500 text-center py-8">
-            No players assigned to this tactic yet.
+  <div class="flex">
+    <!-- Left Side: Tactic Card -->
+    <div class="tactic-section">
+      <section class="xl:col-span-8">
+        <div class="bg-surface-container-low rounded-xl overflow-hidden relative aspect-[3/4] md:aspect-[10/16] border border-white/5 shadow-2xl w-full max-w-3xl min-h-[654px] mx-auto">
+          <!-- Pitch Background -->
+          <div class="absolute inset-0 bg-primary-container pitch-grid" style="background-color: #254736;">
+            <img src="assets/images/tactics/SimpleBackground.png" alt="Tactics formation" class="h-full" />
           </div>
-        }
-      </div>
+
+          <!-- Tactical Nodes -->
+          <div class="absolute inset-0 p-8 md:p-5 flex flex-col justify-between">
+            <div class="flex justify-center items-center h-1/8"></div>
+
+            <!-- Forwards -->
+            <div class="flex justify-center gap-10 items-center h-1/4">
+              <div class="player-node group cursor-grab active:cursor-grabbing flex flex-col items-center gap-2">
+                <div class="w-12 h-12 md:w-16 md:h-16 rounded-full bg-secondary text-on-secondary flex items-center justify-center font-headline font-black text-xl border-4 border-white/10 shadow-xl transition-transform hover:scale-110 active:scale-95 active:shadow-primary/50">
+                  9
+                </div>
+                <span class="bg-surface-container-highest/80 backdrop-blur px-1 py-0.5 rounded text-[7px] font-label font-bold uppercase border border-white/5">
+                  {{ playerNameInTactics('ST') }}
+                </span>
+              </div>
+              <div class="player-node group cursor-grab active:cursor-grabbing flex flex-col items-center gap-2">
+                <div class="w-12 h-12 md:w-16 md:h-16 rounded-full bg-secondary text-on-secondary flex items-center justify-center font-headline font-black text-xl border-4 border-white/10 shadow-xl transition-transform hover:scale-110 active:scale-95 active:shadow-primary/50">
+                  10
+                </div>
+                <span class="bg-surface-container-highest/80 backdrop-blur px-1 py-0.5 rounded text-[7px] font-label font-bold uppercase border border-white/5">
+                  {{ playerNameInTactics('ST') }}
+                </span>
+              </div>
+            </div>
+
+            <!-- Midfield -->
+            <div class="flex justify-around items-center h-1/4">
+              <div class="player-node flex flex-col items-center gap-2">
+                <div class="w-12 h-12 md:w-16 md:h-16 rounded-full bg-secondary text-on-secondary flex items-center justify-center font-headline font-black text-xl border-4 border-white/10 shadow-xl transition-transform hover:scale-110">
+                  7
+                </div>
+                <span class="bg-surface-container-highest/80 backdrop-blur px-1 py-0.5 rounded text-[7px] font-label font-bold uppercase border border-white/5">
+                  {{ playerNameInTactics('LM') }}
+                </span>
+              </div>
+              <div class="player-node flex flex-col items-center gap-2">
+                <div class="w-12 h-12 md:w-16 md:h-16 rounded-full bg-secondary text-on-secondary flex items-center justify-center font-headline font-black text-xl border-4 border-white/10 shadow-xl transition-transform hover:scale-110">
+                  8
+                </div>
+                <span class="bg-surface-container-highest/80 backdrop-blur px-1 py-0.5 rounded text-[7px] font-label font-bold uppercase border border-white/5">
+                  {{ playerNameInTactics('CM') }}
+                </span>
+              </div>
+              <div class="player-node flex flex-col items-center gap-2">
+                <div class="w-12 h-12 md:w-16 md:h-16 rounded-full bg-secondary text-on-secondary flex items-center justify-center font-headline font-black text-xl border-4 border-white/10 shadow-xl transition-transform hover:scale-110">
+                  6
+                </div>
+                <span class="bg-surface-container-highest/80 backdrop-blur px-1 py-0.5 rounded text-[7px] font-label font-bold uppercase border border-white/5">
+                  {{ playerNameInTactics('CM') }}
+                </span>
+              </div>
+              <div class="player-node flex flex-col items-center gap-2">
+                <div class="w-12 h-12 md:w-16 md:h-16 rounded-full bg-secondary text-on-secondary flex items-center justify-center font-headline font-black text-xl border-4 border-white/10 shadow-xl transition-transform hover:scale-110">
+                  11
+                </div>
+                <span class="bg-surface-container-highest/80 backdrop-blur px-1 py-0.5 rounded text-[7px] font-label font-bold uppercase border border-white/5">
+                  {{ playerNameInTactics('RM') }}
+                </span>
+              </div>
+            </div>
+
+            <!-- Defenders -->
+            <div class="flex justify-around items-center h-1/4">
+              <div class="player-node flex flex-col items-center gap-2">
+                <div class="w-12 h-12 md:w-16 md:h-16 rounded-full bg-secondary text-on-secondary flex items-center justify-center font-headline font-black text-xl border-4 border-white/10 shadow-xl transition-transform hover:scale-110">
+                  2
+                </div>
+                <span class="bg-surface-container-highest/80 backdrop-blur px-1 py-0.5 rounded text-[7px] font-label font-bold uppercase border border-white/5">
+                  {{ playerNameInTactics('LB') }}
+                </span>
+              </div>
+              <div class="player-node flex flex-col items-center gap-2">
+                <div class="w-12 h-12 md:w-16 md:h-16 rounded-full bg-secondary text-on-secondary flex items-center justify-center font-headline font-black text-xl border-4 border-white/10 shadow-xl transition-transform hover:scale-110">
+                  4
+                </div>
+                <span class="bg-surface-container-highest/80 backdrop-blur px-1 py-0.5 rounded text-[7px] font-label font-bold uppercase border border-white/5">
+                  {{ playerNameInTactics('CB') }}
+                </span>
+              </div>
+              <div class="player-node flex flex-col items-center gap-2">
+                <div class="w-12 h-12 md:w-16 md:h-16 rounded-full bg-secondary text-on-secondary flex items-center justify-center font-headline font-black text-xl border-4 border-white/10 shadow-xl transition-transform hover:scale-110">
+                  5</div>
+                <span class="bg-surface-container-highest/80 backdrop-blur px-1 py-0.5 rounded text-[7px] font-label font-bold uppercase border border-white/5">
+                  {{ playerNameInTactics('CB') }}
+                </span>
+              </div>
+              <div class="player-node flex flex-col items-center gap-2">
+                <div class="w-12 h-12 md:w-16 md:h-16 rounded-full bg-secondary text-on-secondary flex items-center justify-center font-headline font-black text-xl border-4 border-white/10 shadow-xl transition-transform hover:scale-110">
+                  3
+                </div>
+                <span class="bg-surface-container-highest/80 backdrop-blur px-1 py-0.5 rounded text-[7px] font-label font-bold uppercase border border-white/5">
+                  {{ playerNameInTactics('RB') }}
+                </span>
+              </div>
+            </div>
+
+            <!-- Goalkeeper -->
+            <div class="flex justify-center items-center h-1/8">
+              <div class="player-node flex flex-col items-center gap-2">
+                <div class="w-12 h-12 md:w-16 md:h-16 rounded-full bg-primary-fixed text-on-primary flex items-center justify-center font-headline font-black text-xl border-4 border-white/10 shadow-xl transition-transform hover:scale-110">
+                  1
+                </div>
+                <span class="bg-surface-container-highest/80 backdrop-blur px-1 py-0.5 rounded text-[7px] font-label font-bold uppercase border border-white/5">
+                  {{ playerNameInTactics('GK') }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
+
+    <!-- Right Side: Players Table -->
+    <div class="players-section">
+      @if (tableData.length > 0) {
+      <app-data-table [data]="tableData" [columns]="displayedColumns"
+        [initialSort]="{ active: 'position', direction: 'asc' }">
+      </app-data-table>
+      } @else {
+      <div class="text-gray-500 text-center py-8">
+        No players assigned to this tactic yet.
+      </div>
+      }
+    </div>
+  </div>
   }
 </div>
