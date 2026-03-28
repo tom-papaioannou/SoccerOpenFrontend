@@ -26,7 +26,23 @@
   display: flex;
   flex-direction: column;
   max-width: 500px;
-  padding: 0px 16px;;
+  padding: 0px 16px;
+}
+
+/* Mobile responsive layout */
+@media (max-width: 767px) {
+  .tactics-detail-container {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .tactic-section,
+  .players-section {
+    width: 100%;
+    max-width: 100%;
+    padding-left: 0;
+    padding-right: 0;
+  }
 }
 
 /* Tactic Card Styles */
