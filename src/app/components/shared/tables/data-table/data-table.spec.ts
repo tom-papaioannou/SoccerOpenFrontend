@@ -154,4 +154,44 @@ describe('DataTable', () => {
 
     expect(component.rowDrop.emit).not.toHaveBeenCalled();
   });
+
+  it('should reorder renderedData when onDrop is called', () => {
+    const data: TestRow[] = [
+      { name: 'Alice', value: 1 },
+      { name: 'Bob', value: 2 },
+      { name: 'Charlie', value: 3 }
+    ];
+    component.data = data;
+    component.columns = [{ key: 'name', header: 'Name' }, { key: 'value', header: 'Value' }];
+    component.enableDragDrop = true;
+    component.ngOnChanges({
+      data: { currentValue: data, previousValue: [], firstChange: true, isFirstChange: () => true }
+    });
+
+    component.onDrop({ previousIndex: 0, currentIndex: 2 } as CdkDragDrop<TestRow[]>);
+
+    expect(component.renderedData[0].name).toBe('Bob');
+    expect(component.renderedData[1].name).toBe('Charlie');
+    expect(component.renderedData[2].name).toBe('Alice');
+  });
+
+  it('should skip sorting when enableDragDrop is true', () => {
+    const data: TestRow[] = [
+      { name: 'Charlie', value: 3 },
+      { name: 'Alice', value: 1 },
+      { name: 'Bob', value: 2 }
+    ];
+    component.data = data;
+    component.columns = [{ key: 'name', header: 'Name', sortable: true }, { key: 'value', header: 'Value' }];
+    component.enableDragDrop = true;
+    component.ngOnChanges({
+      data: { currentValue: data, previousValue: [], firstChange: true, isFirstChange: () => true },
+      initialSort: { currentValue: { active: 'name', direction: 'asc' }, previousValue: undefined, firstChange: true, isFirstChange: () => true }
+    });
+
+    // Data should remain in original order even with initialSort, because drag-drop mode is enabled
+    expect(component.renderedData[0].name).toBe('Charlie');
+    expect(component.renderedData[1].name).toBe('Alice');
+    expect(component.renderedData[2].name).toBe('Bob');
+  });
 });

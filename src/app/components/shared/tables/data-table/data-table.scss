@@ -50,6 +50,57 @@
   color: var(--dt-cell-color, white);
 }
 
+/* ── Div-based drag-drop table layout ── */
+
+.dt-drag-table {
+  width: 100%;
+  border-radius: 12px;
+  background: transparent;
+}
+
+.dt-drag-header-row {
+  display: flex;
+  background: var(--dt-header-bg, transparent);
+  min-height: 48px;
+  align-items: center;
+  padding: 0 16px;
+}
+
+.dt-drag-header-cell {
+  flex: 1;
+  color: var(--dt-header-color, white);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: normal;
+  padding: 0 16px;
+  box-sizing: border-box;
+}
+
+.dt-drag-row {
+  display: flex;
+  min-height: 48px;
+  align-items: center;
+  padding: 0 16px;
+  border-bottom: 1px solid transparent;
+}
+
+.dt-drag-row:hover {
+  background: var(--dt-row-hover, rgba(255, 255, 255, 0.025));
+}
+
+.dt-drag-row.clickable {
+  cursor: pointer;
+}
+
+.dt-drag-cell {
+  flex: 1;
+  color: var(--dt-cell-color, white);
+  padding: 0 16px;
+  box-sizing: border-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .dt-draggable {
   cursor: grab;
 }
@@ -59,6 +110,10 @@
 }
 
 .cdk-drag-preview {
+  display: flex;
+  align-items: center;
+  min-height: 48px;
+  padding: 0 16px;
   box-sizing: border-box;
   border-radius: 4px;
   box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),

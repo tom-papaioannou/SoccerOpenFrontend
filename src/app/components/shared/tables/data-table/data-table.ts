@@ -8,7 +8,7 @@ import { Component, Input, OnChanges, SimpleChanges, TemplateRef, Output, EventE
 import { MatSortModule, Sort } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
-import { CdkDragDrop, DragDropModule } from '@angular/cdk/drag-drop';
+import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-data-table',
@@ -60,6 +60,7 @@ export class DataTable<T> implements OnChanges{
     if (event.previousIndex === event.currentIndex) return;
     const draggedRow = this.renderedData[event.previousIndex];
     const droppedOnRow = this.renderedData[event.currentIndex];
+    moveItemInArray(this.renderedData, event.previousIndex, event.currentIndex);
     this.rowDrop.emit({ draggedRow, droppedOnRow });
   }
 
@@ -76,7 +77,7 @@ export class DataTable<T> implements OnChanges{
   }
 
   private applySort() {
-    if (!this.active || !this.direction) {
+    if (this.enableDragDrop || !this.active || !this.direction) {
       this.sortedData = [...this.data];
     } else {
       const col = this.columns.find(c => c.key === this.active);
