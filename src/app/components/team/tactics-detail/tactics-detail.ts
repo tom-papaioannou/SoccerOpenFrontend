@@ -162,7 +162,7 @@ export class TacticsDetail implements OnInit {
         ? `${pt.person.name?.substring(0, 1) || ''}. ${pt.person.surname || ''}`.trim() || 'Unknown Player'
         : 'Unknown Player';
       return {
-        personID: pt.personID,
+        personID: pt.personID, // Not displayed; used for swap API identification
         playerName,
         position: getPlayerPositionLabel(pt.playerPosition),
         positionValue: pt.playerPosition, // Include raw enum value for sorting
