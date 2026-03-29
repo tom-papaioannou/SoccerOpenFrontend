@@ -1,19 +1,19 @@
 <div class="rounded-xl border-1 p-3 tableBorder">
-  <mat-table [dataSource]="renderedData" [class]="tableClass" matSort (matSortChange)="onSort($event)"
+  <table mat-table [dataSource]="renderedData" [class]="tableClass" matSort (matSortChange)="onSort($event)"
     cdkDropList (cdkDropListDropped)="onDrop($event)" [cdkDropListDisabled]="!enableDragDrop">
 
     @for (col of columns; track col.key) {
       <ng-container [matColumnDef]="col.key">
-        <mat-header-cell *matHeaderCellDef mat-sort-header
+        <th mat-header-cell *matHeaderCellDef mat-sort-header
           [class.dt-header-center]="col.align === 'center'"
           [class.dt-header-right]="col.align === 'right'"
           [disabled]="col.sortable !== true"
           [style.width]="col.width"
           [ngClass]="col.headerClass">
           {{ col.header }}
-        </mat-header-cell>
+        </th>
 
-        <mat-cell *matCellDef="let row"
+        <td mat-cell *matCellDef="let row"
           [class.dt-align-left]="col.align === 'left'"
           [class.dt-align-center]="col.align === 'center'"
           [class.dt-align-right]="col.align === 'right'"
@@ -24,13 +24,13 @@
           @else {
             <ng-container *ngTemplateOutlet="col.cellTemplate; context: { $implicit: row, value: $any(row)[col.key] }"></ng-container>
           }
-        </mat-cell>
+        </td>
       </ng-container>
     }
-    <mat-header-row *matHeaderRowDef="displayed"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: displayed" (click)="onRowClick(row)" [class.clickable]="rowClick.observed"
-      cdkDrag [cdkDragData]="row" [cdkDragDisabled]="!enableDragDrop" [class.dt-draggable]="enableDragDrop"></mat-row>
-  </mat-table>
+    <tr mat-header-row *matHeaderRowDef="displayed"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayed" (click)="onRowClick(row)" [class.clickable]="rowClick.observed"
+      cdkDrag [cdkDragData]="row" [cdkDragDisabled]="!enableDragDrop" [class.dt-draggable]="enableDragDrop"></tr>
+  </table>
 
   @if (pageSize > 0) {
     <mat-paginator
