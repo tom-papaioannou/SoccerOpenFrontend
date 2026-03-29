@@ -89,3 +89,12 @@ export interface AddPlayerTacticRequest {
   PlayerPosition: number;
   PlayerRole: number;
 }
+
+/**
+ * DTO for swapping two players within a tactic
+ */
+export interface SwapPlayerTacticsRequest {
+  FirstPersonID: string;
+  SecondPersonID: string;
+  TacticID: string;
+}

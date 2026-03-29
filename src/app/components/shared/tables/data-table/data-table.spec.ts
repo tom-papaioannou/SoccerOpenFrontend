@@ -5,6 +5,7 @@
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
 
 import { DataTable } from './data-table';
 
@@ -108,5 +109,49 @@ describe('DataTable', () => {
 
     expect(component.pageIndex).toBe(0);
     expect(component.renderedData.length).toBe(5);
+  });
+
+  it('should have enableDragDrop default to false', () => {
+    expect(component.enableDragDrop).toBe(false);
+  });
+
+  it('should emit rowDrop when onDrop is called with different indices', () => {
+    const data: TestRow[] = [
+      { name: 'Alice', value: 1 },
+      { name: 'Bob', value: 2 },
+      { name: 'Charlie', value: 3 }
+    ];
+    component.data = data;
+    component.columns = [{ key: 'name', header: 'Name' }, { key: 'value', header: 'Value' }];
+    component.enableDragDrop = true;
+    component.ngOnChanges({
+      data: { currentValue: data, previousValue: [], firstChange: true, isFirstChange: () => true }
+    });
+
+    spyOn(component.rowDrop, 'emit');
+    component.onDrop({ previousIndex: 0, currentIndex: 2 } as CdkDragDrop<TestRow[]>);
+
+    expect(component.rowDrop.emit).toHaveBeenCalledWith({
+      draggedRow: { name: 'Alice', value: 1 },
+      droppedOnRow: { name: 'Charlie', value: 3 }
+    });
+  });
+
+  it('should not emit rowDrop when dropped on same index', () => {
+    const data: TestRow[] = [
+      { name: 'Alice', value: 1 },
+      { name: 'Bob', value: 2 }
+    ];
+    component.data = data;
+    component.columns = [{ key: 'name', header: 'Name' }, { key: 'value', header: 'Value' }];
+    component.enableDragDrop = true;
+    component.ngOnChanges({
+      data: { currentValue: data, previousValue: [], firstChange: true, isFirstChange: () => true }
+    });
+
+    spyOn(component.rowDrop, 'emit');
+    component.onDrop({ previousIndex: 1, currentIndex: 1 } as CdkDragDrop<TestRow[]>);
+
+    expect(component.rowDrop.emit).not.toHaveBeenCalled();
   });
 });

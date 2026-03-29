@@ -8,7 +8,7 @@ import { Observable, throwError } from 'rxjs';
 import { catchError, shareReplay } from 'rxjs/operators';
 import { environment } from '../../environments/environment.development';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Tactic, CreateTacticRequest, PlayerTactic, AddPlayerTacticRequest } from '../models/tactic.model';
+import { Tactic, CreateTacticRequest, PlayerTactic, AddPlayerTacticRequest, SwapPlayerTacticsRequest } from '../models/tactic.model';
 
 @Injectable({
   providedIn: 'root'
@@ -77,6 +77,16 @@ export class TacticsService {
    */
   deleteTactic(tacticID: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/deleteTeamTactic/${tacticID}`).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  /**
+   * Swap two players within a tactic
+   * Backend endpoint: POST /api/tactics/swapPlayersTactic
+   */
+  swapPlayersTactic(request: SwapPlayerTacticsRequest): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/swapPlayersTactic`, request).pipe(
       catchError(this.handleError)
     );
   }

@@ -1,5 +1,6 @@
 <div class="rounded-xl border-1 p-3 tableBorder">
-  <table mat-table [dataSource]="renderedData" [class]="tableClass" matSort (matSortChange)="onSort($event)">
+  <table mat-table [dataSource]="renderedData" [class]="tableClass" matSort (matSortChange)="onSort($event)"
+    cdkDropList (cdkDropListDropped)="onDrop($event)" [cdkDropListDisabled]="!enableDragDrop">
 
     @for (col of columns; track col.key) {
       <ng-container [matColumnDef]="col.key">
@@ -27,7 +28,8 @@
       </ng-container>
     }
     <tr mat-header-row *matHeaderRowDef="displayed"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayed" (click)="onRowClick(row)" [class.clickable]="rowClick.observed"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayed" (click)="onRowClick(row)" [class.clickable]="rowClick.observed"
+      cdkDrag [cdkDragData]="row" [cdkDragDisabled]="!enableDragDrop" [class.dt-draggable]="enableDragDrop"></tr>
   </table>
 
   @if (pageSize > 0) {

@@ -8,6 +8,7 @@ import { Component, Input, OnChanges, SimpleChanges, TemplateRef, Output, EventE
 import { MatSortModule, Sort } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { CdkDragDrop, DragDropModule } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-data-table',
@@ -15,7 +16,8 @@ import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
     MatTableModule,
     CommonModule,
     MatSortModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    DragDropModule
   ],
   templateUrl: './data-table.html',
   styleUrl: './data-table.scss'
@@ -40,7 +42,9 @@ export class DataTable<T> implements OnChanges{
   @Input() initialSort?: { active: string; direction: 'asc' | 'desc' };
   @Input() pageSize = 0;
   @Input() pageSizeOptions: number[] = [5, 10, 25];
+  @Input() enableDragDrop = false;
   @Output() rowClick = new EventEmitter<T>();
+  @Output() rowDrop = new EventEmitter<{ draggedRow: T; droppedOnRow: T }>();
   private active = '';
   private direction: 'asc' | 'desc' | '' = '';
   private sortedData: T[] = [];
@@ -50,6 +54,13 @@ export class DataTable<T> implements OnChanges{
 
   onRowClick(row: T): void {
     this.rowClick.emit(row);
+  }
+
+  onDrop(event: CdkDragDrop<T[]>): void {
+    if (event.previousIndex === event.currentIndex) return;
+    const draggedRow = this.renderedData[event.previousIndex];
+    const droppedOnRow = this.renderedData[event.currentIndex];
+    this.rowDrop.emit({ draggedRow, droppedOnRow });
   }
 
   onSort(e: Sort) {

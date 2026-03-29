@@ -13,7 +13,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { forkJoin } from 'rxjs';
 
 import { TacticsService } from '../../../services/tactics.service';
-import { Tactic, Formation, PlayerTactic } from '../../../models/tactic.model';
+import { Tactic, Formation, PlayerTactic, SwapPlayerTacticsRequest } from '../../../models/tactic.model';
 import { PlayerPosition } from '../../../models/player-enums.model';
 import { DataTable } from '../../shared/tables/data-table/data-table';
 import { getPlayerPositionLabel, getPlayerRoleLabel } from '../../../utils/position-utils';
@@ -162,6 +162,7 @@ export class TacticsDetail implements OnInit {
         ? `${pt.person.name?.substring(0, 1) || ''}. ${pt.person.surname || ''}`.trim() || 'Unknown Player'
         : 'Unknown Player';
       return {
+        personID: pt.personID,
         playerName,
         position: getPlayerPositionLabel(pt.playerPosition),
         positionValue: pt.playerPosition, // Include raw enum value for sorting
@@ -172,5 +173,28 @@ export class TacticsDetail implements OnInit {
 
   playerNameInTactics(position: string): string {
     return this.tableData.find(p => p.position === position)?.playerName || position;
+  }
+
+  onPlayerSwap(event: { draggedRow: any; droppedOnRow: any }): void {
+    const tacticId = this.tactic()?.tacticID;
+    if (!tacticId || !event.draggedRow.personID || !event.droppedOnRow.personID) return;
+    if (event.draggedRow.personID === event.droppedOnRow.personID) return;
+
+    const request: SwapPlayerTacticsRequest = {
+      FirstPersonID: event.draggedRow.personID,
+      SecondPersonID: event.droppedOnRow.personID,
+      TacticID: tacticId
+    };
+
+    this.tacticsService.swapPlayersTactic(request)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.loadTacticDetails(tacticId);
+        },
+        error: (err) => {
+          console.error('Failed to swap players:', err);
+        }
+      });
   }
 }
