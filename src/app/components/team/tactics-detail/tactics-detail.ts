@@ -16,7 +16,7 @@ import { TacticsService } from '../../../services/tactics.service';
 import { Tactic, Formation, PlayerTactic } from '../../../models/tactic.model';
 import { PlayerPosition } from '../../../models/player-enums.model';
 import { DataTable } from '../../shared/tables/data-table/data-table';
-import { getPlayerPositionLabel, getPlayerRoleLabel } from '../../../utils/position-utils';
+import { getPlayerPositionLabel, getPlayerRoleLabel, positionSortOrder } from '../../../utils/position-utils';
 
 @Component({
   selector: 'app-tactics-detail',
@@ -42,29 +42,11 @@ export class TacticsDetail implements OnInit {
   playerTactics = signal<PlayerTactic[]>([]);
   loading = signal(false);
   error = signal<string | null>(null);
-  
-  // Position sort order map - defines the tactical field layout order
-  private readonly positionSortOrder: Record<number, number> = {
-    [PlayerPosition.Goalkeeper]: 1,
-    [PlayerPosition.LeftBack]: 2,
-    [PlayerPosition.CenterBack]: 3,
-    [PlayerPosition.RightBack]: 4,
-    [PlayerPosition.LeftWingBack]: 5,
-    [PlayerPosition.DefensiveMidfielder]: 6,
-    [PlayerPosition.RightWingBack]: 7,
-    [PlayerPosition.LeftMidfielder]: 8,
-    [PlayerPosition.CentralMidfielder]: 9,
-    [PlayerPosition.RightMidfielder]: 10,
-    [PlayerPosition.LeftWinger]: 11,
-    [PlayerPosition.AttackingMidfielder]: 12,
-    [PlayerPosition.RightWinger]: 13,
-    [PlayerPosition.Striker]: 14
-  };
 
   // Custom comparator for position sorting
   private positionComparator = (a: unknown, b: unknown): number => {
-    const aOrder = this.positionSortOrder[a as number] ?? 999;
-    const bOrder = this.positionSortOrder[b as number] ?? 999;
+    const aOrder = positionSortOrder[a as number] ?? 999;
+    const bOrder = positionSortOrder[b as number] ?? 999;
     return aOrder - bOrder;
   };
   
