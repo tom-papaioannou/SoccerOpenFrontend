@@ -9,7 +9,7 @@ import { DataTable } from "../../shared/tables/data-table/data-table";
 import { TeamsService } from '../../../services/teams.service';
 import { Person, PlayerPosition } from '../../../models/player-enums.model';
 import { Subject, takeUntil } from 'rxjs';
-import { getPlayerPositionLabel } from '../../../utils/position-utils';
+import { getPlayerPositionLabel, positionSortOrder } from '../../../utils/position-utils';
 import { calculateAge } from '../../../utils/date-utils';
 
 interface TransformedPlayer {
@@ -30,28 +30,11 @@ interface TransformedPlayer {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class Squad implements OnInit, OnDestroy {
-  // Position sort order map - defines the tactical field layout order
-  private readonly positionSortOrder: Record<number, number> = {
-    [PlayerPosition.Goalkeeper]: 1,
-    [PlayerPosition.LeftBack]: 2,
-    [PlayerPosition.CenterBack]: 3,
-    [PlayerPosition.RightBack]: 4,
-    [PlayerPosition.LeftWingBack]: 5,
-    [PlayerPosition.DefensiveMidfielder]: 6,
-    [PlayerPosition.RightWingBack]: 7,
-    [PlayerPosition.LeftMidfielder]: 8,
-    [PlayerPosition.CentralMidfielder]: 9,
-    [PlayerPosition.RightMidfielder]: 10,
-    [PlayerPosition.LeftWinger]: 11,
-    [PlayerPosition.AttackingMidfielder]: 12,
-    [PlayerPosition.RightWinger]: 13,
-    [PlayerPosition.Striker]: 14
-  };
 
   // Custom comparator for position sorting
   private positionComparator = (a: unknown, b: unknown): number => {
-    const aOrder = this.positionSortOrder[a as number] ?? 999;
-    const bOrder = this.positionSortOrder[b as number] ?? 999;
+    const aOrder = positionSortOrder[a as number] ?? 999;
+    const bOrder = positionSortOrder[b as number] ?? 999;
     return aOrder - bOrder;
   };
 

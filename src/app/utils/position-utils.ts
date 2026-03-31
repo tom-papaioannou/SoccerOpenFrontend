@@ -24,30 +24,50 @@ export function getPlayerPositionLabel(position?: PlayerPosition): string {
       return 'GK';
     case PlayerPosition.RightBack:
       return 'RB';
+    case PlayerPosition.RightCenterBack:
+      return 'RCB';
+      case PlayerPosition.CentralCenterBack:
+      return 'CCB';
+      case PlayerPosition.LeftCenterBack:
+      return 'LCB';
     case PlayerPosition.LeftBack:
       return 'LB';
-    case PlayerPosition.CenterBack:
-      return 'CB';
-    case PlayerPosition.DefensiveMidfielder:
-      return 'DM';
     case PlayerPosition.RightWingBack:
       return 'RWB';
+    case PlayerPosition.RightDefensiveMidfielder:
+      return 'RDM';
+    case PlayerPosition.CentralDefensiveMidfielder:
+      return 'CDM';
+    case PlayerPosition.LeftDefensiveMidfielder:
+      return 'LDM';
     case PlayerPosition.LeftWingBack:
       return 'LWB';
-    case PlayerPosition.CentralMidfielder:
-      return 'CM';
     case PlayerPosition.RightMidfielder:
       return 'RM';
+    case PlayerPosition.RightCenterMidfielder:
+      return 'RCM';
+    case PlayerPosition.CentralCenterMidfielder:
+      return 'CCM';
+    case PlayerPosition.LeftCenterMidfielder:
+      return 'LCM';
     case PlayerPosition.LeftMidfielder:
       return 'LM';
-    case PlayerPosition.AttackingMidfielder:
-      return 'AM';
     case PlayerPosition.RightWinger:
       return 'RW';
+    case PlayerPosition.RightAttackingMidfielder:
+      return 'RAM';
+    case PlayerPosition.CentralAttackingMidfielder:
+      return 'CAM';
+    case PlayerPosition.LeftAttackingMidfielder:
+      return 'LAM';
     case PlayerPosition.LeftWinger:
       return 'LW';
-    case PlayerPosition.Striker:
-      return 'ST';
+    case PlayerPosition.RightStriker:
+      return 'RST';
+    case PlayerPosition.CentralStriker:
+      return 'CST';
+    case PlayerPosition.LeftStriker:
+      return 'LST';
     default:
       return '-';
   }
@@ -192,3 +212,31 @@ export function getPlayerRoleLabel(role?: PlayerRole): string {
       return '-';
   }
 }
+
+  // Position sort order map - defines the tactical field layout order
+  export const positionSortOrder: Record<number, number> = {
+    [PlayerPosition.Goalkeeper]: 1,
+    [PlayerPosition.RightBack]: 2,
+    [PlayerPosition.RightCenterBack]: 3,
+    [PlayerPosition.CentralCenterBack]: 4,
+    [PlayerPosition.LeftCenterBack]: 5,
+    [PlayerPosition.LeftBack]: 6,
+    [PlayerPosition.RightWingBack]: 7,
+    [PlayerPosition.RightDefensiveMidfielder]: 8,
+    [PlayerPosition.CentralDefensiveMidfielder]: 9,
+    [PlayerPosition.LeftDefensiveMidfielder]: 10,
+    [PlayerPosition.LeftWingBack]: 11,
+    [PlayerPosition.RightMidfielder]: 12,
+    [PlayerPosition.RightCenterMidfielder]: 13,
+    [PlayerPosition.CentralCenterMidfielder]: 14,
+    [PlayerPosition.LeftCenterMidfielder]: 15,
+    [PlayerPosition.LeftMidfielder]: 16,
+    [PlayerPosition.RightWinger]: 17,
+    [PlayerPosition.RightAttackingMidfielder]: 18,
+    [PlayerPosition.CentralAttackingMidfielder]: 19,
+    [PlayerPosition.LeftAttackingMidfielder]: 20,
+    [PlayerPosition.LeftWinger]: 21,
+    [PlayerPosition.RightStriker]: 22,
+    [PlayerPosition.CentralStriker]: 23,
+    [PlayerPosition.LeftStriker]: 24
+  };
