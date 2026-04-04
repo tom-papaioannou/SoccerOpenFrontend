@@ -40,13 +40,20 @@
             @for (row of pitchRows(); track row.rowIndex) {
               <div class="flex items-center" [ngClass]="getRowClasses(row)">
                 @for (player of row.players; track player.position) {
-                  <div cdkDrag class="player-node group cursor-grab active:cursor-grabbing flex flex-col items-center gap-2">
-                    <div class="player-shirt">
-                      {{ player.displayNumber }}
+                  <div class="player-node-wrapper" [class.dragging-origin]="draggedPosition() === player.position">
+                    <div cdkDrag
+                         class="player-node group cursor-grab active:cursor-grabbing flex flex-col items-center gap-2"
+                         [attr.data-position]="player.position"
+                         (cdkDragStarted)="onDragStarted($event, player)"
+                         (cdkDragMoved)="onDragMoved($event)"
+                         (cdkDragEnded)="onDragEnded($event, player)">
+                      <div class="player-shirt">
+                        {{ player.displayNumber }}
+                      </div>
+                      <span class="bg-surface-container-highest/80 backdrop-blur px-1 py-0.5 rounded text-[7px] font-label font-bold uppercase border border-white/5">
+                        {{ player.playerName }}
+                      </span>
                     </div>
-                    <span class="bg-surface-container-highest/80 backdrop-blur px-1 py-0.5 rounded text-[7px] font-label font-bold uppercase border border-white/5">
-                      {{ player.playerName }}
-                    </span>
                   </div>
                 }
               </div>

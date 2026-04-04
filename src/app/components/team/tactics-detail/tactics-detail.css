@@ -123,3 +123,35 @@
   transform: scale(0.95);
   box-shadow: 0 0 0 4px var(--color-primary / 0.5);
 }
+
+/* --- Drag-and-drop interaction styles --- */
+
+/* Wrapper around each player node; stays in place during drag */
+.player-node-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 60px;
+}
+
+/* Black dot shown at the original position while a player is being dragged */
+.player-node-wrapper.dragging-origin::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.3);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Light shadow applied to a player node when another player is dragged over it */
+.player-node.drag-hover-target {
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.6));
+  transition: filter 0.15s ease;
+}

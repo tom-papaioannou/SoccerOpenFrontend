@@ -11,7 +11,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { forkJoin } from 'rxjs';
-import { CdkDrag } from '@angular/cdk/drag-drop';
+import { CdkDrag, CdkDragStart, CdkDragMove, CdkDragEnd } from '@angular/cdk/drag-drop';
 import { TacticsService } from '../../../services/tactics.service';
 import { Tactic, Formation, PlayerTactic } from '../../../models/tactic.model';
 import { DataTable } from '../../shared/tables/data-table/data-table';
@@ -55,6 +55,12 @@ export class TacticsDetail implements OnInit {
   playerTactics = signal<PlayerTactic[]>([]);
   loading = signal(false);
   error = signal<string | null>(null);
+
+  /** Tracks the position of the currently dragged player (null when not dragging) */
+  draggedPosition = signal<number | null>(null);
+
+  /** Reference to the DOM element currently being hovered during drag */
+  private hoveredElement: HTMLElement | null = null;
 
   /**
    * Computed signal that groups playerTactics into pitch rows for the visual layout.
@@ -222,5 +228,67 @@ export class TacticsDetail implements OnInit {
         role: getPlayerRoleLabel(pt.playerRole)
       };
     });
+  }
+
+  /** Called when a player node drag begins. Shows a black dot at the original position. */
+  onDragStarted(_event: CdkDragStart, player: PitchRowPlayer): void {
+    this.draggedPosition.set(player.position);
+  }
+
+  /** Called on every pointer move during drag. Detects hover over other player nodes. */
+  onDragMoved(event: CdkDragMove): void {
+    const { x, y } = event.pointerPosition;
+    const dragElement = event.source.element.nativeElement;
+
+    // Clear previous hover target
+    if (this.hoveredElement) {
+      this.hoveredElement.classList.remove('drag-hover-target');
+      this.hoveredElement = null;
+    }
+
+    // Check all player nodes for pointer overlap
+    const allPlayerNodes = document.querySelectorAll('.player-node');
+    for (const node of Array.from(allPlayerNodes)) {
+      if (node === dragElement) continue;
+      const rect = node.getBoundingClientRect();
+      if (x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom) {
+        (node as HTMLElement).classList.add('drag-hover-target');
+        this.hoveredElement = node as HTMLElement;
+        break;
+      }
+    }
+  }
+
+  /** Called when drag ends. Swaps players if hovering another, otherwise resets position. */
+  onDragEnded(event: CdkDragEnd, player: PitchRowPlayer): void {
+    if (this.hoveredElement) {
+      const targetPosition = Number(this.hoveredElement.getAttribute('data-position'));
+      const targetPlayer = this.findPlayerByPosition(targetPosition);
+
+      this.hoveredElement.classList.remove('drag-hover-target');
+
+      if (targetPlayer) {
+        this.onPlayerSwap(player, targetPlayer);
+      }
+    }
+
+    // Always reset position and clean up
+    event.source.reset();
+    this.draggedPosition.set(null);
+    this.hoveredElement = null;
+  }
+
+  /** Called when a dragged player is dropped onto another player. */
+  onPlayerSwap(draggedPlayer: PitchRowPlayer, targetPlayer: PitchRowPlayer): void {
+    console.log('Player swap:', draggedPlayer.playerName, '→', targetPlayer.playerName);
+  }
+
+  /** Finds a PitchRowPlayer by their position enum value. */
+  private findPlayerByPosition(position: number): PitchRowPlayer | null {
+    for (const row of this.pitchRows()) {
+      const player = row.players.find(p => p.position === position);
+      if (player) return player;
+    }
+    return null;
   }
 }
