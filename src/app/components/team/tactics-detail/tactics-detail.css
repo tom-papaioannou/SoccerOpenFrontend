@@ -150,6 +150,11 @@
   z-index: 0;
 }
 
+/* Ensure the dragged player renders above all other nodes */
+.player-node.cdk-drag-dragging {
+  z-index: 1000;
+}
+
 /* Light shadow applied to a player node when another player is dragged over it */
 .player-node.drag-hover-target {
   filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.6));
