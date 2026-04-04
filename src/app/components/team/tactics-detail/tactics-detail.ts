@@ -62,6 +62,9 @@ export class TacticsDetail implements OnInit {
   /** Reference to the DOM element currently being hovered during drag */
   private hoveredElement: HTMLElement | null = null;
 
+  /** Timer handle for the debounced hover removal (1 s after pointer leaves a target) */
+  private hoverRemovalTimer: ReturnType<typeof setTimeout> | null = null;
+
   /**
    * Computed signal that groups playerTactics into pitch rows for the visual layout.
    * Each row contains players sorted left-to-right (descending enum value).
@@ -241,22 +244,50 @@ export class TacticsDetail implements OnInit {
     const { x, y } = event.pointerPosition;
     const dragElement = event.source.element.nativeElement;
 
-    // Clear previous hover target
-    if (this.hoveredElement) {
-      this.hoveredElement.classList.remove('drag-hover-target');
-      this.hoveredElement = null;
-    }
-
-    // Check all player nodes within this component for pointer overlap
+    // Find the player node (if any) under the current pointer position
+    let foundTarget: HTMLElement | null = null;
     const allPlayerNodes = this.elementRef.nativeElement.querySelectorAll('.player-node');
     for (const node of Array.from(allPlayerNodes)) {
       if (node === dragElement) continue;
       const rect = (node as HTMLElement).getBoundingClientRect();
       if (x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom) {
-        (node as HTMLElement).classList.add('drag-hover-target');
-        this.hoveredElement = node as HTMLElement;
+        foundTarget = node as HTMLElement;
         break;
       }
+    }
+
+    if (foundTarget) {
+      if (foundTarget === this.hoveredElement) {
+        // Still hovering the same target – cancel any pending removal
+        this.clearHoverTimer();
+      } else {
+        // Hovering a *different* target – immediately swap
+        this.clearHoverState();
+        foundTarget.classList.add('drag-hover-target');
+        this.hoveredElement = foundTarget;
+      }
+    } else if (this.hoveredElement && !this.hoverRemovalTimer) {
+      // Pointer left the current target – start a 1 s debounce before removing hover
+      this.hoverRemovalTimer = setTimeout(() => {
+        this.clearHoverState();
+      }, 1000);
+    }
+  }
+
+  /** Removes the hover visual from the current target and cancels any pending timer. */
+  private clearHoverState(): void {
+    this.clearHoverTimer();
+    if (this.hoveredElement) {
+      this.hoveredElement.classList.remove('drag-hover-target');
+      this.hoveredElement = null;
+    }
+  }
+
+  /** Cancels the debounced hover-removal timer if one is running. */
+  private clearHoverTimer(): void {
+    if (this.hoverRemovalTimer) {
+      clearTimeout(this.hoverRemovalTimer);
+      this.hoverRemovalTimer = null;
     }
   }
 
@@ -264,7 +295,6 @@ export class TacticsDetail implements OnInit {
   onDragEnded(event: CdkDragEnd, player: PitchRowPlayer): void {
     if (this.hoveredElement) {
       const positionAttr = this.hoveredElement.getAttribute('data-position');
-      this.hoveredElement.classList.remove('drag-hover-target');
 
       if (positionAttr != null) {
         const targetPlayer = this.findPlayerByPosition(Number(positionAttr));
@@ -277,7 +307,7 @@ export class TacticsDetail implements OnInit {
     // Always reset position and clean up
     event.source.reset();
     this.draggedPosition.set(null);
-    this.hoveredElement = null;
+    this.clearHoverState();
   }
 
   /** Called when a dragged player is dropped onto another player. */
