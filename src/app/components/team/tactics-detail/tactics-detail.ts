@@ -3,7 +3,7 @@
  * Licensed under the MIT License
  */
 
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnInit, signal, computed, DestroyRef } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnInit, OnDestroy, signal, computed, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatCard, MatCardContent } from '@angular/material/card';
@@ -45,7 +45,7 @@ export interface PitchRow {
   styleUrl: './tactics-detail.css',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TacticsDetail implements OnInit {
+export class TacticsDetail implements OnInit, OnDestroy {
   private readonly destroyRef: DestroyRef;
   private readonly route: ActivatedRoute;
   private readonly router: Router;
@@ -156,6 +156,10 @@ export class TacticsDetail implements OnInit {
     }
     
     this.loadTacticDetails(tacticId);
+  }
+
+  ngOnDestroy(): void {
+    this.clearHoverTimer();
   }
 
   loadTacticDetails(tacticId: string): void {
