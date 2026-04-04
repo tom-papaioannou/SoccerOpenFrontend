@@ -251,7 +251,7 @@ export class TacticsDetail implements OnInit {
     const allPlayerNodes = this.elementRef.nativeElement.querySelectorAll('.player-node');
     for (const node of Array.from(allPlayerNodes)) {
       if (node === dragElement) continue;
-      const rect = node.getBoundingClientRect();
+      const rect = (node as HTMLElement).getBoundingClientRect();
       if (x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom) {
         (node as HTMLElement).classList.add('drag-hover-target');
         this.hoveredElement = node as HTMLElement;
