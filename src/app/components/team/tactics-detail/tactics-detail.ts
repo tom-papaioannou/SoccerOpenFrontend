@@ -11,7 +11,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { forkJoin } from 'rxjs';
-
+import { CdkDrag } from '@angular/cdk/drag-drop';
 import { TacticsService } from '../../../services/tactics.service';
 import { Tactic, Formation, PlayerTactic } from '../../../models/tactic.model';
 import { DataTable } from '../../shared/tables/data-table/data-table';
@@ -38,7 +38,8 @@ export interface PitchRow {
     MatCardContent,
     MatButtonModule,
     MatIconModule,
-    DataTable
+    DataTable,
+    CdkDrag
   ],
   templateUrl: './tactics-detail.html',
   styleUrl: './tactics-detail.css',

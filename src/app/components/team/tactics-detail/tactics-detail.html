@@ -38,10 +38,9 @@
             <div class="flex justify-center items-center h-1/8"></div>
 
             @for (row of pitchRows(); track row.rowIndex) {
-              <div class="flex items-center"
-                [ngClass]="getRowClasses(row)">
+              <div class="flex items-center" [ngClass]="getRowClasses(row)">
                 @for (player of row.players; track player.position) {
-                  <div class="player-node group cursor-grab active:cursor-grabbing flex flex-col items-center gap-2">
+                  <div cdkDrag class="player-node group cursor-grab active:cursor-grabbing flex flex-col items-center gap-2">
                     <div class="player-shirt">
                       {{ player.displayNumber }}
                     </div>
