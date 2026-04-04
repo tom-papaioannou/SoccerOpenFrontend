@@ -23,6 +23,7 @@ export interface PitchRowPlayer {
   playerName: string;
   displayNumber: number;
   playerTacticID?: string;
+  role: number;
 }
 
 export interface PitchRow {
@@ -90,7 +91,8 @@ export class TacticsDetail implements OnInit, OnDestroy {
         positionLabel: getPlayerPositionLabel(pt.playerPosition),
         playerName,
         displayNumber: positionSortOrder[pt.playerPosition] ?? 0,
-        playerTacticID: pt.playerTacticID
+        playerTacticID: pt.playerTacticID,
+        role: pt.playerRole
       };
 
       if (!rowMap.has(row)) {
@@ -324,10 +326,10 @@ export class TacticsDetail implements OnInit, OnDestroy {
         // Swap playerPosition values in the local state so the pitch and table update
         const updated = this.playerTactics().map(pt => {
           if (pt.playerTacticID === draggedPlayer.playerTacticID) {
-            return { ...pt, playerPosition: targetPlayer.position };
+            return { ...pt, playerPosition: targetPlayer.position, playerRole: targetPlayer.role };
           }
           if (pt.playerTacticID === targetPlayer.playerTacticID) {
-            return { ...pt, playerPosition: draggedPlayer.position };
+            return { ...pt, playerPosition: draggedPlayer.position, playerRole: draggedPlayer.role };
           }
           return pt;
         });
