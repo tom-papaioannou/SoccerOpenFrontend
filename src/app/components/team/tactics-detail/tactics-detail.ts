@@ -3,7 +3,7 @@
  * Licensed under the MIT License
  */
 
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, signal, computed, DestroyRef } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnInit, OnDestroy, signal, computed, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatCard, MatCardContent } from '@angular/material/card';
@@ -11,7 +11,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { forkJoin } from 'rxjs';
-import { CdkDrag } from '@angular/cdk/drag-drop';
+import { CdkDrag, CdkDragStart, CdkDragMove, CdkDragEnd } from '@angular/cdk/drag-drop';
 import { TacticsService } from '../../../services/tactics.service';
 import { Tactic, Formation, PlayerTactic } from '../../../models/tactic.model';
 import { DataTable } from '../../shared/tables/data-table/data-table';
@@ -22,6 +22,8 @@ export interface PitchRowPlayer {
   positionLabel: string;
   playerName: string;
   displayNumber: number;
+  playerTacticID?: string;
+  role: number;
 }
 
 export interface PitchRow {
@@ -45,7 +47,7 @@ export interface PitchRow {
   styleUrl: './tactics-detail.css',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TacticsDetail implements OnInit {
+export class TacticsDetail implements OnInit, OnDestroy {
   private readonly destroyRef: DestroyRef;
   private readonly route: ActivatedRoute;
   private readonly router: Router;
@@ -55,6 +57,15 @@ export class TacticsDetail implements OnInit {
   playerTactics = signal<PlayerTactic[]>([]);
   loading = signal(false);
   error = signal<string | null>(null);
+
+  /** Tracks the position of the currently dragged player (null when not dragging) */
+  draggedPosition = signal<number | null>(null);
+
+  /** Reference to the DOM element currently being hovered during drag */
+  private hoveredElement: HTMLElement | null = null;
+
+  /** Timer handle for the debounced hover removal (1 s after pointer leaves a target) */
+  private hoverRemovalTimer: ReturnType<typeof setTimeout> | null = null;
 
   /**
    * Computed signal that groups playerTactics into pitch rows for the visual layout.
@@ -79,7 +90,9 @@ export class TacticsDetail implements OnInit {
         position: pt.playerPosition,
         positionLabel: getPlayerPositionLabel(pt.playerPosition),
         playerName,
-        displayNumber: positionSortOrder[pt.playerPosition] ?? 0
+        displayNumber: positionSortOrder[pt.playerPosition] ?? 0,
+        playerTacticID: pt.playerTacticID,
+        role: pt.playerRole
       };
 
       if (!rowMap.has(row)) {
@@ -129,6 +142,7 @@ export class TacticsDetail implements OnInit {
   constructor(
     private readonly tacticsService: TacticsService,
     private readonly cdr: ChangeDetectorRef,
+    private readonly elementRef: ElementRef,
     route: ActivatedRoute,
     router: Router,
     destroyRef: DestroyRef
@@ -146,6 +160,10 @@ export class TacticsDetail implements OnInit {
     }
     
     this.loadTacticDetails(tacticId);
+  }
+
+  ngOnDestroy(): void {
+    this.clearHoverTimer();
   }
 
   loadTacticDetails(tacticId: string): void {
@@ -219,8 +237,117 @@ export class TacticsDetail implements OnInit {
         playerName,
         position: getPlayerPositionLabel(pt.playerPosition),
         positionValue: pt.playerPosition, // Include raw enum value for sorting
-        role: getPlayerRoleLabel(pt.playerRole)
+        role: getPlayerRoleLabel(pt.playerRole),
+        playerTacticID: pt.playerTacticID
       };
     });
+  }
+
+  /** Called when a player node drag begins. Shows a black dot at the original position. */
+  onDragStarted(_event: CdkDragStart, player: PitchRowPlayer): void {
+    this.draggedPosition.set(player.position);
+  }
+
+  /** Called on every pointer move during drag. Detects hover over other player nodes. */
+  onDragMoved(event: CdkDragMove): void {
+    const { x, y } = event.pointerPosition;
+    const dragElement = event.source.element.nativeElement;
+
+    // Find the player node (if any) under the current pointer position
+    let foundTarget: HTMLElement | null = null;
+    const allPlayerNodes = this.elementRef.nativeElement.querySelectorAll('.player-node');
+    for (const node of Array.from(allPlayerNodes)) {
+      if (node === dragElement) continue;
+      const rect = (node as HTMLElement).getBoundingClientRect();
+      if (x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom) {
+        foundTarget = node as HTMLElement;
+        break;
+      }
+    }
+
+    if (foundTarget) {
+      if (foundTarget === this.hoveredElement) {
+        // Still hovering the same target – cancel any pending removal
+        this.clearHoverTimer();
+      } else {
+        // Hovering a *different* target – immediately swap
+        this.clearHoverState();
+        foundTarget.classList.add('drag-hover-target');
+        this.hoveredElement = foundTarget;
+      }
+    } else if (this.hoveredElement && !this.hoverRemovalTimer) {
+      // Pointer left the current target – start a 1 s debounce before removing hover
+      this.hoverRemovalTimer = setTimeout(() => {
+        this.clearHoverState();
+      }, 1000);
+    }
+  }
+
+  /** Removes the hover visual from the current target and cancels any pending timer. */
+  private clearHoverState(): void {
+    this.clearHoverTimer();
+    if (this.hoveredElement) {
+      this.hoveredElement.classList.remove('drag-hover-target');
+      this.hoveredElement = null;
+    }
+  }
+
+  /** Cancels the debounced hover-removal timer if one is running. */
+  private clearHoverTimer(): void {
+    if (this.hoverRemovalTimer) {
+      clearTimeout(this.hoverRemovalTimer);
+      this.hoverRemovalTimer = null;
+    }
+  }
+
+  /** Called when drag ends. Swaps players if hovering another, otherwise resets position. */
+  onDragEnded(event: CdkDragEnd, player: PitchRowPlayer): void {
+    if (this.hoveredElement) {
+      const positionAttr = this.hoveredElement.getAttribute('data-position');
+
+      if (positionAttr != null) {
+        const targetPlayer = this.findPlayerByPosition(Number(positionAttr));
+        if (targetPlayer) {
+          this.onPlayerSwap(player, targetPlayer);
+        }
+      }
+    }
+
+    // Always reset position and clean up
+    event.source.reset();
+    this.draggedPosition.set(null);
+    this.clearHoverState();
+  }
+
+  /** Called when a dragged player is dropped onto another player. */
+  onPlayerSwap(draggedPlayer: PitchRowPlayer, targetPlayer: PitchRowPlayer): void {
+    this.tacticsService.swapPlayerTactics(draggedPlayer.playerTacticID!, targetPlayer.playerTacticID!).subscribe({
+      next: () => {
+        // Swap playerPosition values in the local state so the pitch and table update
+        const updated = this.playerTactics().map(pt => {
+          if (pt.playerTacticID === draggedPlayer.playerTacticID) {
+            return { ...pt, playerPosition: targetPlayer.position, playerRole: targetPlayer.role };
+          }
+          if (pt.playerTacticID === targetPlayer.playerTacticID) {
+            return { ...pt, playerPosition: draggedPlayer.position, playerRole: draggedPlayer.role };
+          }
+          return pt;
+        });
+        this.playerTactics.set(updated);
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        console.error('Error swapping players:', err);
+      }
+    });
+  }
+
+  /** Finds a PitchRowPlayer by their position enum value. */
+  private findPlayerByPosition(position: number): PitchRowPlayer | null {
+    for (const row of this.pitchRows()) {
+      const player = row.players.find(p => p.position === position);
+      if (player) return player;
+    }
+    return null;
   }
 }
