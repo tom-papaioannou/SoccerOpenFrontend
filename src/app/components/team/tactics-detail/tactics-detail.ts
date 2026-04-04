@@ -21,7 +21,7 @@ export interface PitchRowPlayer {
   position: number;
   positionLabel: string;
   playerName: string;
-  shirtNumber: number;
+  displayNumber: number;
 }
 
 export interface PitchRow {
@@ -78,7 +78,7 @@ export class TacticsDetail implements OnInit {
         position: pt.playerPosition,
         positionLabel: getPlayerPositionLabel(pt.playerPosition),
         playerName,
-        shirtNumber: positionSortOrder[pt.playerPosition] ?? 0
+        displayNumber: positionSortOrder[pt.playerPosition] ?? 0
       };
 
       if (!rowMap.has(row)) {
@@ -192,6 +192,16 @@ export class TacticsDetail implements OnInit {
 
     // defaults to 4-4-2 image
     return 'assets/images/tactics/4-4-2.png';
+  }
+
+  /**
+   * Returns the CSS layout classes for a given pitch row.
+   */
+  getRowClasses(row: PitchRow): string {
+    if (row.isGoalkeeper) {
+      return 'justify-center h-1/8';
+    }
+    return row.players.length <= 2 ? 'justify-center gap-10' : 'justify-around';
   }
 
   goBack(): void {

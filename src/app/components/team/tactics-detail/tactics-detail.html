@@ -39,13 +39,11 @@
 
             @for (row of pitchRows(); track row.rowIndex) {
               <div class="flex items-center"
-                [ngClass]="row.isGoalkeeper
-                  ? 'justify-center h-1/8'
-                  : (row.players.length <= 2 ? 'justify-center gap-10' : 'justify-around')">
+                [ngClass]="getRowClasses(row)">
                 @for (player of row.players; track player.position) {
                   <div class="player-node group cursor-grab active:cursor-grabbing flex flex-col items-center gap-2">
                     <div class="player-shirt">
-                      {{ player.shirtNumber }}
+                      {{ player.displayNumber }}
                     </div>
                     <span class="bg-surface-container-highest/80 backdrop-blur px-1 py-0.5 rounded text-[7px] font-label font-bold uppercase border border-white/5">
                       {{ player.playerName }}
