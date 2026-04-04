@@ -277,7 +277,7 @@ export class TacticsDetail implements OnInit, OnDestroy {
       // Pointer left the current target – start a 1 s debounce before removing hover
       this.hoverRemovalTimer = setTimeout(() => {
         this.clearHoverState();
-      }, 100);
+      }, 1000);
     }
   }
 
@@ -321,8 +321,18 @@ export class TacticsDetail implements OnInit, OnDestroy {
   onPlayerSwap(draggedPlayer: PitchRowPlayer, targetPlayer: PitchRowPlayer): void {
     this.tacticsService.swapPlayerTactics(draggedPlayer.playerTacticID!, targetPlayer.playerTacticID!).subscribe({
       next: () => {
-        // After successful swap, update local state to reflect the change
-        console.log('Player swap:', draggedPlayer.playerName, '→', targetPlayer.playerName);
+        // Swap playerPosition values in the local state so the pitch and table update
+        const updated = this.playerTactics().map(pt => {
+          if (pt.playerTacticID === draggedPlayer.playerTacticID) {
+            return { ...pt, playerPosition: targetPlayer.position };
+          }
+          if (pt.playerTacticID === targetPlayer.playerTacticID) {
+            return { ...pt, playerPosition: draggedPlayer.position };
+          }
+          return pt;
+        });
+        this.playerTactics.set(updated);
+        this.cdr.markForCheck();
       },
       error: (err) => {
         console.error('Error swapping players:', err);
