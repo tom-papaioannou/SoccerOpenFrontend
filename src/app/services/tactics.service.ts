@@ -81,6 +81,13 @@ export class TacticsService {
     );
   }
 
+  swapPlayerTactics(firstPersonTacticID: string, secondPersonTacticID: string): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/swapPlayersTactics`, { firstPersonTacticID: firstPersonTacticID, secondPersonTacticID: secondPersonTacticID }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+
   /**
    * Handle HTTP errors
    */

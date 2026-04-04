@@ -22,6 +22,7 @@ export interface PitchRowPlayer {
   positionLabel: string;
   playerName: string;
   displayNumber: number;
+  playerTacticID?: string;
 }
 
 export interface PitchRow {
@@ -88,7 +89,8 @@ export class TacticsDetail implements OnInit, OnDestroy {
         position: pt.playerPosition,
         positionLabel: getPlayerPositionLabel(pt.playerPosition),
         playerName,
-        displayNumber: positionSortOrder[pt.playerPosition] ?? 0
+        displayNumber: positionSortOrder[pt.playerPosition] ?? 0,
+        playerTacticID: pt.playerTacticID
       };
 
       if (!rowMap.has(row)) {
@@ -233,7 +235,8 @@ export class TacticsDetail implements OnInit, OnDestroy {
         playerName,
         position: getPlayerPositionLabel(pt.playerPosition),
         positionValue: pt.playerPosition, // Include raw enum value for sorting
-        role: getPlayerRoleLabel(pt.playerRole)
+        role: getPlayerRoleLabel(pt.playerRole),
+        playerTacticID: pt.playerTacticID
       };
     });
   }
@@ -274,7 +277,7 @@ export class TacticsDetail implements OnInit, OnDestroy {
       // Pointer left the current target – start a 1 s debounce before removing hover
       this.hoverRemovalTimer = setTimeout(() => {
         this.clearHoverState();
-      }, 1000);
+      }, 100);
     }
   }
 
@@ -316,7 +319,15 @@ export class TacticsDetail implements OnInit, OnDestroy {
 
   /** Called when a dragged player is dropped onto another player. */
   onPlayerSwap(draggedPlayer: PitchRowPlayer, targetPlayer: PitchRowPlayer): void {
-    console.log('Player swap:', draggedPlayer.playerName, '→', targetPlayer.playerName);
+    this.tacticsService.swapPlayerTactics(draggedPlayer.playerTacticID!, targetPlayer.playerTacticID!).subscribe({
+      next: () => {
+        // After successful swap, update local state to reflect the change
+        console.log('Player swap:', draggedPlayer.playerName, '→', targetPlayer.playerName);
+      },
+      error: (err) => {
+        console.error('Error swapping players:', err);
+      }
+    });
   }
 
   /** Finds a PitchRowPlayer by their position enum value. */
