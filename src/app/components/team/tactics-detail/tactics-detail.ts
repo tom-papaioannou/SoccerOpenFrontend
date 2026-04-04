@@ -3,7 +3,7 @@
  * Licensed under the MIT License
  */
 
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, signal, computed, DestroyRef } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnInit, signal, computed, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatCard, MatCardContent } from '@angular/material/card';
@@ -135,6 +135,7 @@ export class TacticsDetail implements OnInit {
   constructor(
     private readonly tacticsService: TacticsService,
     private readonly cdr: ChangeDetectorRef,
+    private readonly elementRef: ElementRef,
     route: ActivatedRoute,
     router: Router,
     destroyRef: DestroyRef
@@ -246,8 +247,8 @@ export class TacticsDetail implements OnInit {
       this.hoveredElement = null;
     }
 
-    // Check all player nodes for pointer overlap
-    const allPlayerNodes = document.querySelectorAll('.player-node');
+    // Check all player nodes within this component for pointer overlap
+    const allPlayerNodes = this.elementRef.nativeElement.querySelectorAll('.player-node');
     for (const node of Array.from(allPlayerNodes)) {
       if (node === dragElement) continue;
       const rect = node.getBoundingClientRect();
@@ -262,13 +263,14 @@ export class TacticsDetail implements OnInit {
   /** Called when drag ends. Swaps players if hovering another, otherwise resets position. */
   onDragEnded(event: CdkDragEnd, player: PitchRowPlayer): void {
     if (this.hoveredElement) {
-      const targetPosition = Number(this.hoveredElement.getAttribute('data-position'));
-      const targetPlayer = this.findPlayerByPosition(targetPosition);
-
+      const positionAttr = this.hoveredElement.getAttribute('data-position');
       this.hoveredElement.classList.remove('drag-hover-target');
 
-      if (targetPlayer) {
-        this.onPlayerSwap(player, targetPlayer);
+      if (positionAttr != null) {
+        const targetPlayer = this.findPlayerByPosition(Number(positionAttr));
+        if (targetPlayer) {
+          this.onPlayerSwap(player, targetPlayer);
+        }
       }
     }
 
