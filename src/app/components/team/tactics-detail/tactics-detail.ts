@@ -3,7 +3,7 @@
  * Licensed under the MIT License
  */
 
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, signal, DestroyRef } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, signal, computed, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatCard, MatCardContent } from '@angular/material/card';
@@ -14,9 +14,21 @@ import { forkJoin } from 'rxjs';
 
 import { TacticsService } from '../../../services/tactics.service';
 import { Tactic, Formation, PlayerTactic } from '../../../models/tactic.model';
-import { PlayerPosition } from '../../../models/player-enums.model';
 import { DataTable } from '../../shared/tables/data-table/data-table';
-import { getPlayerPositionLabel, getPlayerRoleLabel, positionSortOrder } from '../../../utils/position-utils';
+import { getPlayerPositionLabel, getPlayerRoleLabel, positionSortOrder, getPositionPitchRow } from '../../../utils/position-utils';
+
+export interface PitchRowPlayer {
+  position: number;
+  positionLabel: string;
+  playerName: string;
+  shirtNumber: number;
+}
+
+export interface PitchRow {
+  rowIndex: number;
+  players: PitchRowPlayer[];
+  isGoalkeeper: boolean;
+}
 
 @Component({
   selector: 'app-tactics-detail',
@@ -42,6 +54,55 @@ export class TacticsDetail implements OnInit {
   playerTactics = signal<PlayerTactic[]>([]);
   loading = signal(false);
   error = signal<string | null>(null);
+
+  /**
+   * Computed signal that groups playerTactics into pitch rows for the visual layout.
+   * Each row contains players sorted left-to-right (descending enum value).
+   * Rows are sorted top-to-bottom (highest row index first: strikers → GK).
+   */
+  pitchRows = computed<PitchRow[]>(() => {
+    const tactics = this.playerTactics();
+    if (!tactics.length) return [];
+
+    const rowMap = new Map<number, PitchRowPlayer[]>();
+
+    for (const pt of tactics) {
+      const row = getPositionPitchRow(pt.playerPosition);
+      if (row < 0) continue;
+
+      const playerName = pt.person
+        ? `${pt.person.name?.substring(0, 1) || ''}. ${pt.person.surname || ''}`.trim() || 'Unknown Player'
+        : 'Unknown Player';
+
+      const player: PitchRowPlayer = {
+        position: pt.playerPosition,
+        positionLabel: getPlayerPositionLabel(pt.playerPosition),
+        playerName,
+        shirtNumber: positionSortOrder[pt.playerPosition] ?? 0
+      };
+
+      if (!rowMap.has(row)) {
+        rowMap.set(row, []);
+      }
+      rowMap.get(row)!.push(player);
+    }
+
+    // Sort players within each row: descending position enum value = left to right
+    const rows: PitchRow[] = [];
+    for (const [rowIndex, players] of rowMap) {
+      players.sort((a, b) => b.position - a.position);
+      rows.push({
+        rowIndex,
+        players,
+        isGoalkeeper: rowIndex === 0
+      });
+    }
+
+    // Sort rows: highest row index first (strikers at top, GK at bottom)
+    rows.sort((a, b) => b.rowIndex - a.rowIndex);
+
+    return rows;
+  });
 
   // Custom comparator for position sorting
   private positionComparator = (a: unknown, b: unknown): number => {
@@ -150,9 +211,5 @@ export class TacticsDetail implements OnInit {
         role: getPlayerRoleLabel(pt.playerRole)
       };
     });
-  }
-
-  playerNameInTactics(position: string): string {
-    return this.tableData.find(p => p.position === position)?.playerName || position;
   }
 }

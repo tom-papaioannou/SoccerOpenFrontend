@@ -213,6 +213,50 @@ export function getPlayerRoleLabel(role?: PlayerRole): string {
   }
 }
 
+/**
+ * Maps a PlayerPosition to a pitch row index for visual layout.
+ * Higher row indices are rendered closer to the top of the pitch (attacking end).
+ * Row 0 = Goalkeeper, Row 1 = Defenders, Row 2 = Defensive Midfield / Wing-backs,
+ * Row 3 = Midfield, Row 4 = Attacking Midfield / Wingers, Row 5 = Strikers.
+ * Returns -1 for unknown / None positions.
+ */
+export function getPositionPitchRow(position: PlayerPosition): number {
+  switch (position) {
+    case PlayerPosition.Goalkeeper:
+      return 0;
+    case PlayerPosition.RightBack:
+    case PlayerPosition.RightCenterBack:
+    case PlayerPosition.CentralCenterBack:
+    case PlayerPosition.LeftCenterBack:
+    case PlayerPosition.LeftBack:
+      return 1;
+    case PlayerPosition.RightWingBack:
+    case PlayerPosition.RightDefensiveMidfielder:
+    case PlayerPosition.CentralDefensiveMidfielder:
+    case PlayerPosition.LeftDefensiveMidfielder:
+    case PlayerPosition.LeftWingBack:
+      return 2;
+    case PlayerPosition.RightMidfielder:
+    case PlayerPosition.RightCenterMidfielder:
+    case PlayerPosition.CentralCenterMidfielder:
+    case PlayerPosition.LeftCenterMidfielder:
+    case PlayerPosition.LeftMidfielder:
+      return 3;
+    case PlayerPosition.RightWinger:
+    case PlayerPosition.RightAttackingMidfielder:
+    case PlayerPosition.CentralAttackingMidfielder:
+    case PlayerPosition.LeftAttackingMidfielder:
+    case PlayerPosition.LeftWinger:
+      return 4;
+    case PlayerPosition.RightStriker:
+    case PlayerPosition.CentralStriker:
+    case PlayerPosition.LeftStriker:
+      return 5;
+    default:
+      return -1;
+  }
+}
+
   // Position sort order map - defines the tactical field layout order
   export const positionSortOrder: Record<number, number> = {
     [PlayerPosition.Goalkeeper]: 1,

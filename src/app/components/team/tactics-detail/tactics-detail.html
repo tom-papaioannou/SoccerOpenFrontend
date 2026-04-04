@@ -37,108 +37,23 @@
           <div class="absolute inset-0 p-8 md:p-5 flex flex-col justify-between">
             <div class="flex justify-center items-center h-1/8"></div>
 
-            <!-- Forwards -->
-            <div class="flex justify-center gap-10 items-center h-1/4">
-              <div class="player-node group cursor-grab active:cursor-grabbing flex flex-col items-center gap-2">
-                <div class="player-shirt">
-                  9
-                </div>
-                <span class="bg-surface-container-highest/80 backdrop-blur px-1 py-0.5 rounded text-[7px] font-label font-bold uppercase border border-white/5">
-                  {{ playerNameInTactics('LST') }}
-                </span>
+            @for (row of pitchRows(); track row.rowIndex) {
+              <div class="flex items-center"
+                [ngClass]="row.isGoalkeeper
+                  ? 'justify-center h-1/8'
+                  : (row.players.length <= 2 ? 'justify-center gap-10' : 'justify-around')">
+                @for (player of row.players; track player.position) {
+                  <div class="player-node group cursor-grab active:cursor-grabbing flex flex-col items-center gap-2">
+                    <div class="player-shirt">
+                      {{ player.shirtNumber }}
+                    </div>
+                    <span class="bg-surface-container-highest/80 backdrop-blur px-1 py-0.5 rounded text-[7px] font-label font-bold uppercase border border-white/5">
+                      {{ player.playerName }}
+                    </span>
+                  </div>
+                }
               </div>
-              <div class="player-node group cursor-grab active:cursor-grabbing flex flex-col items-center gap-2">
-                <div class="player-shirt">
-                  10
-                </div>
-                <span class="bg-surface-container-highest/80 backdrop-blur px-1 py-0.5 rounded text-[7px] font-label font-bold uppercase border border-white/5">
-                  {{ playerNameInTactics('RST') }}
-                </span>
-              </div>
-            </div>
-
-            <!-- Midfield -->
-            <div class="flex justify-around items-center h-1/4">
-              <div class="player-node group cursor-grab active:cursor-grabbing flex flex-col items-center gap-2">
-                <div class="player-shirt">
-                  7
-                </div>
-                <span class="bg-surface-container-highest/80 backdrop-blur px-1 py-0.5 rounded text-[7px] font-label font-bold uppercase border border-white/5">
-                  {{ playerNameInTactics('LM') }}
-                </span>
-              </div>
-              <div class="player-node group cursor-grab active:cursor-grabbing flex flex-col items-center gap-2">
-                <div class="player-shirt">
-                  8
-                </div>
-                <span class="bg-surface-container-highest/80 backdrop-blur px-1 py-0.5 rounded text-[7px] font-label font-bold uppercase border border-white/5">
-                  {{ playerNameInTactics('LCM') }}
-                </span>
-              </div>
-              <div class="player-node group cursor-grab active:cursor-grabbing flex flex-col items-center gap-2">
-                <div class="player-shirt">
-                  6
-                </div>
-                <span class="bg-surface-container-highest/80 backdrop-blur px-1 py-0.5 rounded text-[7px] font-label font-bold uppercase border border-white/5">
-                  {{ playerNameInTactics('RCM') }}
-                </span>
-              </div>
-              <div class="player-node group cursor-grab active:cursor-grabbing flex flex-col items-center gap-2">
-                <div class="player-shirt">
-                  11
-                </div>
-                <span class="bg-surface-container-highest/80 backdrop-blur px-1 py-0.5 rounded text-[7px] font-label font-bold uppercase border border-white/5">
-                  {{ playerNameInTactics('RM') }}
-                </span>
-              </div>
-            </div>
-
-            <!-- Defenders -->
-            <div class="flex justify-around items-center h-1/4">
-              <div class="player-node group cursor-grab active:cursor-grabbing flex flex-col items-center gap-2">
-                <div class="player-shirt">
-                  2
-                </div>
-                <span class="bg-surface-container-highest/80 backdrop-blur px-1 py-0.5 rounded text-[7px] font-label font-bold uppercase border border-white/5">
-                  {{ playerNameInTactics('LB') }}
-                </span>
-              </div>
-              <div class="player-node group cursor-grab active:cursor-grabbing flex flex-col items-center gap-2">
-                <div class="player-shirt">
-                  4
-                </div>
-                <span class="bg-surface-container-highest/80 backdrop-blur px-1 py-0.5 rounded text-[7px] font-label font-bold uppercase border border-white/5">
-                  {{ playerNameInTactics('LCB') }}
-                </span>
-              </div>
-              <div class="player-node group cursor-grab active:cursor-grabbing flex flex-col items-center gap-2">
-                <div class="player-shirt">
-                  5</div>
-                <span class="bg-surface-container-highest/80 backdrop-blur px-1 py-0.5 rounded text-[7px] font-label font-bold uppercase border border-white/5">
-                  {{ playerNameInTactics('RCB') }}
-                </span>
-              </div>
-              <div class="player-node group cursor-grab active:cursor-grabbing flex flex-col items-center gap-2">
-                <div class="player-shirt">
-                  3
-                </div>
-                <span class="bg-surface-container-highest/80 backdrop-blur px-1 py-0.5 rounded text-[7px] font-label font-bold uppercase border border-white/5">
-                  {{ playerNameInTactics('RB') }}
-                </span>
-              </div>
-            </div>
-
-            <!-- Goalkeeper -->
-            <div class="flex justify-center items-center h-1/8">
-              <div class="player-node group cursor-grab active:cursor-grabbing flex flex-col items-center gap-2">
-                <div class="player-shirt">
-                  1
-                </div>
-                <span class="bg-surface-container-highest/80 backdrop-blur px-1 py-0.5 rounded text-[7px] font-label font-bold uppercase border border-white/5">
-                  {{ playerNameInTactics('GK') }}
-                </span>
-              </div>
-            </div>
+            }
           </div>
         </div>
       </section>
