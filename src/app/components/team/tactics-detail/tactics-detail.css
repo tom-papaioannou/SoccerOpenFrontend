@@ -25,8 +25,50 @@
 .players-section {
   display: flex;
   flex-direction: column;
-  max-width: 500px;
+  width: 620px;
+  flex-shrink: 0;
   padding: 0px 16px;
+}
+
+/* Filter wrapper: on desktop buttons are to the right of the table */
+.squad-filter-wrapper {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.squad-table-area {
+  flex: 1;
+  min-width: 0;
+  overflow-y: auto;
+  min-width: 434px;
+
+  @media (max-width: 768px) {
+    min-width: 343px;
+  }
+}
+
+.squad-unit-buttons {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+/* On mobile: buttons above the table */
+@media (max-width: 767px) {
+  .squad-filter-wrapper {
+    flex-direction: column-reverse;
+  }
+
+  .squad-unit-buttons {
+    flex-direction: row;
+    width: 100%;
+  }
+
+  .squad-unit-buttons mat-button-toggle {
+    flex: 1;
+  }
 }
 
 /* Mobile responsive layout */
@@ -40,8 +82,8 @@
   .players-section {
     width: 100%;
     max-width: 100%;
-    padding-left: 0;
-    padding-right: 0;
+    padding-left: 8px;
+    padding-right: 8px;
   }
 }
 

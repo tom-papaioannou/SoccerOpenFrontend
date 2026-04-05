@@ -8,6 +8,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatCard, MatCardContent } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatIconModule } from '@angular/material/icon';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { forkJoin } from 'rxjs';
@@ -16,6 +17,15 @@ import { TacticsService } from '../../../services/tactics.service';
 import { Tactic, Formation, PlayerTactic } from '../../../models/tactic.model';
 import { DataTable } from '../../shared/tables/data-table/data-table';
 import { getPlayerPositionLabel, getPlayerRoleLabel, positionSortOrder, getPositionPitchRow } from '../../../utils/position-utils';
+
+function getSquadUnitLabel(squadUnit: number): string {
+  switch (squadUnit) {
+    case 0: return 'Starting';
+    case 1: return 'Substitutes';
+    case 2: return 'Reserves';
+    default: return '-';
+  }
+}
 
 export interface PitchRowPlayer {
   position: number;
@@ -39,6 +49,7 @@ export interface PitchRow {
     MatCard,
     MatCardContent,
     MatButtonModule,
+    MatButtonToggleModule,
     MatIconModule,
     DataTable,
     CdkDrag
@@ -64,6 +75,9 @@ export class TacticsDetail implements OnInit, OnDestroy {
   /** Reference to the DOM element currently being hovered during drag */
   private hoveredElement: HTMLElement | null = null;
 
+  /** Currently selected squad unit filter (0 = Starting, 1 = Substitutes, 2 = Reserves) */
+  selectedSquadUnit = signal<number>(0);
+
   /** Timer handle for the debounced hover removal (1 s after pointer leaves a target) */
   private hoverRemovalTimer: ReturnType<typeof setTimeout> | null = null;
 
@@ -79,6 +93,8 @@ export class TacticsDetail implements OnInit, OnDestroy {
     const rowMap = new Map<number, PitchRowPlayer[]>();
 
     for (const pt of tactics) {
+      // Only show starting players (squadUnit 0) on the pitch
+      if (pt.squadUnit !== 0) continue;
       const row = getPositionPitchRow(pt.playerPosition);
       if (row < 0) continue;
 
@@ -135,7 +151,7 @@ export class TacticsDetail implements OnInit, OnDestroy {
       sortAccessor: (row: any) => row.positionValue,
       comparator: this.positionComparator
     },
-    { key: 'playerName', header: 'Name', width: '80%', sortable: true },
+    { key: 'playerName', header: 'Name', width: '60%', sortable: true },
     { key: 'role', width: '10%', header: 'Role', sortable: true }
   ];
 
@@ -227,20 +243,39 @@ export class TacticsDetail implements OnInit, OnDestroy {
     this.router.navigate(['/team/tactics']);
   }
 
-  // Transform playerTactics for table display
+  // Transform playerTactics for table display, grouped by squad unit:
+  // Starting players (0) sorted by position, Substitutes (1) sorted by substituteOrder, Reserves (2) in default order
   get tableData() {
-    return this.playerTactics().map(pt => {
+    const all = this.playerTactics().map(pt => {
       const playerName = pt.person
         ? `${pt.person.name?.substring(0, 1) || ''}. ${pt.person.surname || ''}`.trim() || 'Unknown Player'
         : 'Unknown Player';
       return {
         playerName,
-        position: getPlayerPositionLabel(pt.playerPosition),
+        position: pt.squadUnit === 0 ? getPlayerPositionLabel(pt.playerPosition) : (pt.squadUnit === 1 ? `S${pt.substituteOrder ?? ''}` : 'Res'),
         positionValue: pt.playerPosition, // Include raw enum value for sorting
         role: getPlayerRoleLabel(pt.playerRole),
-        playerTacticID: pt.playerTacticID
+        playerTacticID: pt.playerTacticID,
+        squadUnit: pt.squadUnit,
+        squadUnitLabel: getSquadUnitLabel(pt.squadUnit),
+        substituteOrder: pt.substituteOrder ?? Number.MAX_SAFE_INTEGER
       };
     });
+
+    const starting = all
+      .filter(p => p.squadUnit === 0)
+      .sort((a, b) => (positionSortOrder[a.positionValue] ?? 999) - (positionSortOrder[b.positionValue] ?? 999));
+    const substitutes = all
+      .filter(p => p.squadUnit === 1)
+      .sort((a, b) => a.substituteOrder - b.substituteOrder);
+    const reserves = all.filter(p => p.squadUnit === 2);
+
+    return [...starting, ...substitutes, ...reserves];
+  }
+
+  /** Returns table data filtered by the currently selected squad unit. */
+  get filteredTableData() {
+    return this.tableData.filter(p => p.squadUnit === this.selectedSquadUnit());
   }
 
   /** Called when a player node drag begins. Shows a black dot at the original position. */

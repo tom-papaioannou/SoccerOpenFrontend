@@ -1,10 +1,10 @@
 <div class="tactics-detail-container p-4">
   <!-- Header with Back Button -->
-  <div class="mb-6 flex items-center gap-4">
+  <div class="mb-4 flex items-center gap-4">
     <button mat-icon-button (click)="goBack()" aria-label="Go back to tactics">
       <mat-icon>arrow_back</mat-icon>
     </button>
-    <h2 class="text-2xl font-bold">Tactic Details</h2>
+    <h2 class="text-2xl font-bold">{{tactic()?.name}}</h2>
   </div>
 
   <!-- Error Message -->
@@ -63,17 +63,37 @@
       </section>
     </div>
 
-    <!-- Right Side: Players Table -->
+    <!-- Right Side: Players Table with Filter Buttons -->
     <div class="players-section">
-      @if (tableData.length > 0) {
-      <app-data-table [data]="tableData" [columns]="displayedColumns"
-        [initialSort]="{ active: 'position', direction: 'asc' }">
-      </app-data-table>
-      } @else {
-      <div class="text-gray-500 text-center py-8">
-        No players assigned to this tactic yet.
+      <div class="squad-filter-wrapper">
+        <div class="squad-table-area">
+          @if (filteredTableData.length > 0) {
+          <app-data-table [data]="filteredTableData"
+            [columns]="displayedColumns">
+          </app-data-table>
+          } @else {
+          <div class="text-gray-500 text-center py-8">
+            No players in this category.
+          </div>
+          }
+        </div>
+        <mat-button-toggle-group class="squad-unit-buttons p-4"
+          [value]="selectedSquadUnit()"
+          (change)="selectedSquadUnit.set($event.value)">
+          <mat-button-toggle [value]="0" [ngStyle]="selectedSquadUnit() === 0 ? {'background-color': 'lightblue'} : {}">
+            <span class="hidden md:inline">Starting</span>
+            <span class="inline md:hidden">XI</span>
+          </mat-button-toggle>
+          <mat-button-toggle [value]="1" [ngStyle]="selectedSquadUnit() === 1 ? {'background-color': 'lightblue'} : {}">
+            <span class="hidden md:inline">Substitutes</span>
+            <span class="inline md:hidden">Subs</span>
+          </mat-button-toggle>
+          <mat-button-toggle [value]="2" [ngStyle]="selectedSquadUnit() === 2 ? {'background-color': 'lightblue'} : {}">
+            <span class="hidden md:inline">Reserves</span>
+            <span class="inline md:hidden">Res</span>
+          </mat-button-toggle>
+        </mat-button-toggle-group>
       </div>
-      }
     </div>
   </div>
   }
