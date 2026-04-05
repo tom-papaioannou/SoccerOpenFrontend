@@ -25,7 +25,8 @@
 .players-section {
   display: flex;
   flex-direction: column;
-  max-width: 700px;
+  width: 620px;
+  flex-shrink: 0;
   padding: 0px 16px;
 }
 
@@ -76,8 +77,8 @@
   .players-section {
     width: 100%;
     max-width: 100%;
-    padding-left: 0;
-    padding-right: 0;
+    padding-left: 8px;
+    padding-right: 8px;
   }
 }
 
