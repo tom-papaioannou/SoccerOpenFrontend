@@ -78,6 +78,8 @@ export interface PlayerTactic {
     };
   playerPosition: number;
   playerRole: number;
+  squadUnit: number;
+  substituteOrder?: number;
 }
 
 /**
