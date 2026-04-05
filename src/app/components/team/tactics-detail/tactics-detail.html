@@ -77,12 +77,21 @@
           </div>
           }
         </div>
-        <mat-button-toggle-group class="squad-unit-buttons"
+        <mat-button-toggle-group class="squad-unit-buttons p-4"
           [value]="selectedSquadUnit()"
           (change)="selectedSquadUnit.set($event.value)">
-          <mat-button-toggle [value]="0" [ngStyle]="selectedSquadUnit() === 0 ? {'background-color': 'lightblue'} : {}" style="min-width: 150px;">Starting</mat-button-toggle>
-          <mat-button-toggle [value]="1" [ngStyle]="selectedSquadUnit() === 1 ? {'background-color': 'lightblue'} : {}" style="min-width: 150px;">Substitutes</mat-button-toggle>
-          <mat-button-toggle [value]="2" [ngStyle]="selectedSquadUnit() === 2 ? {'background-color': 'lightblue'} : {}" style="min-width: 150px;">Reserves</mat-button-toggle>
+          <mat-button-toggle [value]="0" [ngStyle]="selectedSquadUnit() === 0 ? {'background-color': 'lightblue'} : {}">
+            <span class="hidden md:inline">Starting</span>
+            <span class="inline md:hidden">XI</span>
+          </mat-button-toggle>
+          <mat-button-toggle [value]="1" [ngStyle]="selectedSquadUnit() === 1 ? {'background-color': 'lightblue'} : {}">
+            <span class="hidden md:inline">Substitutes</span>
+            <span class="inline md:hidden">Subs</span>
+          </mat-button-toggle>
+          <mat-button-toggle [value]="2" [ngStyle]="selectedSquadUnit() === 2 ? {'background-color': 'lightblue'} : {}">
+            <span class="hidden md:inline">Reserves</span>
+            <span class="inline md:hidden">Res</span>
+          </mat-button-toggle>
         </mat-button-toggle-group>
       </div>
     </div>
