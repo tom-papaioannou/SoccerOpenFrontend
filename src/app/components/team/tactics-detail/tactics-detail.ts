@@ -21,7 +21,7 @@ import { getPlayerPositionLabel, getPlayerRoleLabel, positionSortOrder, getPosit
 function getSquadUnitLabel(squadUnit: number): string {
   switch (squadUnit) {
     case 0: return 'Starting';
-    case 1: return 'Substitute';
+    case 1: return 'Substitutes';
     case 2: return 'Reserve';
     default: return '-';
   }
