@@ -65,16 +65,14 @@
 
     <!-- Right Side: Players Table -->
     <div class="players-section">
-      <div class="players-section-inner">
-        @if (tableData.length > 0) {
-        <app-data-table [data]="tableData" [columns]="displayedColumns">
-        </app-data-table>
-        } @else {
-        <div class="text-gray-500 text-center py-8">
-          No players assigned to this tactic yet.
-        </div>
-        }
+      @if (tableData.length > 0) {
+      <app-data-table [data]="tableData" [columns]="displayedColumns">
+      </app-data-table>
+      } @else {
+      <div class="text-gray-500 text-center py-8">
+        No players assigned to this tactic yet.
       </div>
+      }
     </div>
   </div>
   }
