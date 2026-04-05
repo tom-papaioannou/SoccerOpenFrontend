@@ -8,6 +8,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatCard, MatCardContent } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatIconModule } from '@angular/material/icon';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { forkJoin } from 'rxjs';
@@ -48,6 +49,7 @@ export interface PitchRow {
     MatCard,
     MatCardContent,
     MatButtonModule,
+    MatButtonToggleModule,
     MatIconModule,
     DataTable,
     CdkDrag
@@ -72,6 +74,9 @@ export class TacticsDetail implements OnInit, OnDestroy {
 
   /** Reference to the DOM element currently being hovered during drag */
   private hoveredElement: HTMLElement | null = null;
+
+  /** Currently selected squad unit filter (0 = Starting, 1 = Substitutes, 2 = Reserves) */
+  selectedSquadUnit = signal<number>(0);
 
   /** Timer handle for the debounced hover removal (1 s after pointer leaves a target) */
   private hoverRemovalTimer: ReturnType<typeof setTimeout> | null = null;
@@ -266,6 +271,11 @@ export class TacticsDetail implements OnInit, OnDestroy {
     const reserves = all.filter(p => p.squadUnit === 2);
 
     return [...starting, ...substitutes, ...reserves];
+  }
+
+  /** Returns table data filtered by the currently selected squad unit. */
+  get filteredTableData() {
+    return this.tableData.filter(p => p.squadUnit === this.selectedSquadUnit());
   }
 
   /** Called when a player node drag begins. Shows a black dot at the original position. */

@@ -63,17 +63,28 @@
       </section>
     </div>
 
-    <!-- Right Side: Players Table -->
+    <!-- Right Side: Players Table with Filter Buttons -->
     <div class="players-section min-w-[620px]">
-      @if (tableData.length > 0) {
-      <app-data-table [data]="tableData"
-        [columns]="displayedColumns">
-      </app-data-table>
-      } @else {
-      <div class="text-gray-500 text-center py-8">
-        No players assigned to this tactic yet.
+      <div class="squad-filter-wrapper">
+        <div class="squad-table-area">
+          @if (filteredTableData.length > 0) {
+          <app-data-table [data]="filteredTableData"
+            [columns]="displayedColumns">
+          </app-data-table>
+          } @else {
+          <div class="text-gray-500 text-center py-8">
+            No players in this category.
+          </div>
+          }
+        </div>
+        <mat-button-toggle-group class="squad-unit-buttons"
+          [value]="selectedSquadUnit()"
+          (change)="selectedSquadUnit.set($event.value)">
+          <mat-button-toggle [value]="0">Starting</mat-button-toggle>
+          <mat-button-toggle [value]="1">Substitutes</mat-button-toggle>
+          <mat-button-toggle [value]="2">Reserves</mat-button-toggle>
+        </mat-button-toggle-group>
       </div>
-      }
     </div>
   </div>
   }
