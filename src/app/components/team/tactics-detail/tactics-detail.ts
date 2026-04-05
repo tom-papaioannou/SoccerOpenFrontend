@@ -17,6 +17,15 @@ import { Tactic, Formation, PlayerTactic } from '../../../models/tactic.model';
 import { DataTable } from '../../shared/tables/data-table/data-table';
 import { getPlayerPositionLabel, getPlayerRoleLabel, positionSortOrder, getPositionPitchRow } from '../../../utils/position-utils';
 
+function getSquadUnitLabel(squadUnit: number): string {
+  switch (squadUnit) {
+    case 0: return 'Starting';
+    case 1: return 'Substitute';
+    case 2: return 'Reserve';
+    default: return '-';
+  }
+}
+
 export interface PitchRowPlayer {
   position: number;
   positionLabel: string;
@@ -244,8 +253,8 @@ export class TacticsDetail implements OnInit, OnDestroy {
         role: getPlayerRoleLabel(pt.playerRole),
         playerTacticID: pt.playerTacticID,
         squadUnit: pt.squadUnit,
-        squadUnitLabel: pt.squadUnit === 0 ? 'Starting' : pt.squadUnit === 1 ? 'Substitute' : 'Reserve',
-        substituteOrder: pt.substituteOrder ?? 0
+        squadUnitLabel: getSquadUnitLabel(pt.squadUnit),
+        substituteOrder: pt.substituteOrder ?? Number.MAX_SAFE_INTEGER
       };
     });
 
