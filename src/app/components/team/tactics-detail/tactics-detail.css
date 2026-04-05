@@ -42,6 +42,11 @@
   flex: 1;
   min-width: 0;
   overflow-y: auto;
+  min-width: 434px;
+
+  @media (max-width: 768px) {
+    min-width: 343px;
+  }
 }
 
 .squad-unit-buttons {

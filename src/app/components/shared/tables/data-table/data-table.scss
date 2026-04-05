@@ -42,6 +42,11 @@
   border-color: transparent;
   background: var(--dt-data-bg, rgba(0,0,0,0.5));
   height: var(--dt-data-bg, 100%);
+  min-width: 434px;
+
+  @media (max-width: 768px) {
+    min-width: 343px;
+  }
 }
 
 .dt-align-left   { text-align: left; }
