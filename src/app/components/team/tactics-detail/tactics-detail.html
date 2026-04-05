@@ -1,10 +1,10 @@
 <div class="tactics-detail-container p-4">
   <!-- Header with Back Button -->
-  <div class="mb-6 flex items-center gap-4">
+  <div class="mb-4 flex items-center gap-4">
     <button mat-icon-button (click)="goBack()" aria-label="Go back to tactics">
       <mat-icon>arrow_back</mat-icon>
     </button>
-    <h2 class="text-2xl font-bold">Tactic Details</h2>
+    <h2 class="text-2xl font-bold">{{tactic()?.name}}</h2>
   </div>
 
   <!-- Error Message -->
@@ -64,9 +64,10 @@
     </div>
 
     <!-- Right Side: Players Table -->
-    <div class="players-section">
+    <div class="players-section min-w-[620px]">
       @if (tableData.length > 0) {
-      <app-data-table [data]="tableData" [columns]="displayedColumns">
+      <app-data-table [data]="tableData"
+        [columns]="displayedColumns">
       </app-data-table>
       } @else {
       <div class="text-gray-500 text-center py-8">
