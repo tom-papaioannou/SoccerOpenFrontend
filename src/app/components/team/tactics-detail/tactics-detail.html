@@ -66,8 +66,7 @@
     <!-- Right Side: Players Table -->
     <div class="players-section">
       @if (tableData.length > 0) {
-      <app-data-table [data]="tableData" [columns]="displayedColumns"
-        [initialSort]="{ active: 'position', direction: 'asc' }">
+      <app-data-table [data]="tableData" [columns]="displayedColumns">
       </app-data-table>
       } @else {
       <div class="text-gray-500 text-center py-8">

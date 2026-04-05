@@ -79,6 +79,8 @@ export class TacticsDetail implements OnInit, OnDestroy {
     const rowMap = new Map<number, PitchRowPlayer[]>();
 
     for (const pt of tactics) {
+      // Only show starting players (squadUnit 0) on the pitch
+      if (pt.squadUnit !== 0) continue;
       const row = getPositionPitchRow(pt.playerPosition);
       if (row < 0) continue;
 
@@ -135,8 +137,9 @@ export class TacticsDetail implements OnInit, OnDestroy {
       sortAccessor: (row: any) => row.positionValue,
       comparator: this.positionComparator
     },
-    { key: 'playerName', header: 'Name', width: '80%', sortable: true },
-    { key: 'role', width: '10%', header: 'Role', sortable: true }
+    { key: 'playerName', header: 'Name', width: '60%', sortable: true },
+    { key: 'role', width: '10%', header: 'Role', sortable: true },
+    { key: 'squadUnitLabel', width: '20%', header: 'Squad Unit', sortable: true }
   ];
 
   constructor(
@@ -227,9 +230,10 @@ export class TacticsDetail implements OnInit, OnDestroy {
     this.router.navigate(['/team/tactics']);
   }
 
-  // Transform playerTactics for table display
+  // Transform playerTactics for table display, grouped by squad unit:
+  // Starting players (0) sorted by position, Substitutes (1) sorted by substituteOrder, Reserves (2) in default order
   get tableData() {
-    return this.playerTactics().map(pt => {
+    const all = this.playerTactics().map(pt => {
       const playerName = pt.person
         ? `${pt.person.name?.substring(0, 1) || ''}. ${pt.person.surname || ''}`.trim() || 'Unknown Player'
         : 'Unknown Player';
@@ -238,9 +242,22 @@ export class TacticsDetail implements OnInit, OnDestroy {
         position: getPlayerPositionLabel(pt.playerPosition),
         positionValue: pt.playerPosition, // Include raw enum value for sorting
         role: getPlayerRoleLabel(pt.playerRole),
-        playerTacticID: pt.playerTacticID
+        playerTacticID: pt.playerTacticID,
+        squadUnit: pt.squadUnit,
+        squadUnitLabel: pt.squadUnit === 0 ? 'Starting' : pt.squadUnit === 1 ? 'Substitute' : 'Reserve',
+        substituteOrder: pt.substituteOrder ?? 0
       };
     });
+
+    const starting = all
+      .filter(p => p.squadUnit === 0)
+      .sort((a, b) => (positionSortOrder[a.positionValue] ?? 999) - (positionSortOrder[b.positionValue] ?? 999));
+    const substitutes = all
+      .filter(p => p.squadUnit === 1)
+      .sort((a, b) => a.substituteOrder - b.substituteOrder);
+    const reserves = all.filter(p => p.squadUnit === 2);
+
+    return [...starting, ...substitutes, ...reserves];
   }
 
   /** Called when a player node drag begins. Shows a black dot at the original position. */
