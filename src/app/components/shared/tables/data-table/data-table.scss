@@ -1,12 +1,15 @@
 @use '@angular/material' as mat;
 
 :host {
+  display: block;
+  width: 100%;
   @include mat.sort-overrides((
     arrow-color: var(--dt-sort-arrow-color, currentColor),
   ));
 }
 
 .app-table {
+  width: 100%;
   border-radius: 12px;
   background: transparent;
 }
