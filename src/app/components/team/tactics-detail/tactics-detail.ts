@@ -147,8 +147,7 @@ export class TacticsDetail implements OnInit, OnDestroy {
       comparator: this.positionComparator
     },
     { key: 'playerName', header: 'Name', width: '60%', sortable: true },
-    { key: 'role', width: '10%', header: 'Role', sortable: true },
-    { key: 'squadUnitLabel', width: '20%', header: 'Squad Unit', sortable: true }
+    { key: 'role', width: '10%', header: 'Role', sortable: true }
   ];
 
   constructor(
@@ -248,7 +247,7 @@ export class TacticsDetail implements OnInit, OnDestroy {
         : 'Unknown Player';
       return {
         playerName,
-        position: getPlayerPositionLabel(pt.playerPosition),
+        position: pt.squadUnit === 0 ? getPlayerPositionLabel(pt.playerPosition) : (pt.squadUnit === 1 ? `S${pt.substituteOrder ?? ''}` : 'Res'),
         positionValue: pt.playerPosition, // Include raw enum value for sorting
         role: getPlayerRoleLabel(pt.playerRole),
         playerTacticID: pt.playerTacticID,
