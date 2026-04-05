@@ -80,9 +80,9 @@
         <mat-button-toggle-group class="squad-unit-buttons"
           [value]="selectedSquadUnit()"
           (change)="selectedSquadUnit.set($event.value)">
-          <mat-button-toggle [value]="0">Starting</mat-button-toggle>
-          <mat-button-toggle [value]="1">Substitutes</mat-button-toggle>
-          <mat-button-toggle [value]="2">Reserves</mat-button-toggle>
+          <mat-button-toggle [value]="0" [ngStyle]="selectedSquadUnit() === 0 ? {'background-color': 'lightblue'} : {}" style="min-width: 150px;">Starting</mat-button-toggle>
+          <mat-button-toggle [value]="1" [ngStyle]="selectedSquadUnit() === 1 ? {'background-color': 'lightblue'} : {}" style="min-width: 150px;">Substitutes</mat-button-toggle>
+          <mat-button-toggle [value]="2" [ngStyle]="selectedSquadUnit() === 2 ? {'background-color': 'lightblue'} : {}" style="min-width: 150px;">Reserves</mat-button-toggle>
         </mat-button-toggle-group>
       </div>
     </div>
