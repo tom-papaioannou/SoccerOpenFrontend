@@ -12,10 +12,9 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatIconModule } from '@angular/material/icon';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { forkJoin } from 'rxjs';
-import { CdkDrag, CdkDragStart, CdkDragMove, CdkDragEnd } from '@angular/cdk/drag-drop';
+import { CdkDrag, CdkDragStart, CdkDragMove, CdkDragEnd, CdkDragDrop, CdkDropList, CdkDragHandle, CdkDragPlaceholder } from '@angular/cdk/drag-drop';
 import { TacticsService } from '../../../services/tactics.service';
 import { Tactic, Formation, PlayerTactic } from '../../../models/tactic.model';
-import { DataTable } from '../../shared/tables/data-table/data-table';
 import { getPlayerPositionLabel, getPlayerRoleLabel, positionSortOrder, getPositionPitchRow } from '../../../utils/position-utils';
 
 function getSquadUnitLabel(squadUnit: number): string {
@@ -42,6 +41,18 @@ export interface PitchRow {
   isGoalkeeper: boolean;
 }
 
+/** Shape of each row displayed in the player tactics drop-list. */
+export interface PlayerTacticTableRow {
+  playerName: string;
+  position: string;
+  positionValue: number;
+  role: string;
+  playerTacticID: string | undefined;
+  squadUnit: number;
+  squadUnitLabel: string;
+  substituteOrder: number;
+}
+
 @Component({
   selector: 'app-tactics-detail',
   imports: [
@@ -51,8 +62,10 @@ export interface PitchRow {
     MatButtonModule,
     MatButtonToggleModule,
     MatIconModule,
-    DataTable,
-    CdkDrag
+    CdkDrag,
+    CdkDropList,
+    CdkDragHandle,
+    CdkDragPlaceholder
   ],
   templateUrl: './tactics-detail.html',
   styleUrl: './tactics-detail.css',
@@ -68,6 +81,7 @@ export class TacticsDetail implements OnInit, OnDestroy {
   playerTactics = signal<PlayerTactic[]>([]);
   loading = signal(false);
   error = signal<string | null>(null);
+  tacticId = signal<string | null>(null);
 
   /** Tracks the position of the currently dragged player (null when not dragging) */
   draggedPosition = signal<number | null>(null);
@@ -134,27 +148,6 @@ export class TacticsDetail implements OnInit, OnDestroy {
     return rows;
   });
 
-  // Custom comparator for position sorting
-  private positionComparator = (a: unknown, b: unknown): number => {
-    const aOrder = positionSortOrder[a as number] ?? 999;
-    const bOrder = positionSortOrder[b as number] ?? 999;
-    return aOrder - bOrder;
-  };
-  
-  // Table columns for player tactics
-  displayedColumns = [
-    { 
-      key: 'position', 
-      width: '10%', 
-      header: 'Position', 
-      sortable: true,
-      sortAccessor: (row: any) => row.positionValue,
-      comparator: this.positionComparator
-    },
-    { key: 'playerName', header: 'Name', width: '60%', sortable: true },
-    { key: 'role', width: '10%', header: 'Role', sortable: true }
-  ];
-
   constructor(
     private readonly tacticsService: TacticsService,
     private readonly cdr: ChangeDetectorRef,
@@ -175,6 +168,7 @@ export class TacticsDetail implements OnInit, OnDestroy {
       return;
     }
     
+    this.tacticId.set(tacticId);
     this.loadTacticDetails(tacticId);
   }
 
@@ -245,8 +239,8 @@ export class TacticsDetail implements OnInit, OnDestroy {
 
   // Transform playerTactics for table display, grouped by squad unit:
   // Starting players (0) sorted by position, Substitutes (1) sorted by substituteOrder, Reserves (2) in default order
-  get tableData() {
-    const all = this.playerTactics().map(pt => {
+  get tableData(): PlayerTacticTableRow[] {
+    const all: PlayerTacticTableRow[] = this.playerTactics().map(pt => {
       const playerName = pt.person
         ? `${pt.person.name?.substring(0, 1) || ''}. ${pt.person.surname || ''}`.trim() || 'Unknown Player'
         : 'Unknown Player';
@@ -274,7 +268,7 @@ export class TacticsDetail implements OnInit, OnDestroy {
   }
 
   /** Returns table data filtered by the currently selected squad unit. */
-  get filteredTableData() {
+  get filteredTableData(): PlayerTacticTableRow[] {
     return this.tableData.filter(p => p.squadUnit === this.selectedSquadUnit());
   }
 
@@ -357,24 +351,48 @@ export class TacticsDetail implements OnInit, OnDestroy {
   /** Called when a dragged player is dropped onto another player. */
   onPlayerSwap(draggedPlayer: PitchRowPlayer, targetPlayer: PitchRowPlayer): void {
     this.tacticsService.swapPlayerTactics(draggedPlayer.playerTacticID!, targetPlayer.playerTacticID!).subscribe({
-      next: () => {
-        // Swap playerPosition values in the local state so the pitch and table update
-        const updated = this.playerTactics().map(pt => {
-          if (pt.playerTacticID === draggedPlayer.playerTacticID) {
-            return { ...pt, playerPosition: targetPlayer.position, playerRole: targetPlayer.role };
-          }
-          if (pt.playerTacticID === targetPlayer.playerTacticID) {
-            return { ...pt, playerPosition: draggedPlayer.position, playerRole: draggedPlayer.role };
-          }
-          return pt;
-        });
-        this.playerTactics.set(updated);
-        this.cdr.markForCheck();
-      },
+      next: () => this.reloadPlayerTactics(),
       error: (err) => {
         console.error('Error swapping players:', err);
       }
     });
+  }
+
+  /** Handles a drop event on the player tactics list. */
+  onTablePlayerDrop(event: CdkDragDrop<PlayerTacticTableRow[]>): void {
+    if (event.previousIndex === event.currentIndex) return;
+
+    const data = this.filteredTableData;
+    const draggedPlayer = data[event.previousIndex];
+    const targetPlayer = data[event.currentIndex];
+
+    if (!draggedPlayer?.playerTacticID || !targetPlayer?.playerTacticID) return;
+
+    this.tacticsService.swapPlayerTactics(draggedPlayer.playerTacticID, targetPlayer.playerTacticID).subscribe({
+      next: () => this.reloadPlayerTactics(),
+      error: (err) => {
+        console.error('Error swapping players in list:', err);
+      }
+    });
+  }
+
+  /** Reloads the player tactics from the backend and updates the signal.
+   *  Note: takeUntilDestroyed is safe here because this.destroyRef was captured
+   *  in the constructor (injection context) and is passed explicitly. */
+  private reloadPlayerTactics(): void {
+    const id = this.tacticId();
+    if (!id) return;
+    this.tacticsService.getPlayerTactics(id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (pts) => {
+          this.playerTactics.set(pts);
+          this.cdr.markForCheck();
+        },
+        error: (err) => {
+          console.error('Error reloading player tactics:', err);
+        }
+      });
   }
 
   /** Finds a PitchRowPlayer by their position enum value. */

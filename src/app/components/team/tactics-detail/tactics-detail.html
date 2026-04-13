@@ -34,7 +34,7 @@
           </div>
 
           <!-- Tactical Nodes -->
-          <div class="absolute inset-0 p-8 md:p-5 flex flex-col justify-between">
+          <div class="absolute inset-0 p-8 md:p-5 flex flex-col justify-between border-4 border-white rounded-lg">
             <div class="flex justify-center items-center h-1/8"></div>
 
             @for (row of pitchRows(); track row.rowIndex) {
@@ -68,9 +68,30 @@
       <div class="squad-filter-wrapper">
         <div class="squad-table-area">
           @if (filteredTableData.length > 0) {
-          <app-data-table [data]="filteredTableData"
-            [columns]="displayedColumns">
-          </app-data-table>
+          <div class="player-tactics-list rounded-xl border p-3">
+            <!-- Header row -->
+            <div class="player-list-header">
+              <span class="list-col-drag"></span>
+              <span class="list-col-pos">Pos</span>
+              <span class="list-col-name">Name</span>
+              <span class="list-col-role">Role</span>
+            </div>
+            <!-- Drag-drop list -->
+            <div cdkDropList
+                 [cdkDropListData]="filteredTableData"
+                 (cdkDropListDropped)="onTablePlayerDrop($event)"
+                 class="player-list-body">
+              @for (player of filteredTableData; track player.playerTacticID) {
+                <div cdkDrag class="player-list-row">
+                  <mat-icon cdkDragHandle class="list-col-drag drag-handle">drag_indicator</mat-icon>
+                  <span class="list-col-pos">{{ player.position }}</span>
+                  <span class="list-col-name">{{ player.playerName }}</span>
+                  <span class="list-col-role">{{ player.role }}</span>
+                  <div class="player-list-placeholder" *cdkDragPlaceholder></div>
+                </div>
+              }
+            </div>
+          </div>
           } @else {
           <div class="text-gray-500 text-center py-8">
             No players in this category.
