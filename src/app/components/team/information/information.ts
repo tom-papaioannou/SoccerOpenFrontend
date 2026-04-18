@@ -17,7 +17,6 @@ export class Information implements OnInit, OnDestroy {
   constructor(private readonly teamsService: TeamsService) {}
 
   ngOnInit(): void {
-    this.team = this.teamsService.CurrentTeam;
     this.teamsService.currentTeamObservable
       .pipe(takeUntil(this.destroy$))
       .subscribe((team) => {
