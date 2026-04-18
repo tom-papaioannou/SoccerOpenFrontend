@@ -43,6 +43,12 @@ describe('App Routes', () => {
     expect(teamRoute?.canActivate).toContain(authenticationGuard);
   });
 
+  it('should include information child route under team', () => {
+    const teamRoute = routes.find(r => r.path === 'team');
+    const informationRoute = teamRoute?.children?.find(c => c.path === 'information');
+    expect(informationRoute).toBeTruthy();
+  });
+
   it('should have all routes except login and register protected', () => {
     const routesWithComponents = routes.filter(r => 
       r.component !== undefined && 
