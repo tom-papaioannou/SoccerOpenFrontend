@@ -1,0 +1,20 @@
+<div class="max-w-3xl mx-auto p-4">
+  <div class="information-card rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+    <h2 class="text-xl font-semibold mb-4">Team Information</h2>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div>
+        <p class="text-xs uppercase text-gray-500">Name</p>
+        <p class="text-base">{{ team?.name ?? '-' }}</p>
+      </div>
+      <div>
+        <p class="text-xs uppercase text-gray-500">Stadium</p>
+        <p class="text-base">{{ team?.stadium?.name ?? '-' }}</p>
+      </div>
+      <div>
+        <p class="text-xs uppercase text-gray-500">City</p>
+        <p class="text-base">{{ team?.stadium?.city ?? '-' }}</p>
+      </div>
+    </div>
+  </div>
+</div>

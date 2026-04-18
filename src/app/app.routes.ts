@@ -13,6 +13,7 @@ import { Tactics } from './components/team/tactics/tactics';
 import { TacticsDetail } from './components/team/tactics-detail/tactics-detail';
 import { Fixtures } from './components/team/fixtures/fixtures';
 import { PlayerDetails } from './components/team/player-details/player-details';
+import { Information } from './components/team/information/information';
 import { Competitions } from './components/competitions/competitions';
 import { CompetitionsManagement } from './components/competitions-management/competitions-management';
 import { CompetitionDetails } from './components/competition-details/competition-details';
@@ -38,7 +39,8 @@ export const routes: Routes = [
             { path: 'player/:id', component: PlayerDetails },
             { path: 'tactics', component: Tactics },
             { path: 'tactics/:id', component: TacticsDetail },
-            { path: 'fixtures', component: Fixtures }
+            { path: 'fixtures', component: Fixtures },
+            { path: 'information', component: Information }
         ]
     },
     { path: '**', redirectTo: '/home' },
