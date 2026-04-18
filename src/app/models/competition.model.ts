@@ -31,9 +31,16 @@ export interface Competition {
 export interface Team {
   teamID?: string;
   name: string;
-  country?: string;
-  stadium?: string;
-  foundedYear?: number;
+  stadium?: Stadium;
+}
+
+export interface Stadium {
+  stadiumID?: string;
+  name: string;
+  city?: string;
+  latitude: number;
+  longitude: number;
+  capacity: number;
 }
 
 export interface CompetitionPayload {
