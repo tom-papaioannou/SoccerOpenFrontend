@@ -14,7 +14,7 @@ import { forkJoin } from 'rxjs';
 import { CdkDrag, CdkDragStart, CdkDragMove, CdkDragEnd, CdkDragDrop, CdkDropList, CdkDragHandle, CdkDragPlaceholder } from '@angular/cdk/drag-drop';
 import { TacticsService } from '../../../services/tactics.service';
 import { Tactic, Formation, PlayerTactic, SquadUnit } from '../../../models/tactic.model';
-import { PlayerRole } from '../../../models/player-enums.model';
+import { PlayerPosition, PlayerRole } from '../../../models/player-enums.model';
 import { getPlayerPositionLabel, getPlayerRoleLabel, positionSortOrder, getPositionPitchRow } from '../../../utils/position-utils';
 import { FormsModule } from '@angular/forms';
 
@@ -37,10 +37,119 @@ function getPlayerRoleOptionLabel(role: PlayerRole): string {
   return `${abbreviation}`;
 }
 
-const PLAYER_ROLE_OPTIONS = Object.values(PlayerRole)
-  .filter((value): value is PlayerRole => typeof value === 'number')
-  .sort((a, b) => a - b)
-  .map(value => ({ value, label: getPlayerRoleOptionLabel(value) }));
+function getAvailableRolesForPosition(position: PlayerPosition): PlayerRole[] {
+  switch (position) {
+    case PlayerPosition.Goalkeeper:
+      return [
+        PlayerRole.Goalkeeper,
+        PlayerRole.SweeperKeeper
+      ];
+
+    case PlayerPosition.RightCenterBack:
+    case PlayerPosition.CentralCenterBack:
+    case PlayerPosition.LeftCenterBack:
+      return [
+        PlayerRole.CenterBack,
+        PlayerRole.BallPlayingDefender,
+        PlayerRole.NoNonsenseCenterBack,
+        PlayerRole.Libero,
+        PlayerRole.Stopper,
+        PlayerRole.Cover
+      ];
+
+    case PlayerPosition.RightBack:
+    case PlayerPosition.LeftBack:
+    case PlayerPosition.RightWingBack:
+    case PlayerPosition.LeftWingBack:
+      return [
+        PlayerRole.FullBack,
+        PlayerRole.WingBack,
+        PlayerRole.CompleteWingBack,
+        PlayerRole.InvertedWingBack,
+        PlayerRole.WideCenterBack
+      ];
+
+    case PlayerPosition.RightDefensiveMidfielder:
+    case PlayerPosition.CentralDefensiveMidfielder:
+    case PlayerPosition.LeftDefensiveMidfielder:
+      return [
+        PlayerRole.DefensiveMidfielder,
+        PlayerRole.Anchorman,
+        PlayerRole.HalfBack,
+        PlayerRole.DeepLyingPlaymaker,
+        PlayerRole.Regista,
+        PlayerRole.Volante,
+        PlayerRole.SegundoVolante,
+        PlayerRole.BallWinningMidfielder
+      ];
+
+    case PlayerPosition.RightCenterMidfielder:
+    case PlayerPosition.CentralCenterMidfielder:
+    case PlayerPosition.LeftCenterMidfielder:
+      return [
+        PlayerRole.CentralMidfielder,
+        PlayerRole.BoxToBoxMidfielder,
+        PlayerRole.Mezzala,
+        PlayerRole.Carrilero,
+        PlayerRole.AdvancedPlaymaker,
+        PlayerRole.RoamingPlaymaker
+      ];
+
+    case PlayerPosition.RightMidfielder:
+    case PlayerPosition.LeftMidfielder:
+    case PlayerPosition.RightWinger:
+    case PlayerPosition.LeftWinger:
+      return [
+        PlayerRole.WideMidfielder,
+        PlayerRole.WidePlaymaker,
+        PlayerRole.Winger,
+        PlayerRole.InvertedWinger,
+        PlayerRole.InsideForward,
+        PlayerRole.InvertedForward,
+        PlayerRole.Raumdeuter,
+        PlayerRole.WideTargetMan,
+        PlayerRole.DefensiveWinger
+      ];
+
+    case PlayerPosition.RightAttackingMidfielder:
+    case PlayerPosition.CentralAttackingMidfielder:
+    case PlayerPosition.LeftAttackingMidfielder:
+      return [
+        PlayerRole.AttackingMidfielder,
+        PlayerRole.ShadowStriker,
+        PlayerRole.Enganche,
+        PlayerRole.Trequartista,
+        PlayerRole.SecondStriker,
+        PlayerRole.FalseTen,
+        PlayerRole.CentralWinger
+      ];
+
+    case PlayerPosition.RightStriker:
+    case PlayerPosition.CentralStriker:
+    case PlayerPosition.LeftStriker:
+      return [
+        PlayerRole.AdvancedForward,
+        PlayerRole.CompleteForward,
+        PlayerRole.Poacher,
+        PlayerRole.TargetMan,
+        PlayerRole.DeepLyingForward,
+        PlayerRole.PressingForward,
+        PlayerRole.DefensiveForward,
+        PlayerRole.FalseNine,
+        PlayerRole.TrequartistaForward
+      ];
+
+    default:
+      return [];
+  }
+}
+
+function getAvailableRoleOptionsForPosition(position: PlayerPosition): { value: PlayerRole; label: string }[] {
+  return getAvailableRolesForPosition(position).map(value => ({
+    value,
+    label: getPlayerRoleOptionLabel(value)
+  }));
+}
 
 export interface PitchRowPlayer {
   position: number;
@@ -89,7 +198,6 @@ export interface PlayerTacticTableRow {
 })
 export class TacticsDetail implements OnInit, OnDestroy {
   readonly SquadUnit = SquadUnit;
-  readonly playerRoleOptions = PLAYER_ROLE_OPTIONS;
 
   private readonly destroyRef: DestroyRef;
   private readonly route: ActivatedRoute;
@@ -298,6 +406,10 @@ export class TacticsDetail implements OnInit, OnDestroy {
     return !!playerTacticID && this.updatingRoleIds().has(playerTacticID);
   }
 
+  getPlayerRoleOptions(position: number): { value: PlayerRole; label: string }[] {
+    return getAvailableRoleOptionsForPosition(position);
+  }
+
   onPlayerRoleChange(player: PlayerTacticTableRow, event: Event): void {
     const select = event.target as HTMLSelectElement;
     const nextRole = Number(select.value) as PlayerRole;
@@ -314,6 +426,13 @@ export class TacticsDetail implements OnInit, OnDestroy {
     if (player.squadUnit !== SquadUnit.Starting) {
       select.value = String(previousRole);
       this.error.set('Only starting squad player roles can be updated.');
+      this.cdr.markForCheck();
+      return;
+    }
+
+    if (!getAvailableRolesForPosition(player.positionValue).includes(nextRole)) {
+      select.value = String(previousRole);
+      this.error.set('Selected role is not available for this player position.');
       this.cdr.markForCheck();
       return;
     }
