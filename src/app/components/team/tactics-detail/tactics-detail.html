@@ -93,7 +93,7 @@
                     (click)="$event.stopPropagation()"
                     (mousedown)="$event.stopPropagation()"
                     (touchstart)="$event.stopPropagation()">
-                    @for (role of playerRoleOptions; track role.value) {
+                    @for (role of getPlayerRoleOptions(player.positionValue); track role.value) {
                       <option [value]="role.value">{{ role.label }}</option>
                     }
                   </select>
