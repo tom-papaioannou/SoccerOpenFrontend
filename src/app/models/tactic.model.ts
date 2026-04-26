@@ -3,6 +3,8 @@
  * Licensed under the MIT License
  */
 
+import { PlayerPosition, PlayerRole } from './player-enums.model';
+
 /**
  * Formation enum matching backend Formation enum
  */
@@ -37,6 +39,15 @@ export enum Formation {
   // // Uncommon / historical (900+)
   // Four_Six_Zero = 900,
   // Two_Three_Five = 901
+}
+
+/**
+ * SquadUnit enum matching backend SquadUnit enum
+ */
+export enum SquadUnit {
+  Starting = 0,
+  Substitute = 1,
+  Reserve = 2
 }
 
 /**
@@ -76,10 +87,17 @@ export interface PlayerTactic {
       dateOfBirth?: string;
       placeOfBirth?: string;
     };
-  playerPosition: number;
-  playerRole: number;
-  squadUnit: number;
+  playerPosition: PlayerPosition;
+  playerRole: PlayerRole;
+  squadUnit: SquadUnit;
   substituteOrder?: number;
+}
+
+/**
+ * DTO for updating only the role of an existing starting player tactic
+ */
+export interface UpdatePlayerTacticRoleRequest {
+  playerRole: PlayerRole;
 }
 
 /**
@@ -88,6 +106,6 @@ export interface PlayerTactic {
 export interface AddPlayerTacticRequest {
   TacticID: string;
   PlayerID?: string;
-  PlayerPosition: number;
-  PlayerRole: number;
+  PlayerPosition: PlayerPosition;
+  PlayerRole: PlayerRole;
 }

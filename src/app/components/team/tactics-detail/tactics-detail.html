@@ -77,16 +77,26 @@
               <span class="list-col-role">Role</span>
             </div>
             <!-- Drag-drop list -->
-            <div cdkDropList
-                 [cdkDropListData]="filteredTableData"
-                 (cdkDropListDropped)="onTablePlayerDrop($event)"
-                 class="player-list-body">
+            <div cdkDropList [cdkDropListData]="filteredTableData"
+              (cdkDropListDropped)="onTablePlayerDrop($event)"
+              class="player-list-body">
               @for (player of filteredTableData; track player.playerTacticID) {
                 <div cdkDrag class="player-list-row">
                   <mat-icon cdkDragHandle class="list-col-drag drag-handle">drag_indicator</mat-icon>
                   <span class="list-col-pos">{{ player.position }}</span>
                   <span class="list-col-name">{{ player.playerName }}</span>
-                  <span class="list-col-role">{{ player.role }}</span>
+                  <select class="list-col-role role-select"
+                    [ngModel]="player.roleValue"
+                    [disabled]="player.squadUnit !== SquadUnit.Starting || isRoleUpdating(player.playerTacticID)"
+                    [attr.aria-label]="'Role for ' + player.playerName"
+                    (change)="onPlayerRoleChange(player, $event)"
+                    (click)="$event.stopPropagation()"
+                    (mousedown)="$event.stopPropagation()"
+                    (touchstart)="$event.stopPropagation()">
+                    @for (role of playerRoleOptions; track role.value) {
+                      <option [value]="role.value">{{ role.label }}</option>
+                    }
+                  </select>
                   <div class="player-list-placeholder" *cdkDragPlaceholder></div>
                 </div>
               }
@@ -101,15 +111,15 @@
         <mat-button-toggle-group class="squad-unit-buttons p-4"
           [value]="selectedSquadUnit()"
           (change)="selectedSquadUnit.set($event.value)">
-          <mat-button-toggle [value]="0" [ngStyle]="selectedSquadUnit() === 0 ? {'background-color': 'lightblue'} : {}">
+          <mat-button-toggle [value]="SquadUnit.Starting" [ngStyle]="selectedSquadUnit() === SquadUnit.Starting ? {'background-color': 'lightblue'} : {}">
             <span class="hidden md:inline">Starting</span>
             <span class="inline md:hidden">XI</span>
           </mat-button-toggle>
-          <mat-button-toggle [value]="1" [ngStyle]="selectedSquadUnit() === 1 ? {'background-color': 'lightblue'} : {}">
+          <mat-button-toggle [value]="SquadUnit.Substitute" [ngStyle]="selectedSquadUnit() === SquadUnit.Substitute ? {'background-color': 'lightblue'} : {}">
             <span class="hidden md:inline">Substitutes</span>
             <span class="inline md:hidden">Subs</span>
           </mat-button-toggle>
-          <mat-button-toggle [value]="2" [ngStyle]="selectedSquadUnit() === 2 ? {'background-color': 'lightblue'} : {}">
+          <mat-button-toggle [value]="SquadUnit.Reserve" [ngStyle]="selectedSquadUnit() === SquadUnit.Reserve ? {'background-color': 'lightblue'} : {}">
             <span class="hidden md:inline">Reserves</span>
             <span class="inline md:hidden">Res</span>
           </mat-button-toggle>

@@ -291,7 +291,23 @@
 }
 
 .list-col-role {
-  flex: 0 0 60px;
+  flex: 0 0 80px;
   font-size: 0.8rem;
-  text-align: right;
+  text-align: left;
+}
+
+.role-select {
+  min-width: 0;
+  width: 80px;
+  border-radius: 6px;
+  border: 1px solid rgba(148, 163, 184, 0.45);
+  background-color: rgba(15, 23, 42, 0.72);
+  color: #f8fafc;
+  cursor: pointer;
+  padding: 4px 8px;
+}
+
+.role-select:disabled {
+  cursor: default;
+  opacity: 0.6;
 }
