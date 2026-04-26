@@ -8,7 +8,8 @@ import { Observable, throwError } from 'rxjs';
 import { catchError, shareReplay } from 'rxjs/operators';
 import { environment } from '../../environments/environment.development';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Tactic, CreateTacticRequest, PlayerTactic, AddPlayerTacticRequest } from '../models/tactic.model';
+import { PlayerRole } from '../models/player-enums.model';
+import { Tactic, CreateTacticRequest, PlayerTactic, AddPlayerTacticRequest, UpdatePlayerTacticRoleRequest } from '../models/tactic.model';
 
 @Injectable({
   providedIn: 'root'
@@ -71,6 +72,17 @@ export class TacticsService {
     );
   }
 
+  updateStartingPlayerRole(teamID: string, playerTacticID: string, playerRole: PlayerRole): Observable<PlayerTactic> {
+    const request: UpdatePlayerTacticRoleRequest = { playerRole };
+
+    return this.http.patch<PlayerTactic>(
+      `${this.apiUrl}/teams/${teamID}/starting-player-tactics/${playerTacticID}/role`,
+      request
+    ).pipe(
+      catchError(this.handleError)
+    );
+  }
+
   /**
    * Delete a tactic
    * Backend endpoint: DELETE /api/tactics/deleteTactic/{tacticID}
@@ -100,7 +112,9 @@ export class TacticsService {
     } else {
       // Server-side error
       errorMessage = `Server Error (${error.status}): ${error.message}`;
-      if (error.error?.message) {
+      if (typeof error.error === 'string' && error.error.trim()) {
+        errorMessage = error.error;
+      } else if (error.error?.message) {
         errorMessage = error.error.message;
       }
     }
