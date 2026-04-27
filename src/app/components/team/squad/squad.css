@@ -13,3 +13,40 @@
 .compact {
   --dt-row-hover: #f0f0f0;
 }
+
+.shirt-number-select {
+  width: 62px;
+  max-width: 100%;
+  min-height: 32px;
+  border: 1px solid rgba(255,255,255,0.22);
+  border-radius: 6px;
+  background: rgba(0,0,0,0.28);
+  color: white;
+  padding: 4px 6px 4px 8px;
+}
+
+:host ::ng-deep .shirt-number-select .mat-mdc-select-value,
+:host ::ng-deep .shirt-number-select .mat-mdc-select-arrow {
+  color: white;
+}
+
+:host ::ng-deep .shirt-number-select .mat-mdc-select-value {
+  padding-right: 6px;
+}
+
+::ng-deep .shirt-number-select-panel {
+  background: #1f2933 !important;
+  background-color: #1f2933 !important;
+  color: white;
+  min-width: 170px;
+}
+
+::ng-deep .shirt-number-select-panel .mat-mdc-option {
+  background-color: #1f2933;
+  color: white;
+}
+
+::ng-deep .shirt-number-select-panel .mat-mdc-option:hover,
+::ng-deep .shirt-number-select-panel .mat-mdc-option.mdc-list-item--selected {
+  background-color: rgba(255,255,255,0.14) !important;
+}

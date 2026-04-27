@@ -3,14 +3,15 @@
  * Licensed under the MIT License
  */
 
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef, TemplateRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { DataTable } from "../../shared/tables/data-table/data-table";
+import { ColumnDef, DataTable } from "../../shared/tables/data-table/data-table";
 import { TeamsService } from '../../../services/teams.service';
 import { Person, PlayerPosition } from '../../../models/player-enums.model';
 import { Subject, takeUntil } from 'rxjs';
 import { getPlayerPositionLabel, positionSortOrder } from '../../../utils/position-utils';
 import { calculateAge } from '../../../utils/date-utils';
+import { MatSelectModule } from '@angular/material/select';
 
 interface TransformedPlayer {
   personID: string;
@@ -22,16 +23,24 @@ interface TransformedPlayer {
   age: number | string;
 }
 
+interface ShirtNumberOption {
+  value: number;
+  label: string;
+}
+
 @Component({
   selector: 'app-squad',
   imports: [
-    DataTable
+    DataTable,
+    MatSelectModule
   ],
   templateUrl: './squad.html',
   styleUrl: './squad.css',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true
 })
 export class Squad implements OnInit, OnDestroy {
+  @ViewChild('shirtNumberTemplate', { static: true }) shirtNumberTemplate!: TemplateRef<{ $implicit: TransformedPlayer; value: number | string }>;
 
   // Custom comparator for position sorting
   private positionComparator = (a: unknown, b: unknown): number => {
@@ -40,39 +49,46 @@ export class Squad implements OnInit, OnDestroy {
     return aOrder - bOrder;
   };
 
-  displayedColumns = [
-    {
-      key: 'shirtNumber',
-      header: 'Shirt',
-      width: '10%',
-      align: 'end',
-      headerClass: 'text-end',
-      cellClass: 'text-end',
-      sortable: true,
-      sortAccessor: (row: TransformedPlayer) => row.shirtNumberValue
-    },
-    { key: 'name', header: 'Name', width: '50%', sortable: true },
-    { 
-      key: 'position', 
-      header: 'Position',
-      sortable: true,
-      sortAccessor: (row: TransformedPlayer) => row.positionValue,
-      comparator: this.positionComparator
-    },
-    { key: 'age', header: 'Age', align: 'end', headerClass:'text-end', cellClass:'text-end' }
-  ];
+  displayedColumns: ColumnDef<TransformedPlayer>[] = [];
+  shirtNumberOptions: ShirtNumberOption[] = [];
   people: TransformedPlayer[] = [];
+  private currentTeamID: string | null = null;
   private destroy$ = new Subject<void>();
 
   constructor(private readonly teamsService: TeamsService, private readonly cdr: ChangeDetectorRef, private readonly router: Router) {}
 
   ngOnInit(): void {
+    this.displayedColumns = [
+    {
+      key: 'shirtNumber',
+      header: 'Shirt',
+      width: '5%',
+      align: 'right',
+      headerClass: 'text-end',
+      cellClass: 'text-end',
+      sortable: true,
+      sortAccessor: (row: TransformedPlayer) => row.shirtNumberValue,
+      cellTemplate: this.shirtNumberTemplate
+    },
+    { key: 'name', header: 'Name', width: '38%', sortable: true },
+    { 
+      key: 'position', 
+      header: 'Position',
+      width: '15%',
+      sortable: true,
+      sortAccessor: (row: TransformedPlayer) => row.positionValue,
+      comparator: this.positionComparator
+    },
+    { key: 'age', header: 'Age', width: '15%', align: 'right', headerClass:'text-end', cellClass:'text-end' }
+  ];
+
     // Subscribe to currentTeamObservable to wait for team to be set
     this.teamsService.currentTeamObservable
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (team) => {
           if (team?.teamID) {
+            this.currentTeamID = team.teamID;
             this.loadPlayers(team.teamID);
           }
         },
@@ -93,12 +109,14 @@ export class Squad implements OnInit, OnDestroy {
       .subscribe({
         next: (players: Person[]) => {
           this.people = this.transformPlayers(players);
+          this.shirtNumberOptions = this.buildShirtNumberOptions(this.people);
           this.cdr.detectChanges();
         },
         error: (error) => {
           console.error('Error fetching players:', error);
           // Keep empty array on error
           this.people = [];
+          this.shirtNumberOptions = this.buildShirtNumberOptions(this.people);
         }
       });
   }
@@ -137,6 +155,72 @@ export class Squad implements OnInit, OnDestroy {
     );
     
     return sorted[0].playerPosition;
+  }
+
+  private buildShirtNumberOptions(people: TransformedPlayer[]): ShirtNumberOption[] {
+    const assignments = new Map<number, string>();
+
+    for (const person of people) {
+      if (!person.shirtNumberValue) {
+        continue;
+      }
+
+      assignments.set(person.shirtNumberValue, person.name);
+    }
+
+    return Array.from({ length: 99 }, (_, index) => {
+      const shirtNumber = index + 1;
+      const assignedPlayerName = assignments.get(shirtNumber) ?? '';
+
+      return {
+        value: shirtNumber,
+        label: `${shirtNumber} - ${assignedPlayerName}`
+      };
+    });
+  }
+
+  onShirtNumberDropdownClick(event: Event): void {
+    event.stopPropagation();
+  }
+
+  onShirtNumberSelectionChange(shirtNumber: number, person: TransformedPlayer): void {
+    if (!this.currentTeamID || !shirtNumber || shirtNumber === person.shirtNumberValue) {
+      return;
+    }
+
+    const previousShirtNumber = person.shirtNumberValue ?? null;
+
+    this.teamsService.updatePlayerShirtNumber(this.currentTeamID, person.personID, shirtNumber)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          this.people = this.people.map(player => {
+            if (player.personID === person.personID) {
+              return {
+                ...player,
+                shirtNumber,
+                shirtNumberValue: shirtNumber
+              };
+            }
+
+            if (player.shirtNumberValue === shirtNumber) {
+              return {
+                ...player,
+                shirtNumber: previousShirtNumber ?? '-',
+                shirtNumberValue: previousShirtNumber
+              };
+            }
+
+            return player;
+          });
+          this.shirtNumberOptions = this.buildShirtNumberOptions(this.people);
+          this.cdr.detectChanges();
+        },
+        error: (error) => {
+          console.error('Error updating shirt number:', error);
+          this.cdr.detectChanges();
+        }
+      });
   }
 
   onPlayerClick(person: TransformedPlayer): void {

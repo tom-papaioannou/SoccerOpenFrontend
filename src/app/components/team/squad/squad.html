@@ -1,4 +1,20 @@
 <div class="p-2">
+    <ng-template #shirtNumberTemplate let-player>
+        <mat-select
+            class="shirt-number-select"
+            panelClass="shirt-number-select-panel"
+            [value]="player.shirtNumberValue"
+            (click)="onShirtNumberDropdownClick($event)"
+            (selectionChange)="onShirtNumberSelectionChange($event.value, player)">
+            <mat-select-trigger>
+                {{ player.shirtNumberValue ?? '-' }}
+            </mat-select-trigger>
+            @for (option of shirtNumberOptions; track option.value) {
+                <mat-option [value]="option.value">{{ option.label }}</mat-option>
+            }
+        </mat-select>
+    </ng-template>
+
     <app-data-table
         [data]="people"
         class="players-theme"
