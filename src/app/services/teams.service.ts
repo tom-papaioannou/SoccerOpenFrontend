@@ -43,6 +43,14 @@ export class TeamsService {
     return this.http.get<Person[]>(`${environment.apiUrl}/api/teams/getTeamSquad/${teamID}`);
   }
 
+  updatePlayerShirtNumber(teamID: string, personID: string, shirtNumber: number): Observable<void> {
+    return this.http.put<void>(`${environment.apiUrl}/api/teams/updatePlayerShirtNumber`, {
+      teamID,
+      personID,
+      shirtNumber
+    });
+  }
+
   getPlayerDetails(playerID: string): Observable<any> {
     return this.http.get(`${environment.apiUrl}/api/teams/getPlayerDetails/${playerID}`);
   }
