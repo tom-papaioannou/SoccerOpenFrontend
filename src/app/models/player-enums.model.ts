@@ -117,6 +117,7 @@ export interface Person {
   dateOfBirth?: string;
   placeOfBirth?: string;
   contractID?: string;
+  shirtNumber?: number | null;
   playerTrainedPositions?: PlayerTrainedPosition[];
   playerTrainedRoles?: PlayerTrainedRole[];
   playerStats?: PlayerStats;

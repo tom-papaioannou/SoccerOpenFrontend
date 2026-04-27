@@ -14,6 +14,8 @@ import { calculateAge } from '../../../utils/date-utils';
 
 interface TransformedPlayer {
   personID: string;
+  shirtNumber: number | string;
+  shirtNumberValue?: number | null;
   name: string;
   position: string;
   positionValue?: PlayerPosition;
@@ -39,7 +41,17 @@ export class Squad implements OnInit, OnDestroy {
   };
 
   displayedColumns = [
-    { key: 'name', header: 'Name', width: '60%', sortable: true },
+    {
+      key: 'shirtNumber',
+      header: 'Shirt',
+      width: '10%',
+      align: 'end',
+      headerClass: 'text-end',
+      cellClass: 'text-end',
+      sortable: true,
+      sortAccessor: (row: TransformedPlayer) => row.shirtNumberValue
+    },
+    { key: 'name', header: 'Name', width: '50%', sortable: true },
     { 
       key: 'position', 
       header: 'Position',
@@ -104,6 +116,8 @@ export class Squad implements OnInit, OnDestroy {
       
       return {
         personID: person.personID,
+        shirtNumber: person.shirtNumber ?? '-',
+        shirtNumberValue: person.shirtNumber,
         name,
         position: getPlayerPositionLabel(bestPosition),
         positionValue: bestPosition, // Include raw enum value for sorting
