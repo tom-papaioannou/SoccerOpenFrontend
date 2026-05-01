@@ -1,11 +1,7 @@
-@use '@angular/material' as mat;
-
 :host {
   display: block;
   width: 100%;
-  @include mat.sort-overrides((
-    arrow-color: var(--dt-sort-arrow-color, currentColor),
-  ));
+  --mat-sort-arrow-color: var(--dt-sort-arrow-color, currentColor);
 }
 
 .app-table {
@@ -21,6 +17,8 @@
 .mat-mdc-header-cell {
   background: transparent;
   color: var(--dt-header-color, white);
+  font-size: 0.76rem;
+  padding: 0 8px;
 }
 
 .mat-mdc-row:hover {
@@ -36,16 +34,31 @@
   color: var(--dt-cell-color, white);
   background-color: transparent;
   border-color: transparent;
+  font-size: 0.72rem;
+  padding: 0 8px;
 }
 
 .tableBorder {
-  border-color: transparent;
+  border-color: rgba(255, 255, 255, 0.32);
   background: var(--dt-data-bg, rgba(0,0,0,0.5));
   height: var(--dt-data-bg, 100%);
-  min-width: 434px;
+  width: 100%;
+  min-width: 0;
+}
 
-  @media (max-width: 768px) {
-    min-width: 343px;
+@media (min-width: 769px) {
+  .tableBorder {
+    min-width: 434px;
+  }
+
+  .mat-mdc-header-cell {
+    font-size: 0.875rem;
+    padding: 0 16px;
+  }
+
+  .mat-mdc-cell {
+    font-size: 0.875rem;
+    padding: 0 16px;
   }
 }
 
