@@ -18,7 +18,7 @@ import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
     MatPaginatorModule
   ],
   templateUrl: './data-table.html',
-  styleUrl: './data-table.scss'
+  styleUrl: './data-table.css'
 })
 export class DataTable<T> implements OnChanges{
   ngOnChanges(changes: SimpleChanges): void {
