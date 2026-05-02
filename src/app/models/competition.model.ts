@@ -32,6 +32,14 @@ export interface Team {
   teamID?: string;
   name: string;
   stadium?: Stadium;
+  kit: Kit;
+}
+
+export interface Kit {
+  homeShirtColor: string;
+  homeShortsColor: string;
+  awayShirtColor: string;
+  awayShortsColor: string;
 }
 
 export interface Stadium {
