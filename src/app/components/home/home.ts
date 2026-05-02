@@ -8,18 +8,22 @@ import { DataTable } from '../shared/tables/data-table/data-table';
 import { TeamsService } from '../../services/teams.service';
 import { calculateAge } from '../../utils/date-utils';
 import { getPlayerPositionLabel } from '../../utils/position-utils';
+import { Kit } from '../../models/competition.model';
+import { TeamKit } from '../team-kit/team-kit';
 
 @Component({
   selector: 'app-home',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    DataTable
+    DataTable,
+    TeamKit
   ],
   templateUrl: './home.html',
   styleUrl: './home.css'
 })
 export class Home {
   teamName: string = "";
+  kit: Kit | undefined;
   competitionName: string = "";
 
   displayedColumnsFixtures = [
@@ -46,6 +50,7 @@ export class Home {
     this.teamsService.getCurrentTeamDashboard().subscribe((dashboard) => {
       this.teamName = dashboard.teamName;
       this.competitionName = dashboard.competitionName;
+      this.kit = dashboard.kit;
       (dashboard.players as Array<any>).forEach(element => {
         this.people.push({ name: element.name, age: calculateAge(element.dateOfBirth), position: getPlayerPositionLabel(element.playerTrainedPositions[0].playerPosition) });
       });

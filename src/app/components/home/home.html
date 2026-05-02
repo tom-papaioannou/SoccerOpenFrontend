@@ -1,5 +1,5 @@
 <div class="grid grid-cols-1 lg:grid-cols-7 w-full">
-  <div class="p-2 lg:col-span-3 max-w-[600px]">
+  <div class="p-2 lg:col-span-3 max-w-[600px] flex flex-col">
     <div class="rounded-xl border-1 p-3 tableBorder flex">
       <div class="flex-col flex-1">
         <div class="py-2">
@@ -55,6 +55,26 @@
             </div>
           </div>
         </div>
+      </div>
+    </div>
+
+    <div class="rounded-xl border-1 p-3 tableBorder flex my-4">
+      <div class="flex-col flex-1 flex items-start">
+        <span class="font-bold">Kits</span>
+        
+        <div class="flex justify-center w-full py-6">
+
+          <div class="kit-preview px-8">
+            <span class="py-2">Home</span>
+            <app-team-kit [kit]="kit" [isHome]="true" [showShorts]="true"></app-team-kit>
+          </div>
+
+          <div class="kit-preview px-8">
+            <span class="py-2">Away</span>
+            <app-team-kit [kit]="kit" [isHome]="false" [showShorts]="true"></app-team-kit>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>

@@ -1,0 +1,32 @@
+.shirt {
+  width: 50px;
+  height: 55px;
+  background-color: white;
+
+  clip-path: polygon(
+    20% 0%,
+    80% 0%,
+    100% 25%,
+    82% 40%,
+    82% 100%,
+    18% 100%,
+    18% 40%,
+    0% 25%
+  );
+}
+
+.shorts {
+  width: 32px;
+  height: 35px;
+  background-color: white;
+
+  clip-path: polygon(
+    0% 0%,
+    100% 0%,
+    100% 100%,
+    62% 100%,
+    50% 55%,
+    38% 100%,
+    0% 100%
+  );
+}

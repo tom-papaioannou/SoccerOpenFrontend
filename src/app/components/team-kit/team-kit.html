@@ -1,0 +1,6 @@
+<div class="flex flex-col items-center">
+    <div class="shirt" [style.background-color]="isHome ? kit?.homeShirtColor : kit?.awayShirtColor"></div>
+    @if(showShorts){
+        <div class="shorts my-1"  [style.background-color]="isHome ? kit?.homeShortsColor : kit?.awayShortsColor"></div>
+    }
+</div>
