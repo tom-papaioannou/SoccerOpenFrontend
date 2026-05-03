@@ -41,14 +41,14 @@
 .tableBorder {
   border-color: rgba(255, 255, 255, 0.32);
   background: var(--dt-data-bg, rgba(0,0,0,0.5));
-  height: var(--dt-data-bg, 100%);
+  height: var(--dt-table-height, 100%);
   width: 100%;
   min-width: 0;
 }
 
 @media (min-width: 769px) {
   .tableBorder {
-    min-width: 434px;
+    min-width: var(--dt-table-min-width, 434px);
   }
 
   .mat-mdc-header-cell {
