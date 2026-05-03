@@ -13,7 +13,6 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { ActionButton } from '../shared/buttons/action-button/action-button';
 import { FormTextfield } from '../shared/textfields/form-textfield/form-textfield';
-import { LinkButton } from '../shared/buttons/link-button/link-button';
 import { FormDropdown } from '../shared/dropdowns/form-dropdown/form-dropdown';
 import { AuthService } from '../../services/auth.service';
 import { ServerService } from '../../services/server.service';
@@ -30,7 +29,6 @@ import { ServerService } from '../../services/server.service';
     MatInputModule,
     CommonModule,
     ActionButton,
-    LinkButton,
     FormTextfield,
     FormDropdown
   ],

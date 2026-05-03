@@ -1,0 +1,31 @@
+<div class="world-map-page">
+  <div class="world-map-header">
+    <h2>Competitions</h2>
+    @if (selectedNation()) {
+      <span>{{ selectedNation()!.name }}</span>
+    }
+  </div>
+
+  @if (loading()) {
+    <div class="world-map-state">Loading nations...</div>
+  } @else if (error()) {
+    <div class="world-map-error">{{ error() }}</div>
+  } @else if (nations().length === 0) {
+    <div class="world-map-state">No supported nations available.</div>
+  }
+
+  <div class="world-map-card" [class.hidden]="loading() || error() || nations().length === 0">
+    <div #mapHost class="world-map-host"></div>
+
+    <div class="world-map-regions" aria-label="Map regions">
+      @for (region of mapRegions; track region.name) {
+        <button
+          type="button"
+          [class.active]="selectedRegion() === region.name"
+          (click)="selectRegion(region)">
+          {{ region.name }}
+        </button>
+      }
+    </div>
+  </div>
+</div>

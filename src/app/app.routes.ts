@@ -14,7 +14,6 @@ import { TacticsDetail } from './components/team/tactics-detail/tactics-detail';
 import { Fixtures } from './components/team/fixtures/fixtures';
 import { PlayerDetails } from './components/team/player-details/player-details';
 import { Information } from './components/team/information/information';
-import { Competitions } from './components/competitions/competitions';
 import { CompetitionsManagement } from './components/competitions-management/competitions-management';
 import { CompetitionDetails } from './components/competition-details/competition-details';
 import { Register } from './components/register/register';
@@ -31,7 +30,17 @@ export const routes: Routes = [
     { path: 'server/:id', canActivate: [authenticationGuard], component: ServerDetails },
     { path: 'competitions-management', canActivate: [authenticationGuard], component: CompetitionsManagement },
     { path: 'competition/:id', canActivate: [authenticationGuard], component: CompetitionDetails },
-    { path: 'competitions', canActivate: [authenticationGuard], component: Competitions },
+    { path: 'competitions', redirectTo: '/world-map', pathMatch: 'full' },
+    {
+        path: 'world-map',
+        canActivate: [authenticationGuard],
+        loadComponent: () => import('./components/world-map/world-map').then(m => m.WorldMap)
+    },
+    {
+        path: 'nations/:nationId/competitions',
+        canActivate: [authenticationGuard],
+        loadComponent: () => import('./components/nation-competitions/nation-competitions').then(m => m.NationCompetitions)
+    },
     { path: 'team', canActivate: [authenticationGuard], component: Team,
         children:[
             { path: '', redirectTo: 'squad', pathMatch: "prefix" },

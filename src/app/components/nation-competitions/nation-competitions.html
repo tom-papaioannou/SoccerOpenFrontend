@@ -1,0 +1,22 @@
+<div class="nation-competitions-page">
+  <div class="nation-competitions-header">
+    <button mat-icon-button (click)="goBack()" aria-label="Go back to world map">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <h2>{{ nation()?.name ?? 'Nation' }} Competitions</h2>
+  </div>
+
+  @if (loading()) {
+    <div class="nation-competitions-state">Loading competitions...</div>
+  } @else if (error()) {
+    <div class="nation-competitions-error">{{ error() }}</div>
+  } @else if (competitions().length === 0) {
+    <div class="nation-competitions-state">No competitions found for this nation.</div>
+  } @else {
+    <app-data-table
+      [data]="competitions()"
+      [columns]="$any(columns)"
+      (rowClick)="openCompetition($event)">
+    </app-data-table>
+  }
+</div>
