@@ -1,5 +1,5 @@
 <div class="grid grid-cols-1 lg:grid-cols-7 w-full">
-  <div class="p-2 lg:col-span-3 max-w-[600px] flex flex-col">
+  <div class="p-2 lg:col-span-3 max-w-[600px] min-w-0 flex flex-col">
     <div class="rounded-xl border-1 p-3 tableBorder flex">
       <div class="flex-col flex-1">
         <div class="py-2">
@@ -58,7 +58,7 @@
       </div>
     </div>
 
-    <div class="rounded-xl border-1 p-3 tableBorder flex my-4">
+    <div class="rounded-xl border-1 p-3 tableBorder flex mt-4 dashboard-kits-card">
       <div class="flex-col flex-1 flex items-start">
         <span class="font-bold">Kits</span>
         
@@ -80,7 +80,7 @@
   </div>
 
   @if(showPlayersTable){
-    <div class="p-2 lg:col-span-2 max-w-[600px]">
+    <div class="p-2 lg:col-span-2 max-w-[600px] min-w-0 dashboard-table">
       <app-data-table
         [data]="people"
         [columns]="$any(displayedColumns)">
@@ -88,8 +88,11 @@
     </div>
   }
 
-  <div class="p-2 lg:col-span-2 max-w-[600px]">
+  <div class="p-2 lg:col-span-2 max-w-[600px] min-w-0 dashboard-table dashboard-fixtures-column">
+    <app-information class="dashboard-information"></app-information>
+
     <app-data-table
+      class="dashboard-fixtures-table"
       [data]="fixtures"
       [columns]="$any(displayedColumnsFixtures)">
     </app-data-table>

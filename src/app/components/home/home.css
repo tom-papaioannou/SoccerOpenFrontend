@@ -9,3 +9,26 @@
   align-items: center;
   gap: 4px;
 }
+
+.dashboard-table {
+  --dt-table-min-width: 0;
+}
+
+.dashboard-kits-card {
+  flex: 1;
+}
+
+.dashboard-fixtures-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboard-fixtures-table {
+  --dt-table-height: 100%;
+  flex: 1;
+  min-height: 0;
+}
+
+.dashboard-information {
+  --information-card-wrapper-padding: 0 0 1rem;
+}

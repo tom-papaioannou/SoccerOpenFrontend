@@ -10,13 +10,15 @@ import { calculateAge } from '../../utils/date-utils';
 import { getPlayerPositionLabel } from '../../utils/position-utils';
 import { Kit } from '../../models/competition.model';
 import { TeamKit } from '../team-kit/team-kit';
+import { Information } from '../team/information/information';
 
 @Component({
   selector: 'app-home',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     DataTable,
-    TeamKit
+    TeamKit,
+    Information
   ],
   templateUrl: './home.html',
   styleUrl: './home.css'
@@ -35,6 +37,9 @@ export class Home {
     { date: '15/06', homeaway: 'H', team: "Red Ones" },
     { date: '19/06', homeaway: 'A', team: "Blue Team" },
     { date: '26/06', homeaway: 'H', team: "The Green Flag" },
+    { date: '30/06', homeaway: 'H', team: "The Orange Pirates" },
+    { date: '5/07', homeaway: 'A', team: "The Old Purple" },
+    { date: '9/07', homeaway: 'H', team: "The White Swan" },
   ];
 
   displayedColumns = [

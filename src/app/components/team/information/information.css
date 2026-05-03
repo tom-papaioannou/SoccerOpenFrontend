@@ -1,7 +1,16 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.information-card-wrapper {
+  padding: var(--information-card-wrapper-padding, 1rem);
+}
+
 .information-card {
-  background-color: rgba(0, 0, 0, 0.3);
+  background-color: rgba(0, 0, 0, 0.5);
   border-radius: 0.5rem;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  border: 1px solid #e5e7eb;
   padding: 1rem;
+  border-color: rgba(255, 255, 255, 0.32);
 }
