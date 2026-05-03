@@ -14,8 +14,12 @@ export class NationService {
   constructor(private http: HttpClient) {}
 
   private buildUrl(segment?: string): string {
-    const base = `${environment.apiUrl}/api/Nation`;
+    const base = `${environment.apiUrl}/api/Nations`;
     return segment ? `${base}/${segment}` : base;
+  }
+
+  getAll(): Observable<INation[]> {
+    return this.http.get<INation[]>(this.buildUrl('getAllCompetitionParents'));
   }
 
   getByContinent(continentId: string): Observable<INation[]> {

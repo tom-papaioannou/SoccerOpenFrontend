@@ -1,0 +1,28 @@
+.nation-competitions-page {
+  padding: 1rem;
+}
+
+.nation-competitions-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.nation-competitions-header h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.nation-competitions-state,
+.nation-competitions-error {
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  border-radius: 0.5rem;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 2rem;
+  text-align: center;
+}
+
+.nation-competitions-error {
+  color: #fecaca;
+}

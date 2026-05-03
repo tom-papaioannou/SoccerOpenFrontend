@@ -6,8 +6,15 @@
 export interface INation {
   nationID: string;
   name: string;
-  isO2: string;
-  isO3: string;
+  iso2?: string;
+  iso3?: string;
+  iSO2?: string;
+  iSO3?: string;
+  isO2?: string;
+  isO3?: string;
+  code?: string;
   flagUrl: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
   continentID: string;
 }
