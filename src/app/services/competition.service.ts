@@ -7,7 +7,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment.development';
-import { Competition, CompetitionPayload } from '../models/competition.model';
+import { Competition, CompetitionPayload, TeamCompetitions } from '../models/competition.model';
 
 @Injectable({ providedIn: 'root' })
 export class CompetitionService {
@@ -21,6 +21,18 @@ export class CompetitionService {
 
   getByNation(nationId: string): Observable<Competition[]> {
     return this.getAllCompetitions(nationId);
+  }
+
+  getWorldCompetitions(): Observable<Competition[]> {
+    return this.http.get<Competition[]>(`${this.apiUrl}/world`);
+  }
+
+  getByContinent(continentId: string): Observable<Competition[]> {
+    return this.http.get<Competition[]>(`${this.apiUrl}/continent/${continentId}`);
+  }
+
+  getMyCompetitions(): Observable<TeamCompetitions> {
+    return this.http.get<TeamCompetitions>(`${this.apiUrl}/my`);
   }
 
   getById(competitionId: string): Observable<Competition> {

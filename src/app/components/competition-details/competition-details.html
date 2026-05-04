@@ -1,12 +1,4 @@
 <div class="competition-details-container p-4">
-  <!-- Header with back button -->
-  <div class="mb-4 flex items-center gap-4">
-    <button mat-icon-button (click)="goBack()" aria-label="Go back">
-      <mat-icon>arrow_back</mat-icon>
-    </button>
-    <h2 class="text-2xl font-bold">Competition Details</h2>
-  </div>
-
   @if (loading()) {
     <div class="flex justify-center items-center py-8">
       <div class="text-lg">Loading competition details...</div>
@@ -19,7 +11,18 @@
     <!-- Competition Info Card -->
     <mat-card class="mb-6">
       <mat-card-content class="p-4">
-        <h3 class="text-xl font-bold text-blue-600 mb-2">{{ competition()!.competitionName }}</h3>
+        <div class="competition-summary">
+          <h2>{{ competition()!.competitionName }}</h2>
+          <div class="competition-meta">
+            @if (getParentName(competition()!); as parentName) {
+              <span>{{ parentName }}</span>
+            }
+            @if (competition()!.priority) {
+              <span>Priority {{ competition()!.priority }}</span>
+            }
+            <span>{{ getCompetitionTypeLabel(competition()!.competitionType) }}</span>
+          </div>
+        </div>
       </mat-card-content>
     </mat-card>
 
