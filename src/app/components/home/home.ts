@@ -4,6 +4,7 @@
  */
 
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { DataTable } from '../shared/tables/data-table/data-table';
 import { TeamsService } from '../../services/teams.service';
 import { calculateAge } from '../../utils/date-utils';
@@ -27,6 +28,7 @@ export class Home {
   teamName: string = "";
   kit: Kit | undefined;
   competitionName: string = "";
+  competitionID: string | null = null;
 
   displayedColumnsFixtures = [
     { key: 'date', header: 'Date', width: '15%', sortable: undefined },
@@ -50,11 +52,16 @@ export class Home {
   people: Array<any> = [];
   showPlayersTable = false;
 
-  constructor(private readonly teamsService: TeamsService, private readonly cdr: ChangeDetectorRef){
+  constructor(
+    private readonly teamsService: TeamsService,
+    private readonly router: Router,
+    private readonly cdr: ChangeDetectorRef
+  ){
     this.teamName = this.teamsService.CurrentTeam?.name ?? "Unknown Team";
     this.teamsService.getCurrentTeamDashboard().subscribe((dashboard) => {
       this.teamName = dashboard.teamName;
       this.competitionName = dashboard.competitionName;
+      this.competitionID = dashboard.competitionID ?? null;
       this.kit = dashboard.kit;
       (dashboard.players as Array<any>).forEach(element => {
         this.people.push({ name: element.name, age: calculateAge(element.dateOfBirth), position: getPlayerPositionLabel(element.playerTrainedPositions[0].playerPosition) });
@@ -62,5 +69,11 @@ export class Home {
       this.showPlayersTable = true;
       this.cdr.detectChanges();
     });
+  }
+
+  openCompetition(): void {
+    if (this.competitionID) {
+      this.router.navigate(['/competition', this.competitionID]);
+    }
   }
 }

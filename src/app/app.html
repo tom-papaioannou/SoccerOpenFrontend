@@ -10,7 +10,7 @@
           <a routerLink="" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
           <a routerLink="team/squad" routerLinkActive="active">Squad</a>
           <a routerLink="team/tactics" routerLinkActive="active">Tactics</a>
-          <a routerLink="world-map" routerLinkActive="active">Competitions</a>
+          <a routerLink="competitions" routerLinkActive="active">Competitions</a>
         }
         @else if(role === "Host"){
           @if (authService.currentServerID) {

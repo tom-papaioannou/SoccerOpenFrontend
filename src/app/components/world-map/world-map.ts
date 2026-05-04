@@ -31,6 +31,8 @@ interface MapRegion {
   name: string;
   geometry: { type: 'Sphere' } | Feature<Polygon>;
   bounds?: RegionBounds;
+  continentID?: string;
+  code?: string | null;
 }
 
 interface RegionBounds {
@@ -54,6 +56,8 @@ const mapRegions: MapRegion[] = [
   createMapRegion('Asia', 25, -12, 180, 82),
   createMapRegion('Oceania', 110, -48, 180, 5)
 ];
+
+const worldRegion = mapRegions[0];
 
 function createMapRegion(
   name: string,
@@ -106,7 +110,6 @@ export class WorldMap implements AfterViewInit, OnDestroy {
   myCompetitionsLoading = signal(false);
   selectedNation = signal<MappedNation | null>(null);
   selectedRegion = signal('World');
-  readonly mapRegions = mapRegions;
   private continents: IContinent[] = [];
   private worldFeatures: Feature<Geometry>[] = [];
   private mapLoaded = false;
@@ -128,7 +131,7 @@ export class WorldMap implements AfterViewInit, OnDestroy {
     this.loadWorldMap();
     this.loadContinents();
     this.loadNations();
-    this.loadCompetitionsForRegion(this.mapRegions[0]);
+    this.loadCompetitionsForRegion(worldRegion);
     this.loadMyCompetitions();
   }
 
@@ -166,7 +169,7 @@ export class WorldMap implements AfterViewInit, OnDestroy {
   }
 
   selectWorld(): void {
-    this.selectRegion(this.mapRegions[0]);
+    this.selectRegion(worldRegion);
   }
 
   openCompetition(competition: Competition): void {
@@ -317,6 +320,7 @@ export class WorldMap implements AfterViewInit, OnDestroy {
     const mapAspectRatio = 1.92;
     const height = hostHeight;
     const width = Math.min(hostWidth, Math.round(height * mapAspectRatio));
+    const isMobile = hostWidth <= 599;
 
     select(host).selectAll('*').remove();
 
@@ -330,8 +334,9 @@ export class WorldMap implements AfterViewInit, OnDestroy {
       .style('max-width', '100%')
       .style('height', `${height}px`);
 
-    const region = this.mapRegions.find(item => item.name === this.selectedRegion()) ?? this.mapRegions[0];
-    const previousRegion = this.mapRegions.find(item => item.name === this.renderedRegion) ?? this.mapRegions[0];
+    const availableRegions = this.getAvailableMapRegions();
+    const region = availableRegions.find(item => item.name === this.selectedRegion()) ?? worldRegion;
+    const previousRegion = availableRegions.find(item => item.name === this.renderedRegion) ?? worldRegion;
     const projection = geoNaturalEarth1()
       .fitExtent([[18, 18], [width - 18, height - 18]], { type: 'Sphere' });
     const path = geoPath(projection);
@@ -369,7 +374,7 @@ export class WorldMap implements AfterViewInit, OnDestroy {
       .attr('stroke-width', 0.8);
 
     if (region.name === 'World') {
-      this.renderContinentButtons(mapContent, projection);
+      this.renderContinentButtons(mapContent, projection, isMobile);
     } else {
       this.renderNationButtons(mapContent, projection, region, targetTransform, startingTransform, shouldAnimate);
     }
@@ -384,8 +389,8 @@ export class WorldMap implements AfterViewInit, OnDestroy {
     }
   }
 
-  private renderContinentButtons(mapContent: any, projection: GeoProjection): void {
-    const continentRegions = this.mapRegions.filter(region => region.name !== 'World' && region.bounds);
+  private renderContinentButtons(mapContent: any, projection: GeoProjection, isMobile: boolean): void {
+    const continentRegions = this.getAvailableMapRegions().filter(region => region.name !== 'World' && region.bounds);
 
     const marker = mapContent.append('g')
       .selectAll('g')
@@ -423,9 +428,9 @@ export class WorldMap implements AfterViewInit, OnDestroy {
       .attr('class', 'continent-button-visual');
 
     visual.append('rect')
-      .attr('x', (region: MapRegion) => -this.getRegionButtonWidth(region.name) / 2)
+      .attr('x', (region: MapRegion) => -this.getRegionButtonWidth(this.getRegionButtonLabel(region, isMobile)) / 2)
       .attr('y', -18)
-      .attr('width', (region: MapRegion) => this.getRegionButtonWidth(region.name))
+      .attr('width', (region: MapRegion) => this.getRegionButtonWidth(this.getRegionButtonLabel(region, isMobile)))
       .attr('height', 36)
       .attr('rx', 6)
       .attr('fill', 'rgba(11, 31, 58, 0.92)')
@@ -439,7 +444,7 @@ export class WorldMap implements AfterViewInit, OnDestroy {
       .attr('font-size', 13)
       .attr('font-weight', 700)
       .attr('pointer-events', 'none')
-      .text((region: MapRegion) => region.name);
+      .text((region: MapRegion) => this.getRegionButtonLabel(region, isMobile));
   }
 
   private renderNationButtons(
@@ -584,9 +589,44 @@ export class WorldMap implements AfterViewInit, OnDestroy {
   }
 
   private getContinentIdForRegion(region: MapRegion): string | null {
+    if (region.continentID) {
+      return region.continentID;
+    }
+
     return this.continents.find(
       item => item.name.toLowerCase() === region.name.toLowerCase()
     )?.continentID ?? null;
+  }
+
+  private getAvailableMapRegions(): MapRegion[] {
+    const dbRegions = this.continents
+      .map((continent): MapRegion | null => {
+        const boundsRegion = mapRegions.find(
+          region => region.name.toLowerCase() === continent.name.toLowerCase()
+        );
+
+        if (!boundsRegion || !boundsRegion.bounds) {
+          return null;
+        }
+
+        return {
+          ...boundsRegion,
+          name: continent.name,
+          continentID: continent.continentID,
+          code: continent.code
+        };
+      })
+      .filter((region): region is MapRegion => region !== null);
+
+    return [worldRegion, ...dbRegions];
+  }
+
+  private getRegionButtonLabel(region: MapRegion, isMobile: boolean): string {
+    if (isMobile && region.code) {
+      return region.code;
+    }
+
+    return region.name;
   }
 
   private getSortedCompetitions(teamsType: CompetitionTeamsType): Competition[] {

@@ -10,7 +10,16 @@
       <div class="flex-col flex-1 flex justify-center">
         <div class="flex flex-col justify-center items-center">
           <span class="font-bold text-lg">{{teamName}}</span>
-          <span class="text-sm">2nd in {{competitionName}}</span>
+          <span class="text-sm">
+            2nd in
+            <button
+              type="button"
+              class="dashboard-competition-link"
+              [disabled]="!competitionID"
+              (click)="openCompetition()">
+              {{competitionName}}
+            </button>
+          </span>
         </div>
 
         <div class="flex flex-col">

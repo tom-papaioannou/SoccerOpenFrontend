@@ -10,7 +10,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { DataTable } from '../shared/tables/data-table/data-table';
 import { CompetitionService } from '../../services/competition.service';
-import { Competition, CompetitionType } from '../../models/competition.model';
+import { Competition } from '../../models/competition.model';
 
 @Component({
   selector: 'app-competition-details',
@@ -38,6 +38,7 @@ export class CompetitionDetails implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private competitionService: CompetitionService
   ) {}
 
@@ -72,20 +73,9 @@ export class CompetitionDetails implements OnInit {
     });
   }
 
-  getParentName(competition: Competition): string | null {
-    return competition.nation?.name ?? competition.continent?.name ?? null;
-  }
-
-  getCompetitionTypeLabel(type: CompetitionType | undefined): string {
-    switch (type) {
-      case CompetitionType.League:
-        return 'League';
-      case CompetitionType.Knockout:
-        return 'Knockout';
-      case CompetitionType.Mixed:
-        return 'Mixed';
-      default:
-        return 'Unknown';
+  openNationCompetitions(competition: Competition): void {
+    if (competition.nationID) {
+      this.router.navigate(['/nations', competition.nationID, 'competitions']);
     }
   }
 }

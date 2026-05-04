@@ -3,7 +3,12 @@
     <button mat-icon-button (click)="goBack()" aria-label="Go back to world map">
       <mat-icon>arrow_back</mat-icon>
     </button>
-    <h2>{{ nation()?.name ?? 'Nation' }} Competitions</h2>
+    <div class="nation-title">
+      <h2>{{ nation()?.name ?? 'Nation' }}</h2>
+      @if (nationFlagUrl(); as flagUrl) {
+        <img [src]="flagUrl" [alt]="(nation()?.name ?? 'Nation') + ' flag'">
+      }
+    </div>
   </div>
 
   @if (loading()) {
