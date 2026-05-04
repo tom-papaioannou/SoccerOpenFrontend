@@ -8,12 +8,12 @@ import { Component, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { Competition } from '../../models/competition.model';
+import { Competition, CompetitionType } from '../../models/competition.model';
 import { INation } from '../../models/nation.model';
 import { CompetitionService } from '../../services/competition.service';
 import { NationService } from '../../services/nation.service';
 import { DataTable } from '../shared/tables/data-table/data-table';
-import { getCompetitionTypeLabel } from '../../utils/nation-map-utils';
+import { getCompetitionTypeLabel, getNationFlagUrl } from '../../utils/nation-map-utils';
 
 @Component({
   selector: 'app-nation-competitions',
@@ -68,6 +68,11 @@ export class NationCompetitions implements OnInit {
     this.router.navigate(['/world-map']);
   }
 
+  nationFlagUrl(): string | null {
+    const selectedNation = this.nation();
+    return selectedNation ? getNationFlagUrl(selectedNation) : null;
+  }
+
   private loadNation(nationId: string): void {
     this.nationService.getAll().subscribe({
       next: (nations) => {
@@ -82,11 +87,13 @@ export class NationCompetitions implements OnInit {
 
     this.competitionService.getByNation(nationId).subscribe({
       next: (competitions) => {
-        this.competitions.set(competitions.map(competition => ({
-          ...competition,
-          typeLabel: getCompetitionTypeLabel(competition.competitionType),
-          teamsCount: competition.teams?.length ?? 0
-        } as Competition)));
+        this.competitions.set(
+          this.sortCompetitions(competitions).map(competition => ({
+            ...competition,
+            typeLabel: getCompetitionTypeLabel(competition.competitionType),
+            teamsCount: competition.teams?.length ?? 0
+          } as Competition))
+        );
         this.loading.set(false);
       },
       error: () => {
@@ -94,5 +101,32 @@ export class NationCompetitions implements OnInit {
         this.loading.set(false);
       }
     });
+  }
+
+  private sortCompetitions(competitions: Competition[]): Competition[] {
+    return [...competitions].sort((a, b) => {
+      const typeComparison = this.getCompetitionTypeOrder(a) - this.getCompetitionTypeOrder(b);
+
+      if (typeComparison !== 0) {
+        return typeComparison;
+      }
+
+      return (a.priority ?? 999) - (b.priority ?? 999);
+    });
+  }
+
+  private getCompetitionTypeOrder(competition: Competition): number {
+    if (competition.competitionType === CompetitionType.League) {
+      return 0;
+    }
+
+    if (
+      competition.competitionType === CompetitionType.Knockout ||
+      competition.competitionType === CompetitionType.Mixed
+    ) {
+      return 1;
+    }
+
+    return 2;
   }
 }

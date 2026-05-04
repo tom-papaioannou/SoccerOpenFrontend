@@ -8,42 +8,29 @@
       {{ error() }}
     </div>
   } @else if (competition()) {
-    <!-- Competition Info Card -->
-    <mat-card class="mb-6">
-      <mat-card-content class="p-4">
-        <div class="competition-summary">
-          <h2>{{ competition()!.competitionName }}</h2>
-          <div class="competition-meta">
-            @if (getParentName(competition()!); as parentName) {
-              <span>{{ parentName }}</span>
-            }
-            @if (competition()!.priority) {
-              <span>Priority {{ competition()!.priority }}</span>
-            }
-            <span>{{ getCompetitionTypeLabel(competition()!.competitionType) }}</span>
-          </div>
-        </div>
-      </mat-card-content>
-    </mat-card>
+    <div class="competition-summary">
+      <h2>{{ competition()!.competitionName }}</h2>
+      @if (competition()!.nation?.name) {
+        <button
+          type="button"
+          class="competition-parent-link"
+          (click)="openNationCompetitions(competition()!)">
+          {{ competition()!.nation!.name }}
+        </button>
+      }
+    </div>
 
-    <!-- Teams Table -->
-    <mat-card>
-      <mat-card-content class="p-4">
-        <h4 class="text-lg font-semibold mb-4">Teams</h4>
-        
-        @if (teams().length > 0) {
-          <app-data-table
-            [data]="teams()"
-            [columns]="$any(displayedColumns)"
-            class="teams-theme">
-          </app-data-table>
-        } @else {
-          <div class="text-center py-8 text-gray-500">
-            <mat-icon class="text-4xl mb-2 opacity-50">sports_soccer</mat-icon>
-            <p>No teams in this competition yet</p>
-          </div>
-        }
-      </mat-card-content>
-    </mat-card>
+    @if (teams().length > 0) {
+      <app-data-table
+        [data]="teams()"
+        [columns]="$any(displayedColumns)"
+        class="teams-theme">
+      </app-data-table>
+    } @else {
+      <div class="empty-teams py-8 text-gray-500">
+        <mat-icon class="text-4xl mb-2 opacity-50">sports_soccer</mat-icon>
+        <p>No teams in this competition yet</p>
+      </div>
+    }
   }
 </div>

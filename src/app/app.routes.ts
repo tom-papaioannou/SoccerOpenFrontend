@@ -30,9 +30,8 @@ export const routes: Routes = [
     { path: 'server/:id', canActivate: [authenticationGuard], component: ServerDetails },
     { path: 'competitions-management', canActivate: [authenticationGuard], component: CompetitionsManagement },
     { path: 'competition/:id', canActivate: [authenticationGuard], component: CompetitionDetails },
-    { path: 'competitions', redirectTo: '/world-map', pathMatch: 'full' },
     {
-        path: 'world-map',
+        path: 'competitions',
         canActivate: [authenticationGuard],
         loadComponent: () => import('./components/world-map/world-map').then(m => m.WorldMap)
     },
