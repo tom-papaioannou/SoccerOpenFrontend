@@ -21,7 +21,7 @@
 }
 
 .world-map-header span {
-  color: rgba(255, 255, 255, 0.72);
+  color: rgba(255, 255, 255, 1);
 }
 
 .world-map-card,
@@ -54,9 +54,12 @@
   flex-direction: column;
   gap: 0.5rem;
   min-width: 0;
+  overflow: hidden;
+  padding: 0 0.15rem;
 }
 
-.world-map-regions button {
+.world-map-regions button,
+.competition-list-item {
   border: 1px solid rgba(255, 255, 255, 0.28);
   border-radius: 0.375rem;
   background: rgba(11, 31, 58, 0.86);
@@ -69,13 +72,66 @@
 }
 
 .world-map-regions button:hover,
-.world-map-regions button.active {
+.world-map-regions button.active,
+.competition-list-item:hover {
   background: rgba(27, 78, 132, 0.95);
   border-color: rgba(255, 255, 255, 0.72);
 }
 
-.world-map-regions button:hover {
+.world-map-regions button:hover,
+.competition-list-item:hover {
   transform: translateX(-2px);
+}
+
+.competition-scope-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 0.15rem;
+}
+
+.competition-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.competition-group h3 {
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.competition-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.competition-list-item {
+  font-size: 0.9rem;
+  line-height: 1.2;
+  padding: 0.55rem 0.65rem;
+}
+
+.competition-list-state,
+.competition-list-error {
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 0.86rem;
+  padding: 0.35rem 0;
+}
+
+.competition-list-error {
+  color: #fecaca;
+}
+
+.my-competitions-list {
+  margin-top: auto;
 }
 
 .world-map-state,
@@ -106,5 +162,15 @@
   .world-map-regions {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .competition-scope-list {
+    grid-column: 1 / -1;
+    max-height: 240px;
+  }
+
+  .my-competitions-list {
+    grid-column: 1 / -1;
+    margin-top: 0;
   }
 }

@@ -1,9 +1,7 @@
 <div class="world-map-page">
   <div class="world-map-header">
     <h2>Competitions</h2>
-    @if (selectedNation()) {
-      <span>{{ selectedNation()!.name }}</span>
-    }
+    <span>{{ selectedRegion() }}</span>
   </div>
 
   @if (loading()) {
@@ -18,13 +16,71 @@
     <div #mapHost class="world-map-host"></div>
 
     <div class="world-map-regions" aria-label="Map regions">
-      @for (region of mapRegions; track region.name) {
+      @if (selectedRegion() !== 'World') {
         <button
           type="button"
-          [class.active]="selectedRegion() === region.name"
-          (click)="selectRegion(region)">
-          {{ region.name }}
+          class="back-to-world-button"
+          (click)="selectWorld()">
+          Back to World
         </button>
+      }
+
+      <div class="competition-scope-list">
+        @if (competitionsLoading()) {
+          <div class="competition-list-state">Loading competitions...</div>
+        } @else {
+          @if (clubCompetitions().length > 0) {
+            <section class="competition-group">
+              <h3>Clubs</h3>
+              <div class="competition-list">
+                @for (competition of clubCompetitions(); track competition.competitionID) {
+                  <button
+                    type="button"
+                    class="competition-list-item"
+                    (click)="openCompetition(competition)">
+                    {{ competition.competitionName }}
+                  </button>
+                }
+              </div>
+            </section>
+          }
+
+          @if (nationalCompetitions().length > 0) {
+            <section class="competition-group">
+              <h3>Nations</h3>
+              <div class="competition-list">
+                @for (competition of nationalCompetitions(); track competition.competitionID) {
+                  <button
+                    type="button"
+                    class="competition-list-item"
+                    (click)="openCompetition(competition)">
+                    {{ competition.competitionName }}
+                  </button>
+                }
+              </div>
+            </section>
+          }
+        }
+      </div>
+
+      @if (myCompetitionsLoading() || sortedMyCompetitions().length > 0) {
+        <section class="competition-group my-competitions-list">
+          <h3>My Competitions</h3>
+          @if (myCompetitionsLoading()) {
+            <div class="competition-list-state">Loading competitions...</div>
+          } @else {
+            <div class="competition-list">
+              @for (competition of sortedMyCompetitions(); track competition.competitionID) {
+                <button
+                  type="button"
+                  class="competition-list-item"
+                  (click)="openCompetition(competition)">
+                  {{ competition.competitionName }}
+                </button>
+              }
+            </div>
+          }
+        </section>
       }
     </div>
   </div>

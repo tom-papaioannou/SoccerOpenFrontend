@@ -5,8 +5,9 @@
 
 // Competition enums matching backend
 export enum CompetitionTeamsType {
-  Clubs = 0,
-  NationalTeams = 1
+  None = 0,
+  NationalTeams = 1,
+  Clubs = 2
 }
 
 export enum CompetitionType {
@@ -22,10 +23,21 @@ export interface Competition {
   competitionName: string;
   nationID?: string;
   continentID?: string;
+  nation?: CompetitionParent | null;
+  continent?: CompetitionParent | null;
   priority?: number;
   competitionTeamsType?: CompetitionTeamsType;
   competitionType?: CompetitionType;
   teams?: Team[];
+}
+
+export interface CompetitionParent {
+  name?: string | null;
+}
+
+export interface TeamCompetitions {
+  teamID: string;
+  competitions: Competition[];
 }
 
 export interface Team {
