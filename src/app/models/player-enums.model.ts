@@ -133,6 +133,7 @@ export interface PlayerTrainedPosition{
 }
 
 export interface PlayerTrainedRole{
+  playerPosition?: PlayerPosition;
   playerRole: PlayerRole;
   playerTrainedRoleAdaptation: number;
 }

@@ -14,18 +14,9 @@ import { forkJoin } from 'rxjs';
 import { CdkDrag, CdkDragStart, CdkDragMove, CdkDragEnd, CdkDragDrop, CdkDropList, CdkDragHandle, CdkDragPlaceholder } from '@angular/cdk/drag-drop';
 import { TacticsService } from '../../../services/tactics.service';
 import { Tactic, Formation, PlayerTactic, SquadUnit } from '../../../models/tactic.model';
-import { PlayerPosition, PlayerRole } from '../../../models/player-enums.model';
+import { Person, PlayerPosition, PlayerRole } from '../../../models/player-enums.model';
 import { getPlayerPositionLabel, getPlayerRoleLabel, positionSortOrder, getPositionPitchRow } from '../../../utils/position-utils';
 import { FormsModule } from '@angular/forms';
-
-function getSquadUnitLabel(squadUnit: SquadUnit): string {
-  switch (squadUnit) {
-    case SquadUnit.Starting: return 'Starting';
-    case SquadUnit.Substitute: return 'Substitutes';
-    case SquadUnit.Reserve: return 'Reserves';
-    default: return '-';
-  }
-}
 
 function getPlayerRoleOptionLabel(role: PlayerRole): string {
   if (role === PlayerRole.None) {
@@ -171,11 +162,11 @@ export interface PlayerTacticTableRow {
   playerName: string;
   position: string;
   positionValue: number;
-  role: string;
   roleValue: PlayerRole;
+  bestTrainedPosition: string;
+  bestTrainedRole: string;
   playerTacticID: string | undefined;
   squadUnit: SquadUnit;
-  squadUnitLabel: string;
   substituteOrder: number;
 }
 
@@ -377,11 +368,11 @@ export class TacticsDetail implements OnInit, OnDestroy {
         playerName,
         position: pt.squadUnit === SquadUnit.Starting ? getPlayerPositionLabel(pt.playerPosition) : (pt.squadUnit === SquadUnit.Substitute ? `S${pt.substituteOrder ?? ''}` : 'Res'),
         positionValue: pt.playerPosition, // Include raw enum value for sorting
-        role: getPlayerRoleLabel(pt.playerRole),
         roleValue: pt.playerRole,
+        bestTrainedPosition: getPlayerPositionLabel(this.getBestTrainedPosition(pt.person)),
+        bestTrainedRole: getPlayerRoleLabel(this.getBestTrainedRole(pt.person)),
         playerTacticID: pt.playerTacticID,
         squadUnit: pt.squadUnit,
-        squadUnitLabel: getSquadUnitLabel(pt.squadUnit),
         substituteOrder: pt.substituteOrder ?? Number.MAX_SAFE_INTEGER
       };
     });
@@ -408,6 +399,29 @@ export class TacticsDetail implements OnInit, OnDestroy {
 
   getPlayerRoleOptions(position: number): { value: PlayerRole; label: string }[] {
     return getAvailableRoleOptionsForPosition(position);
+  }
+
+  private getBestTrainedPosition(person: Person | undefined): PlayerPosition | undefined {
+    if (!person?.playerTrainedPositions?.length) {
+      return undefined;
+    }
+
+    return person.playerTrainedPositions.reduce((best, position) =>
+      position.playerTrainedPositionAdaptation > best.playerTrainedPositionAdaptation ? position : best
+    )?.playerPosition;
+  }
+
+  private getBestTrainedRole(person: Person | undefined): PlayerRole | undefined {
+    if (!person?.playerTrainedRoles?.length) {
+      return undefined;
+    }
+
+    let bestPosition = this.getBestTrainedPosition(person);
+
+    return person.playerTrainedRoles.reduce((best, role) => 
+      role.playerPosition === bestPosition &&
+      (role.playerTrainedRoleAdaptation > best.playerTrainedRoleAdaptation) ? role : best
+    )?.playerRole;
   }
 
   onPlayerRoleChange(player: PlayerTacticTableRow, event: Event): void {
