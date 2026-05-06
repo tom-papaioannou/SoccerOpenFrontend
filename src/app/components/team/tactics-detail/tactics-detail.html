@@ -74,6 +74,7 @@
               <span class="list-col-drag"></span>
               <span class="list-col-pos">Pos</span>
               <span class="list-col-role">Role</span>
+              <span class="list-col-suitability" title="Power for Position and Role">PPR</span>
               <span class="list-col-name">Name</span>
               <span class="list-col-trained-pos" title="Best Position">BP</span>
               <span class="list-col-trained-role" title="Best Role">BR</span>
@@ -98,7 +99,14 @@
                       <option [value]="role.value">{{ role.label }}</option>
                     }
                   </select>
-                  <span class="list-col-name">{{ player.playerName }}</span>
+                  <span class="list-col-suitability">{{ player.squadUnit === SquadUnit.Starting ? player.suitability : '' }}</span>
+                  <button type="button"
+                    class="list-col-name player-name-button"
+                    (click)="openPlayerPopup(player, $event)"
+                    (mousedown)="$event.stopPropagation()"
+                    (touchstart)="$event.stopPropagation()">
+                    {{ player.playerName }}
+                  </button>
                   <span class="list-col-trained-pos">{{ player.bestTrainedPosition }}</span>
                   <span class="list-col-trained-role">{{ player.bestTrainedRole }}</span>
                   <div class="player-list-placeholder" *cdkDragPlaceholder></div>
@@ -130,6 +138,50 @@
         </mat-button-toggle-group>
       </div>
     </div>
+  </div>
+  }
+
+  @if (selectedPlayer(); as player) {
+  <div class="player-popup-backdrop" (click)="closePlayerPopup()">
+    <section class="player-popup" role="dialog" aria-modal="true" [attr.aria-label]="'Tactics details for ' + player.playerName" (click)="$event.stopPropagation()">
+      <div class="player-popup-header">
+        <h3>{{ player.playerName }}</h3>
+        <button mat-icon-button type="button" (click)="closePlayerPopup()" aria-label="Close player details">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+
+      <div class="player-popup-row">
+        <span class="player-popup-label">Position</span>
+        <span class="player-popup-value">{{ player.position }} - {{ getPlayerPositionAdaptation(player) }}</span>
+      </div>
+
+      <label class="player-popup-field">
+        <span class="player-popup-label">Role</span>
+        <select class="role-select player-popup-select"
+          [ngModel]="player.roleValue"
+          [disabled]="player.squadUnit !== SquadUnit.Starting || isRoleUpdating(player.playerTacticID)"
+          [attr.aria-label]="'Tactics role for ' + player.playerName"
+          (change)="onPopupRoleChange(player, $event)">
+          @for (role of getPlayerPopupRoleOptions(player); track role.value) {
+            <option [value]="role.value">{{ role.label }}</option>
+          }
+        </select>
+      </label>
+
+      <label class="player-popup-field">
+        <span class="player-popup-label">Swap with</span>
+        <select class="role-select player-popup-select"
+          [ngModel]="''"
+          [attr.aria-label]="'Swap ' + player.playerName + ' with'"
+          (change)="onPopupSwapChange(player, $event)">
+          <option value="">Select player</option>
+          @for (option of getPlayerSwapOptions(player); track option.playerTacticID) {
+            <option [value]="option.playerTacticID">{{ option.label }}</option>
+          }
+        </select>
+      </label>
+    </section>
   </div>
   }
 </div>

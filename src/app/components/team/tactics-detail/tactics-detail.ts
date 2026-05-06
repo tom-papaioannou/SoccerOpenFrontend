@@ -142,6 +142,16 @@ function getAvailableRoleOptionsForPosition(position: PlayerPosition): { value: 
   }));
 }
 
+interface PlayerRoleOptionWithAdaptation {
+  value: PlayerRole;
+  label: string;
+}
+
+interface PlayerSwapOption {
+  playerTacticID: string;
+  label: string;
+}
+
 export interface PitchRowPlayer {
   position: number;
   positionLabel: string;
@@ -163,9 +173,11 @@ export interface PlayerTacticTableRow {
   position: string;
   positionValue: number;
   roleValue: PlayerRole;
+  suitability: number;
   bestTrainedPosition: string;
   bestTrainedRole: string;
   playerTacticID: string | undefined;
+  person?: Person;
   squadUnit: SquadUnit;
   substituteOrder: number;
 }
@@ -209,6 +221,9 @@ export class TacticsDetail implements OnInit, OnDestroy {
 
   /** Currently selected squad unit filter (0 = Starting, 1 = Substitutes, 2 = Reserves) */
   selectedSquadUnit = signal<SquadUnit>(SquadUnit.Starting);
+
+  /** Player currently shown in the detail popup. */
+  selectedPlayer = signal<PlayerTacticTableRow | null>(null);
 
   /** Player tactic ids with a role update in flight. */
   private updatingRoleIds = signal<Set<string>>(new Set());
@@ -369,9 +384,11 @@ export class TacticsDetail implements OnInit, OnDestroy {
         position: pt.squadUnit === SquadUnit.Starting ? getPlayerPositionLabel(pt.playerPosition) : (pt.squadUnit === SquadUnit.Substitute ? `S${pt.substituteOrder ?? ''}` : 'Res'),
         positionValue: pt.playerPosition, // Include raw enum value for sorting
         roleValue: pt.playerRole,
+        suitability: this.getPlayerSuitability(pt.person, pt.playerPosition, pt.playerRole),
         bestTrainedPosition: getPlayerPositionLabel(this.getBestTrainedPosition(pt.person)),
         bestTrainedRole: getPlayerRoleLabel(this.getBestTrainedRole(pt.person)),
         playerTacticID: pt.playerTacticID,
+        person: pt.person,
         squadUnit: pt.squadUnit,
         substituteOrder: pt.substituteOrder ?? Number.MAX_SAFE_INTEGER
       };
@@ -399,6 +416,93 @@ export class TacticsDetail implements OnInit, OnDestroy {
 
   getPlayerRoleOptions(position: number): { value: PlayerRole; label: string }[] {
     return getAvailableRoleOptionsForPosition(position);
+  }
+
+  getPlayerPopupRoleOptions(player: PlayerTacticTableRow): PlayerRoleOptionWithAdaptation[] {
+    return getAvailableRolesForPosition(player.positionValue).map(role => ({
+      value: role,
+      label: `${getPlayerRoleLabel(role)} - ${this.getPlayerRoleAdaptation(player, role)}`
+    }));
+  }
+
+  getPlayerPositionAdaptation(player: PlayerTacticTableRow): number {
+    return this.getPlayerPositionAdaptationForPosition(player.person, player.positionValue);
+  }
+
+  getPlayerRoleAdaptation(player: PlayerTacticTableRow, roleValue: PlayerRole): number {
+    return this.getPlayerRoleAdaptationForRole(player.person, player.positionValue, roleValue);
+  }
+
+  private getPlayerSuitability(person: Person | undefined, positionValue: PlayerPosition, roleValue: PlayerRole): number {
+    const positionAdaptation = this.getPlayerPositionAdaptationForPosition(person, positionValue);
+    const roleAdaptation = this.getPlayerRoleAdaptationForRole(person, positionValue, roleValue);
+
+    return Math.floor((positionAdaptation + roleAdaptation) / 2);
+  }
+
+  private getPlayerPositionAdaptationForPosition(person: Person | undefined, positionValue: PlayerPosition): number {
+    return person?.playerTrainedPositions
+      ?.find(position => position.playerPosition === positionValue)
+      ?.playerTrainedPositionAdaptation ?? 0;
+  }
+
+  private getPlayerRoleAdaptationForRole(person: Person | undefined, positionValue: PlayerPosition, roleValue: PlayerRole): number {
+    const roles = person?.playerTrainedRoles;
+    if (!roles?.length) {
+      return 0;
+    }
+
+    return roles.find(role => role.playerPosition === positionValue && role.playerRole === roleValue)
+      ?.playerTrainedRoleAdaptation
+      ?? roles.find(role => role.playerPosition === undefined && role.playerRole === roleValue)
+        ?.playerTrainedRoleAdaptation
+      ?? 0;
+  }
+
+  openPlayerPopup(player: PlayerTacticTableRow, event?: Event): void {
+    event?.stopPropagation();
+    this.selectedPlayer.set(player);
+  }
+
+  closePlayerPopup(): void {
+    this.selectedPlayer.set(null);
+  }
+
+  onPopupRoleChange(player: PlayerTacticTableRow, event: Event): void {
+    this.onPlayerRoleChange(player, event);
+  }
+
+  getPlayerSwapOptions(player: PlayerTacticTableRow): PlayerSwapOption[] {
+    return this.tableData
+      .filter(option => option.playerTacticID && option.playerTacticID !== player.playerTacticID)
+      .map(option => ({
+        playerTacticID: option.playerTacticID!,
+        label: `${option.position} - ${option.playerName}`
+      }));
+  }
+
+  onPopupSwapChange(player: PlayerTacticTableRow, event: Event): void {
+    const select = event.target as HTMLSelectElement;
+    const targetPlayerTacticID = select.value;
+
+    if (!player.playerTacticID || !targetPlayerTacticID) {
+      select.value = '';
+      return;
+    }
+
+    this.tacticsService.swapPlayerTactics(player.playerTacticID, targetPlayerTacticID)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.closePlayerPopup();
+          this.reloadPlayerTactics();
+        },
+        error: (err) => {
+          select.value = '';
+          this.error.set(err.message || 'Failed to swap players');
+          this.cdr.markForCheck();
+        }
+      });
   }
 
   private getBestTrainedPosition(person: Person | undefined): PlayerPosition | undefined {
@@ -614,6 +718,18 @@ export class TacticsDetail implements OnInit, OnDestroy {
   }
 
   private updatePlayerRoleInState(playerTacticID: string, playerRole: PlayerRole): void {
+    this.selectedPlayer.update(selected => {
+      if (!selected || selected.playerTacticID !== playerTacticID) {
+        return selected;
+      }
+
+      return {
+        ...selected,
+        roleValue: playerRole,
+        suitability: this.getPlayerSuitability(selected.person, selected.positionValue, playerRole)
+      };
+    });
+
     this.playerTactics.update(playerTactics =>
       playerTactics.map(playerTactic =>
         playerTactic.playerTacticID === playerTacticID
@@ -625,12 +741,35 @@ export class TacticsDetail implements OnInit, OnDestroy {
 
   private replacePlayerTacticInState(updatedPlayerTactic: PlayerTactic): void {
     this.playerTactics.update(playerTactics =>
-      playerTactics.map(playerTactic =>
-        playerTactic.playerTacticID === updatedPlayerTactic.playerTacticID
-          ? { ...playerTactic, ...updatedPlayerTactic, person: updatedPlayerTactic.person ?? playerTactic.person }
-          : playerTactic
-      )
+      playerTactics.map(playerTactic => {
+        if (playerTactic.playerTacticID !== updatedPlayerTactic.playerTacticID) {
+          return playerTactic;
+        }
+
+        return {
+          ...playerTactic,
+          ...updatedPlayerTactic,
+          person: this.mergePlayerTacticPerson(playerTactic.person, updatedPlayerTactic.person)
+        };
+      })
     );
+  }
+
+  private mergePlayerTacticPerson(currentPerson: Person | undefined, updatedPerson: Person | undefined): Person | undefined {
+    if (!updatedPerson) {
+      return currentPerson;
+    }
+
+    if (!currentPerson) {
+      return updatedPerson;
+    }
+
+    return {
+      ...currentPerson,
+      ...updatedPerson,
+      playerTrainedPositions: updatedPerson.playerTrainedPositions ?? currentPerson.playerTrainedPositions,
+      playerTrainedRoles: updatedPerson.playerTrainedRoles ?? currentPerson.playerTrainedRoles
+    };
   }
 
   /** Finds a PitchRowPlayer by their position enum value. */
