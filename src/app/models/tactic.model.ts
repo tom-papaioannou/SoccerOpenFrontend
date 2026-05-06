@@ -3,7 +3,7 @@
  * Licensed under the MIT License
  */
 
-import { PlayerPosition, PlayerRole } from './player-enums.model';
+import { Person, PlayerPosition, PlayerRole } from './player-enums.model';
 
 /**
  * Formation enum matching backend Formation enum
@@ -80,13 +80,7 @@ export interface PlayerTactic {
   playerTacticID?: string;
   tacticID: string;
   personID?: string;
-  person?: {
-      personID: string;
-      name?: string;
-      surname?: string;
-      dateOfBirth?: string;
-      placeOfBirth?: string;
-    };
+  person?: Person;
   playerPosition: PlayerPosition;
   playerRole: PlayerRole;
   squadUnit: SquadUnit;

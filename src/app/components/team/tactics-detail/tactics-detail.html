@@ -73,8 +73,10 @@
             <div class="player-list-header">
               <span class="list-col-drag"></span>
               <span class="list-col-pos">Pos</span>
-              <span class="list-col-name">Name</span>
               <span class="list-col-role">Role</span>
+              <span class="list-col-name">Name</span>
+              <span class="list-col-trained-pos" title="Best Position">BP</span>
+              <span class="list-col-trained-role" title="Best Role">BR</span>
             </div>
             <!-- Drag-drop list -->
             <div cdkDropList [cdkDropListData]="filteredTableData"
@@ -84,7 +86,6 @@
                 <div cdkDrag class="player-list-row">
                   <mat-icon cdkDragHandle class="list-col-drag drag-handle">drag_indicator</mat-icon>
                   <span class="list-col-pos">{{ player.position }}</span>
-                  <span class="list-col-name">{{ player.playerName }}</span>
                   <select class="list-col-role role-select"
                     [ngModel]="player.roleValue"
                     [disabled]="player.squadUnit !== SquadUnit.Starting || isRoleUpdating(player.playerTacticID)"
@@ -97,6 +98,9 @@
                       <option [value]="role.value">{{ role.label }}</option>
                     }
                   </select>
+                  <span class="list-col-name">{{ player.playerName }}</span>
+                  <span class="list-col-trained-pos">{{ player.bestTrainedPosition }}</span>
+                  <span class="list-col-trained-role">{{ player.bestTrainedRole }}</span>
                   <div class="player-list-placeholder" *cdkDragPlaceholder></div>
                 </div>
               }
