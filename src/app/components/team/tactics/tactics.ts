@@ -18,6 +18,14 @@ import { TacticsService } from '../../../services/tactics.service';
 import { Tactic, CreateTacticRequest, Formation } from '../../../models/tactic.model';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TeamsService } from '../../../services/teams.service';
+import { Kit } from '../../../models/competition.model';
+import { PlayerPosition } from '../../../models/player-enums.model';
+import { getPositionPitchRow } from '../../../utils/position-utils';
+
+interface FormationPreviewRow {
+  rowIndex: number;
+  positions: PlayerPosition[];
+}
 
 @Component({
   selector: 'app-tactics',
@@ -48,6 +56,7 @@ export class Tactics implements OnInit {
   loading = signal(false);
   error = signal<string | null>(null);
   createMode = signal(false);
+  teamKit = signal<Kit | null>(null);
 
   // Form
   tacticForm: FormGroup;
@@ -109,11 +118,14 @@ export class Tactics implements OnInit {
   }
 
   ngOnInit(): void {
+    this.teamKit.set(this.teamsService.CurrentTeam?.kit ?? null);
+
     // Wait for CurrentTeam to be set before loading tactics
     this.teamsService.currentTeamObservable
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (team) => {
+          this.teamKit.set(team.kit ?? null);
           // Only load tactics when we have a valid team
           if (team) {
             this.loadTactics();
@@ -224,20 +236,114 @@ export class Tactics implements OnInit {
       });
   }
 
-  getFormationImagePath(formation?: Formation): string {
-    switch(formation){
-      case Formation.Four_Three_Three:
-        return 'assets/images/tactics/4-3-3.png';
-      case Formation.Three_Five_Two:
-        return 'assets/images/tactics/3-5-2.png';
-      case Formation.Five_Three_Two:
-        return 'assets/images/tactics/5-3-2.png';
-      case Formation.Four_Five_One:
-        return 'assets/images/tactics/4-5-1.png';
+  getFormationPreviewRows(formation?: Formation): FormationPreviewRow[] {
+    const positions = this.getFormationPositions(formation);
+    const rowMap = new Map<number, PlayerPosition[]>();
+
+    for (const position of positions) {
+      const row = getPositionPitchRow(position);
+      if (row < 0) continue;
+
+      if (!rowMap.has(row)) {
+        rowMap.set(row, []);
+      }
+
+      rowMap.get(row)!.push(position);
     }
 
-    // defaults to 4-4-2 image
-    return 'assets/images/tactics/4-4-2.png';
+    const rows = Array.from(rowMap.entries()).map(([rowIndex, rowPositions]) => ({
+      rowIndex,
+      positions: rowPositions.sort((a, b) => b - a)
+    }));
+
+    return rows.sort((a, b) => b.rowIndex - a.rowIndex);
+  }
+
+  getPreviewRowClass(row: FormationPreviewRow): string {
+    return row.positions.length <= 2 ? 'formation-preview-row centered' : 'formation-preview-row spaced';
+  }
+
+  getHomeShirtColor(): string {
+    return this.teamKit()?.homeShirtColor || 'rgb(207, 73, 73)';
+  }
+
+  getHomeShortsColor(): string {
+    return this.teamKit()?.homeShortsColor || 'rgba(0, 0, 0, 0.6)';
+  }
+
+  private getFormationPositions(formation?: Formation): PlayerPosition[] {
+    switch(formation) {
+      case Formation.Four_Three_Three:
+        return [
+          PlayerPosition.Goalkeeper,
+          PlayerPosition.RightBack,
+          PlayerPosition.RightCenterBack,
+          PlayerPosition.LeftCenterBack,
+          PlayerPosition.LeftBack,
+          PlayerPosition.RightCenterMidfielder,
+          PlayerPosition.CentralCenterMidfielder,
+          PlayerPosition.LeftCenterMidfielder,
+          PlayerPosition.RightWinger,
+          PlayerPosition.CentralStriker,
+          PlayerPosition.LeftWinger
+        ];
+      case Formation.Three_Five_Two:
+        return [
+          PlayerPosition.Goalkeeper,
+          PlayerPosition.RightCenterBack,
+          PlayerPosition.CentralCenterBack,
+          PlayerPosition.LeftCenterBack,
+          PlayerPosition.RightMidfielder,
+          PlayerPosition.RightCenterMidfielder,
+          PlayerPosition.CentralCenterMidfielder,
+          PlayerPosition.LeftCenterMidfielder,
+          PlayerPosition.LeftMidfielder,
+          PlayerPosition.RightStriker,
+          PlayerPosition.LeftStriker
+        ];
+      case Formation.Five_Three_Two:
+        return [
+          PlayerPosition.Goalkeeper,
+          PlayerPosition.RightBack,
+          PlayerPosition.RightCenterBack,
+          PlayerPosition.CentralCenterBack,
+          PlayerPosition.LeftCenterBack,
+          PlayerPosition.LeftBack,
+          PlayerPosition.RightCenterMidfielder,
+          PlayerPosition.CentralCenterMidfielder,
+          PlayerPosition.LeftCenterMidfielder,
+          PlayerPosition.RightStriker,
+          PlayerPosition.LeftStriker
+        ];
+      case Formation.Four_Five_One:
+        return [
+          PlayerPosition.Goalkeeper,
+          PlayerPosition.RightBack,
+          PlayerPosition.RightCenterBack,
+          PlayerPosition.LeftCenterBack,
+          PlayerPosition.LeftBack,
+          PlayerPosition.RightMidfielder,
+          PlayerPosition.RightCenterMidfielder,
+          PlayerPosition.CentralCenterMidfielder,
+          PlayerPosition.LeftCenterMidfielder,
+          PlayerPosition.LeftMidfielder,
+          PlayerPosition.CentralStriker
+        ];
+      default:
+        return [
+          PlayerPosition.Goalkeeper,
+          PlayerPosition.RightBack,
+          PlayerPosition.RightCenterBack,
+          PlayerPosition.LeftCenterBack,
+          PlayerPosition.LeftBack,
+          PlayerPosition.RightMidfielder,
+          PlayerPosition.RightCenterMidfielder,
+          PlayerPosition.LeftCenterMidfielder,
+          PlayerPosition.LeftMidfielder,
+          PlayerPosition.RightStriker,
+          PlayerPosition.LeftStriker
+        ];
+    }
   }
 
   viewTacticDetails(tactic: Tactic): void {

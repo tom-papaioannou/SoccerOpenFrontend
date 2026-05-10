@@ -1,6 +1,10 @@
 .tactics-detail-container {
   max-width: 1400px;
-  margin: 0 auto;
+  margin: 0;
+}
+
+.tactics-detail-layout {
+  align-items: flex-start;
 }
 
 .content-grid {
@@ -20,54 +24,65 @@
 .tactic-section {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
 }
 
 .players-section {
   display: flex;
   flex-direction: column;
-  width: 680px;
+  width: 920px;
   flex-shrink: 0;
   padding: 0px 16px;
 }
 
-/* Filter wrapper: on desktop buttons are to the right of the table */
-.squad-filter-wrapper {
+.players-lists {
   display: flex;
   flex-direction: row;
   gap: 12px;
-  align-items: flex-start;
+  align-items: stretch;
+  height: 654px;
 }
 
-.squad-table-area {
-  flex: 1;
-  min-width: 0;
-  overflow-y: auto;
-  min-width: 494px;
-
-  @media (max-width: 768px) {
-    min-width: 343px;
-  }
-}
-
-.squad-unit-buttons {
+.player-list-panel {
   display: flex;
   flex-direction: column;
-  flex-shrink: 0;
+  flex: 1 1 0;
+  min-width: 0;
 }
 
-/* On mobile: buttons above the table */
+.reserves-list-panel {
+  flex: 0 0 340px;
+}
+
+.player-list-panel .player-tactics-list {
+  min-height: 0;
+  flex: 1 1 auto;
+}
+
+.player-list-body {
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.player-list-panel .player-list-body {
+  flex: 1 1 auto;
+}
+
+.player-list-panel .player-tactics-list {
+  display: flex;
+  flex-direction: column;
+}
+
 @media (max-width: 767px) {
-  .squad-filter-wrapper {
-    flex-direction: column-reverse;
-  }
-
-  .squad-unit-buttons {
-    flex-direction: row;
+  .players-lists {
+    flex-direction: column;
     width: 100%;
+    height: auto;
   }
 
-  .squad-unit-buttons mat-button-toggle {
-    flex: 1;
+  .player-list-panel,
+  .reserves-list-panel {
+    flex: 0 0 654px;
   }
 }
 
@@ -84,11 +99,6 @@
     max-width: 100%;
     padding-left: 4px;
     padding-right: 4px;
-  }
-
-  .squad-table-area {
-    min-width: 0;
-    width: 100%;
   }
 
   .player-tactics-list {
@@ -168,7 +178,25 @@
 }
 
 .player-node{
-  min-width: 60px;
+  min-width: 86px;
+}
+
+.player-node-name {
+  display: block;
+  max-width: 92px;
+  overflow: hidden;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.68rem;
+  line-height: 1rem;
+}
+
+@media (min-width: 768px) {
+  .player-node-name {
+    max-width: 112px;
+    font-size: 0.7rem;
+  }
 }
 
 .player-shirt{
@@ -267,7 +295,8 @@
 }
 
 .player-list-body {
-  min-height: 24px;
+  min-height: 0;
+  overflow-y: auto;
 }
 
 .player-list-row {
@@ -439,4 +468,67 @@
 
 .player-popup-select {
   width: 180px;
+}
+
+.tactic-edit-popup {
+  width: min(520px, 100%);
+}
+
+.tactic-edit-field {
+  align-items: baseline;
+}
+
+.tactic-edit-input {
+  width: 180px;
+  border-radius: 6px;
+  border: 1px solid rgba(148, 163, 184, 0.45);
+  background-color: rgba(15, 23, 42, 0.72);
+  color: #f8fafc;
+  padding: 6px 8px;
+}
+
+.tactic-main-field {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 0;
+  color: #f8fafc;
+  font-weight: 700;
+}
+
+.tactic-main-checkbox {
+  width: 180px;
+  height: 18px;
+  margin: 0;
+  cursor: pointer;
+  vertical-align: baseline;
+}
+
+.tactic-main-checkbox:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
+.tactic-edit-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.tactic-edit-actions button:hover:not(:disabled) {
+  color: rgb(15, 23, 42);
+}
+
+@media (max-width: 480px) {
+  .tactic-edit-field {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .tactic-edit-input,
+  .tactic-edit-field .player-popup-select {
+    width: 100%;
+  }
 }

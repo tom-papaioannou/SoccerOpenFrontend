@@ -60,6 +60,10 @@ export interface Tactic {
   name: string;
   isMain: boolean;
   formation?: Formation;
+  captainID?: string | null;
+  penaltyTakerID?: string | null;
+  leftCornerTakerID?: string | null;
+  rightCornerTakerID?: string | null;
 }
 
 /**
@@ -71,6 +75,19 @@ export interface CreateTacticRequest {
   Name: string;
   isMain: boolean;
   Formation?: Formation;
+}
+
+/**
+ * DTO for updating tactic details and set-piece assignments
+ */
+export interface UpdateTacticRequest {
+  name: string;
+  isMain: boolean;
+  formation: Formation;
+  captainID?: string | null;
+  penaltyTakerID?: string | null;
+  leftCornerTakerID?: string | null;
+  rightCornerTakerID?: string | null;
 }
 
 /**

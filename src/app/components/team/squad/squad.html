@@ -15,6 +15,18 @@
         </mat-select>
     </ng-template>
 
+    <ng-template #nationalityTemplate let-player>
+        @if (player.nationalityFlagUrl) {
+            <img
+                class="nationality-flag"
+                [src]="player.nationalityFlagUrl"
+                [alt]="player.nationalityName + ' flag'"
+                [title]="player.nationalityName" />
+        } @else {
+            <span>-</span>
+        }
+    </ng-template>
+
     <app-data-table
         [data]="people"
         class="players-theme"

@@ -7,13 +7,14 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnIn
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
-import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatIconModule } from '@angular/material/icon';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { forkJoin } from 'rxjs';
 import { CdkDrag, CdkDragStart, CdkDragMove, CdkDragEnd, CdkDragDrop, CdkDropList, CdkDragHandle, CdkDragPlaceholder } from '@angular/cdk/drag-drop';
 import { TacticsService } from '../../../services/tactics.service';
-import { Tactic, Formation, PlayerTactic, SquadUnit } from '../../../models/tactic.model';
+import { Tactic, Formation, PlayerTactic, SquadUnit, UpdateTacticRequest } from '../../../models/tactic.model';
+import { TeamsService } from '../../../services/teams.service';
+import { Kit } from '../../../models/competition.model';
 import { Person, PlayerPosition, PlayerRole } from '../../../models/player-enums.model';
 import { getPlayerPositionLabel, getPlayerRoleLabel, positionSortOrder, getPositionPitchRow } from '../../../utils/position-utils';
 import { FormsModule } from '@angular/forms';
@@ -152,6 +153,16 @@ interface PlayerSwapOption {
   label: string;
 }
 
+interface TacticEditModel {
+  name: string;
+  isMain: boolean;
+  formation: Formation;
+  captainID: string | null;
+  penaltyTakerID: string | null;
+  leftCornerTakerID: string | null;
+  rightCornerTakerID: string | null;
+}
+
 export interface PitchRowPlayer {
   position: number;
   positionLabel: string;
@@ -187,14 +198,13 @@ export interface PlayerTacticTableRow {
   imports: [
     CommonModule,
     MatButtonModule,
-    MatButtonToggleModule,
     MatIconModule,
     CdkDrag,
     CdkDropList,
     CdkDragHandle,
     CdkDragPlaceholder,
     FormsModule
-  ],
+],
   templateUrl: './tactics-detail.html',
   styleUrl: './tactics-detail.css',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -209,9 +219,22 @@ export class TacticsDetail implements OnInit, OnDestroy {
   // State signals
   tactic = signal<Tactic | null>(null);
   playerTactics = signal<PlayerTactic[]>([]);
+  teamPlayers = signal<Person[]>([]);
+  teamKit = signal<Kit | null>(null);
   loading = signal(false);
+  editSaving = signal(false);
   error = signal<string | null>(null);
   tacticId = signal<string | null>(null);
+  editPopupOpen = signal(false);
+  editModel = signal<TacticEditModel>({
+    name: '',
+    isMain: false,
+    formation: Formation.Four_Four_Two,
+    captainID: null,
+    penaltyTakerID: null,
+    leftCornerTakerID: null,
+    rightCornerTakerID: null
+  });
 
   /** Tracks the position of the currently dragged player (null when not dragging) */
   draggedPosition = signal<number | null>(null);
@@ -219,11 +242,16 @@ export class TacticsDetail implements OnInit, OnDestroy {
   /** Reference to the DOM element currently being hovered during drag */
   private hoveredElement: HTMLElement | null = null;
 
-  /** Currently selected squad unit filter (0 = Starting, 1 = Substitutes, 2 = Reserves) */
-  selectedSquadUnit = signal<SquadUnit>(SquadUnit.Starting);
-
   /** Player currently shown in the detail popup. */
   selectedPlayer = signal<PlayerTacticTableRow | null>(null);
+
+  formationOptions = [
+    { value: Formation.Four_Four_Two, label: '4-4-2' },
+    { value: Formation.Four_Three_Three, label: '4-3-3' },
+    { value: Formation.Three_Five_Two, label: '3-5-2' },
+    { value: Formation.Five_Three_Two, label: '5-3-2' },
+    { value: Formation.Four_Five_One, label: '4-5-1' }
+  ];
 
   /** Player tactic ids with a role update in flight. */
   private updatingRoleIds = signal<Set<string>>(new Set());
@@ -249,7 +277,7 @@ export class TacticsDetail implements OnInit, OnDestroy {
       if (row < 0) continue;
 
       const playerName = pt.person
-        ? `${pt.person.name?.substring(0, 1) || ''}. ${pt.person.surname || ''}`.trim() || 'Unknown Player'
+        ? this.getPitchPlayerName(pt.person)
         : 'Unknown Player';
 
       const player: PitchRowPlayer = {
@@ -286,6 +314,7 @@ export class TacticsDetail implements OnInit, OnDestroy {
 
   constructor(
     private readonly tacticsService: TacticsService,
+    private readonly teamsService: TeamsService,
     private readonly cdr: ChangeDetectorRef,
     private readonly elementRef: ElementRef,
     route: ActivatedRoute,
@@ -298,6 +327,16 @@ export class TacticsDetail implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.teamKit.set(this.teamsService.CurrentTeam?.kit ?? null);
+    this.teamsService.currentTeamObservable
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (team) => {
+          this.teamKit.set(team.kit ?? null);
+          this.cdr.markForCheck();
+        }
+      });
+
     const tacticId = this.route.snapshot.paramMap.get('id');
     if (!tacticId) {
       this.error.set('No tactic ID provided');
@@ -333,6 +372,7 @@ export class TacticsDetail implements OnInit, OnDestroy {
           this.tactic.set(tactic);
           this.playerTactics.set(playerTactics);
           this.loading.set(false);
+          this.loadTeamPlayers(tactic.teamID);
           this.cdr.markForCheck();
         },
         error: (err) => {
@@ -343,20 +383,19 @@ export class TacticsDetail implements OnInit, OnDestroy {
       });
   }
 
-  getFormationImagePath(formation?: Formation): string {
-    switch(formation){
-      case Formation.Four_Three_Three:
-        return 'assets/images/tactics/4-3-3.png';
-      case Formation.Three_Five_Two:
-        return 'assets/images/tactics/3-5-2.png';
-      case Formation.Five_Three_Two:
-        return 'assets/images/tactics/5-3-2.png';
-      case Formation.Four_Five_One:
-        return 'assets/images/tactics/4-5-1.png';
-    }
-
-    // defaults to 4-4-2 image
-    return 'assets/images/tactics/4-4-2.png';
+  private loadTeamPlayers(teamID: string): void {
+    this.teamsService.getTeamSquad(teamID)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (players) => {
+          this.teamPlayers.set([...players].sort((a, b) => this.getPlayerFullName(a).localeCompare(this.getPlayerFullName(b))));
+          this.cdr.markForCheck();
+        },
+        error: (err) => {
+          this.error.set(err.message || 'Failed to load team players');
+          this.cdr.markForCheck();
+        }
+      });
   }
 
   /**
@@ -371,6 +410,98 @@ export class TacticsDetail implements OnInit, OnDestroy {
 
   goBack(): void {
     this.router.navigate(['/team/tactics']);
+  }
+
+  openEditPopup(): void {
+    const tactic = this.tactic();
+    if (!tactic) {
+      return;
+    }
+
+    this.editModel.set({
+      name: tactic.name,
+      isMain: tactic.isMain,
+      formation: tactic.formation ?? Formation.Four_Four_Two,
+      captainID: tactic.captainID ?? null,
+      penaltyTakerID: tactic.penaltyTakerID ?? null,
+      leftCornerTakerID: tactic.leftCornerTakerID ?? null,
+      rightCornerTakerID: tactic.rightCornerTakerID ?? null
+    });
+    this.editPopupOpen.set(true);
+  }
+
+  closeEditPopup(): void {
+    if (this.editSaving()) {
+      return;
+    }
+
+    this.editPopupOpen.set(false);
+  }
+
+  saveTacticEdit(): void {
+    const tactic = this.tactic();
+    const tacticID = this.tacticId();
+    const model = this.editModel();
+    const name = model.name.trim();
+
+    if (!tactic || !tacticID) {
+      this.error.set('Cannot update tactic: missing tactic information.');
+      return;
+    }
+
+    if (name.length < 1 || name.length > 30) {
+      this.error.set('Tactic name must be between 1 and 30 characters.');
+      return;
+    }
+
+    const request: UpdateTacticRequest = {
+      name,
+      isMain: model.isMain,
+      formation: Number(model.formation) as Formation,
+      captainID: model.captainID || null,
+      penaltyTakerID: model.penaltyTakerID || null,
+      leftCornerTakerID: model.leftCornerTakerID || null,
+      rightCornerTakerID: model.rightCornerTakerID || null
+    };
+
+    this.editSaving.set(true);
+    this.error.set(null);
+
+    this.tacticsService.updateTeamTactic(tacticID, request)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (updatedTactic) => {
+          this.tactic.set(updatedTactic);
+          this.editPopupOpen.set(false);
+          this.editSaving.set(false);
+          this.cdr.markForCheck();
+        },
+        error: (err) => {
+          this.error.set(err.message || 'Failed to update tactic');
+          this.editSaving.set(false);
+          this.cdr.markForCheck();
+        }
+      });
+  }
+
+  getPlayerFullName(player: Person): string {
+    return `${player.name ?? ''} ${player.surname ?? ''}`.trim() || 'Unknown Player';
+  }
+
+  getHomeShirtColor(): string {
+    return this.teamKit()?.homeShirtColor || 'rgb(207, 73, 73)';
+  }
+
+  getHomeShortsColor(): string {
+    return this.teamKit()?.homeShortsColor || 'rgba(0, 0, 0, 0.6)';
+  }
+
+  private getPitchPlayerName(player: Person): string {
+    const nameInitial = player.name?.substring(0, 1) || '';
+    const surname = player.surname || '';
+    const displaySurname = surname.length > 8 ? `${surname.substring(0, 8)}...` : surname;
+
+    return `${nameInitial}. ${displaySurname}`.trim() || 'Unknown Player';
   }
 
   // Transform playerTactics for table display, grouped by squad unit:
@@ -405,9 +536,12 @@ export class TacticsDetail implements OnInit, OnDestroy {
     return [...starting, ...substitutes, ...reserves];
   }
 
-  /** Returns table data filtered by the currently selected squad unit. */
-  get filteredTableData(): PlayerTacticTableRow[] {
-    return this.tableData.filter(p => p.squadUnit === this.selectedSquadUnit());
+  get mainTableData(): PlayerTacticTableRow[] {
+    return this.tableData.filter(p => p.squadUnit !== SquadUnit.Reserve);
+  }
+
+  get reserveTableData(): PlayerTacticTableRow[] {
+    return this.tableData.filter(p => p.squadUnit === SquadUnit.Reserve);
   }
 
   isRoleUpdating(playerTacticID: string | undefined): boolean {
@@ -670,7 +804,7 @@ export class TacticsDetail implements OnInit, OnDestroy {
   onTablePlayerDrop(event: CdkDragDrop<PlayerTacticTableRow[]>): void {
     if (event.previousIndex === event.currentIndex) return;
 
-    const data = this.filteredTableData;
+    const data = event.container.data;
     const draggedPlayer = data[event.previousIndex];
     const targetPlayer = data[event.currentIndex];
 

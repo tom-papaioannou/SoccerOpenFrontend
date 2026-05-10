@@ -66,6 +66,14 @@
 .dt-align-center { text-align: center; }
 .dt-align-right  { text-align: right; }
 
+.dt-header-center {
+  text-align: center;
+}
+
+.dt-header-center .mat-sort-header-container {
+  justify-content: center;
+}
+
 .mat-mdc-paginator {
   background: transparent;
   color: var(--dt-cell-color, white);
