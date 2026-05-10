@@ -3,32 +3,34 @@
  * Licensed under the MIT License
  */
 
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
+import { Subject, takeUntil } from 'rxjs';
 import { DataTable } from '../shared/tables/data-table/data-table';
 import { TeamsService } from '../../services/teams.service';
 import { calculateAge } from '../../utils/date-utils';
 import { getPlayerPositionLabel } from '../../utils/position-utils';
-import { Kit } from '../../models/competition.model';
+import { Kit, Team } from '../../models/competition.model';
 import { TeamKit } from '../team-kit/team-kit';
-import { Information } from '../team/information/information';
 
 @Component({
   selector: 'app-home',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     DataTable,
-    TeamKit,
-    Information
+    TeamKit
   ],
   templateUrl: './home.html',
   styleUrl: './home.css'
 })
-export class Home {
+export class Home implements OnDestroy {
   teamName: string = "";
   kit: Kit | undefined;
   competitionName: string = "";
   competitionID: string | null = null;
+  stadiumName: string = "-";
+  stadiumCity: string = "-";
+  private readonly destroy$ = new Subject<void>();
 
   displayedColumnsFixtures = [
     { key: 'date', header: 'Date', width: '15%', sortable: undefined },
@@ -58,6 +60,14 @@ export class Home {
     private readonly cdr: ChangeDetectorRef
   ){
     this.teamName = this.teamsService.CurrentTeam?.name ?? "Unknown Team";
+    this.updateStadiumInformation(this.teamsService.CurrentTeam);
+    this.teamsService.currentTeamObservable
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((team) => {
+        this.updateStadiumInformation(team);
+        this.cdr.markForCheck();
+      });
+
     this.teamsService.getCurrentTeamDashboard().subscribe((dashboard) => {
       this.teamName = dashboard.teamName;
       this.competitionName = dashboard.competitionName;
@@ -71,9 +81,19 @@ export class Home {
     });
   }
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   openCompetition(): void {
     if (this.competitionID) {
       this.router.navigate(['/competition', this.competitionID]);
     }
+  }
+
+  private updateStadiumInformation(team: Team | undefined): void {
+    this.stadiumName = team?.stadium?.name ?? "-";
+    this.stadiumCity = team?.stadium?.city ?? "-";
   }
 }
