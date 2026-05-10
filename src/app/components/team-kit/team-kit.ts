@@ -18,5 +18,4 @@ import { Component, Input } from '@angular/core';
 export class TeamKit {
   @Input() kit: any;
   @Input() isHome: boolean = true;
-  @Input() showShorts: boolean = true;
 }

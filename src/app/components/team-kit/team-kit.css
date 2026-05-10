@@ -1,18 +1,11 @@
-.shirt {
-  width: 50px;
-  height: 55px;
+.shirt-icon {
+  width: 100px;
+  height: 110px;
   background-color: white;
-
-  clip-path: polygon(
-    20% 0%,
-    80% 0%,
-    100% 25%,
-    82% 40%,
-    82% 100%,
-    18% 100%,
-    18% 40%,
-    0% 25%
-  );
+  mask: url('/assets/images/shirt.svg') center / contain no-repeat;
+  mask-mode: alpha;
+  -webkit-mask: url('/assets/images/shirt.svg') center / contain no-repeat;
+  -webkit-mask-mode: alpha;
 }
 
 .shorts {

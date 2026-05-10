@@ -10,12 +10,63 @@
   gap: 4px;
 }
 
+.dashboard-team-logo {
+  max-width: min(42vw, 200px);
+  max-height: min(42vw, 200px);
+}
+
+.dashboard-grid {
+  align-items: stretch;
+}
+
+.dashboard-column {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
 .dashboard-table {
   --dt-table-min-width: 0;
 }
 
+.dashboard-table app-data-table {
+  flex: 1;
+  min-height: 0;
+}
+
 .dashboard-kits-card {
   flex: 1;
+}
+
+.dashboard-kits-content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.dashboard-team-information {
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.dashboard-team-information-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  padding-top: 1rem;
+}
+
+.dashboard-kits-section {
+  padding-top: 0.75rem;
+}
+
+.dashboard-kit-previews {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  padding-top: 0.75rem;
+  padding-bottom: 0.25rem;
 }
 
 .dashboard-fixtures-column {
@@ -27,10 +78,6 @@
   --dt-table-height: 100%;
   flex: 1;
   min-height: 0;
-}
-
-.dashboard-information {
-  --information-card-wrapper-padding: 0 0 1rem;
 }
 
 .dashboard-competition-link {
