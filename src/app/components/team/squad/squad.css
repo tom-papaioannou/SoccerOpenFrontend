@@ -34,6 +34,16 @@
   padding-right: 6px;
 }
 
+.nationality-flag {
+  display: inline-block;
+  width: 32px;
+  height: 22px;
+  object-fit: cover;
+  border-radius: 3px;
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.28);
+  vertical-align: middle;
+}
+
 ::ng-deep .shirt-number-select-panel {
   background: #1f2933 !important;
   background-color: #1f2933 !important;

@@ -7,19 +7,27 @@ import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRe
 import { Router } from '@angular/router';
 import { ColumnDef, DataTable } from "../../shared/tables/data-table/data-table";
 import { TeamsService } from '../../../services/teams.service';
-import { Person, PlayerPosition } from '../../../models/player-enums.model';
-import { Subject, takeUntil } from 'rxjs';
-import { getPlayerPositionLabel, positionSortOrder } from '../../../utils/position-utils';
+import { Person, PlayerPosition, PlayerRole } from '../../../models/player-enums.model';
+import { forkJoin, Subject, takeUntil } from 'rxjs';
+import { getPlayerPositionLabel, getPlayerRoleLabel, positionSortOrder } from '../../../utils/position-utils';
 import { calculateAge } from '../../../utils/date-utils';
 import { MatSelectModule } from '@angular/material/select';
+import { NationService } from '../../../services/nation.service';
+import { INation } from '../../../models/nation.model';
+import { getNationFlagUrl } from '../../../utils/nation-map-utils';
 
 interface TransformedPlayer {
   personID: string;
   shirtNumber: number | string;
   shirtNumberValue?: number | null;
   name: string;
+  nationalityFlagUrl: string;
+  nationalityName: string;
   position: string;
   positionValue?: PlayerPosition;
+  role: string;
+  roleValue?: PlayerRole;
+  ppr: number | string;
   age: number | string;
 }
 
@@ -41,6 +49,7 @@ interface ShirtNumberOption {
 })
 export class Squad implements OnInit, OnDestroy {
   @ViewChild('shirtNumberTemplate', { static: true }) shirtNumberTemplate!: TemplateRef<{ $implicit: TransformedPlayer; value: number | string }>;
+  @ViewChild('nationalityTemplate', { static: true }) nationalityTemplate!: TemplateRef<{ $implicit: TransformedPlayer; value: string }>;
 
   // Custom comparator for position sorting
   private positionComparator = (a: unknown, b: unknown): number => {
@@ -52,10 +61,16 @@ export class Squad implements OnInit, OnDestroy {
   displayedColumns: ColumnDef<TransformedPlayer>[] = [];
   shirtNumberOptions: ShirtNumberOption[] = [];
   people: TransformedPlayer[] = [];
+  private nationsByID = new Map<string, INation>();
   private currentTeamID: string | null = null;
   private destroy$ = new Subject<void>();
 
-  constructor(private readonly teamsService: TeamsService, private readonly cdr: ChangeDetectorRef, private readonly router: Router) {}
+  constructor(
+    private readonly teamsService: TeamsService,
+    private readonly nationService: NationService,
+    private readonly cdr: ChangeDetectorRef,
+    private readonly router: Router
+  ) {}
 
   ngOnInit(): void {
     this.displayedColumns = [
@@ -70,7 +85,18 @@ export class Squad implements OnInit, OnDestroy {
       sortAccessor: (row: TransformedPlayer) => row.shirtNumberValue,
       cellTemplate: this.shirtNumberTemplate
     },
-    { key: 'name', header: 'Name', width: '38%', sortable: true },
+    { key: 'name', header: 'Name', width: '32%', sortable: true },
+    {
+      key: 'nationalityFlagUrl',
+      header: 'Nationality',
+      width: '14%',
+      align: 'center',
+      headerClass: 'text-center',
+      cellClass: 'text-center',
+      sortable: true,
+      sortAccessor: (row: TransformedPlayer) => row.nationalityName,
+      cellTemplate: this.nationalityTemplate
+    },
     { 
       key: 'position', 
       header: 'Position',
@@ -78,6 +104,22 @@ export class Squad implements OnInit, OnDestroy {
       sortable: true,
       sortAccessor: (row: TransformedPlayer) => row.positionValue,
       comparator: this.positionComparator
+    },
+    {
+      key: 'role',
+      header: 'Role',
+      width: '12%',
+      sortable: true,
+      sortAccessor: (row: TransformedPlayer) => row.roleValue
+    },
+    {
+      key: 'ppr',
+      header: 'PPR',
+      width: '10%',
+      align: 'center',
+      headerClass: 'text-center',
+      cellClass: 'text-center',
+      sortable: true
     },
     { key: 'age', header: 'Age', width: '15%', align: 'right', headerClass:'text-end', cellClass:'text-end' }
   ];
@@ -104,10 +146,14 @@ export class Squad implements OnInit, OnDestroy {
   }
 
   private loadPlayers(teamID: string): void {
-    this.teamsService.getTeamSquad(teamID)
+    forkJoin({
+      players: this.teamsService.getTeamSquad(teamID),
+      nations: this.nationService.getAll()
+    })
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (players: Person[]) => {
+        next: ({ players, nations }) => {
+          this.nationsByID = new Map(nations.map(nation => [nation.nationID, nation]));
           this.people = this.transformPlayers(players);
           this.shirtNumberOptions = this.buildShirtNumberOptions(this.people);
           this.cdr.detectChanges();
@@ -128,17 +174,25 @@ export class Squad implements OnInit, OnDestroy {
         name = `${person.name || ''} ${person.surname || ''}`.trim();
       }
       const age = person.dateOfBirth ? calculateAge(person.dateOfBirth) : null;
+      const nation = person.nationID ? this.nationsByID.get(person.nationID) : undefined;
       
       // Get the player's best position (highest adaptation)
       const bestPosition = this.getBestPlayerPosition(person);
+      const bestRole = this.getBestPlayerRole(person, bestPosition);
+      const ppr = this.getPlayerPpr(person, bestPosition, bestRole);
       
       return {
         personID: person.personID,
         shirtNumber: person.shirtNumber ?? '-',
         shirtNumberValue: person.shirtNumber,
         name,
+        nationalityFlagUrl: nation ? getNationFlagUrl(nation) : '',
+        nationalityName: nation?.name ?? '',
         position: getPlayerPositionLabel(bestPosition),
         positionValue: bestPosition, // Include raw enum value for sorting
+        role: getPlayerRoleLabel(bestRole),
+        roleValue: bestRole,
+        ppr: ppr !== null ? ppr : '-',
         age: age !== null ? age : '-'
       };
     });
@@ -155,6 +209,51 @@ export class Squad implements OnInit, OnDestroy {
     );
     
     return sorted[0].playerPosition;
+  }
+
+  private getBestPlayerRole(person: Person, position: PlayerPosition | undefined): PlayerRole | undefined {
+    if (position === undefined) {
+      return undefined;
+    }
+
+    if (!person.playerTrainedRoles || person.playerTrainedRoles.length === 0) {
+      return undefined;
+    }
+
+    const matchingRoles = person.playerTrainedRoles.filter(role => role.playerPosition === position);
+
+    if (!matchingRoles.length) {
+      return undefined;
+    }
+
+    const sorted = matchingRoles.sort(
+      (a, b) => b.playerTrainedRoleAdaptation - a.playerTrainedRoleAdaptation
+    );
+
+    return sorted[0].playerRole;
+  }
+
+  private getPlayerPpr(person: Person, position: PlayerPosition | undefined, role: PlayerRole | undefined): number | null {
+    if (position === undefined || role === undefined) {
+      return null;
+    }
+
+    const positionAdaptation = person.playerTrainedPositions
+      ?.find(trainedPosition => trainedPosition.playerPosition === position)
+      ?.playerTrainedPositionAdaptation;
+
+    const roleAdaptation = person.playerTrainedRoles
+      ?.find(trainedRole => trainedRole.playerPosition === position && trainedRole.playerRole === role)
+      ?.playerTrainedRoleAdaptation
+      ?? person.playerTrainedRoles
+        ?.find(trainedRole => trainedRole.playerPosition === undefined && trainedRole.playerRole === role)
+        ?.playerTrainedRoleAdaptation;
+
+    if (positionAdaptation === undefined || roleAdaptation === undefined) {
+      return null;
+    }
+
+    return Math.floor((positionAdaptation + roleAdaptation) / 2);
   }
 
   private buildShirtNumberOptions(people: TransformedPlayer[]): ShirtNumberOption[] {

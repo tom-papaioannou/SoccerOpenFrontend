@@ -1,7 +1,7 @@
 <div class="tactics-container p-4">
   <!-- Header -->
-  <div class="mb-6">
-    <h2 class="text-2xl font-bold">Tactics Management</h2>
+  <div class="tactics-header mb-6">
+    <h2 class="text-2xl font-bold">Tactics</h2>
   </div>
 
   <!-- Error Message -->
@@ -83,8 +83,28 @@
             </button>
           }
           <mat-card-content class="tactic-card-content">
-            <div class="tactic-name">{{ tactic.name }}</div>
-            <img [src]="getFormationImagePath(tactic.formation)" alt="Tactics formation" class="tactic-image" />
+            <div class="tactic-name">
+              <span>{{ tactic.name }}</span>
+              @if (tactic.isMain) {
+                <mat-icon class="main-tactic-star" aria-label="Main tactic">star</mat-icon>
+              }
+            </div>
+            <div class="formation-preview" aria-label="Tactics formation preview">
+              <img src="assets/images/tactics/SimpleBackground.png" alt="" class="formation-preview-image" />
+              <div class="formation-preview-overlay">
+                <div class="formation-preview-spacer"></div>
+                @for (row of getFormationPreviewRows(tactic.formation); track row.rowIndex) {
+                  <div [ngClass]="getPreviewRowClass(row)">
+                    @for (position of row.positions; track position) {
+                      <span class="formation-preview-node"
+                        [style.background-color]="getHomeShirtColor()"
+                        [style.border-color]="getHomeShortsColor()">
+                      </span>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
           </mat-card-content>
         </mat-card>
       }

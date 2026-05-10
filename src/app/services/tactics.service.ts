@@ -9,7 +9,7 @@ import { catchError, shareReplay } from 'rxjs/operators';
 import { environment } from '../../environments/environment.development';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { PlayerRole } from '../models/player-enums.model';
-import { Tactic, CreateTacticRequest, PlayerTactic, AddPlayerTacticRequest, UpdatePlayerTacticRoleRequest } from '../models/tactic.model';
+import { Tactic, CreateTacticRequest, PlayerTactic, AddPlayerTacticRequest, UpdatePlayerTacticRoleRequest, UpdateTacticRequest } from '../models/tactic.model';
 
 @Injectable({
   providedIn: 'root'
@@ -47,6 +47,12 @@ export class TacticsService {
    */
   createTeamTactic(tactic: CreateTacticRequest): Observable<Tactic> {
     return this.http.post<Tactic>(`${this.apiUrl}/createTeamTactic`, tactic).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  updateTeamTactic(tacticID: string, tactic: UpdateTacticRequest): Observable<Tactic> {
+    return this.http.put<Tactic>(`${this.apiUrl}/updateTeamTactic/${tacticID}`, tactic).pipe(
       catchError(this.handleError)
     );
   }
