@@ -39,18 +39,22 @@ Running both projects together allows you to explore the **full scope of the Foo
 
 Below are some screenshots showcasing the application UI and its main features.
 
+### Dashboard
 
-### Tactics Management
+![Team Configuration](screenshots/team-configuration.png)
+
+### Squad
+
+![Squad](screenshots/squad.png)
+
+![Player](screenshots/player.png)
+
+### Tactics
 
 ![Tactics Management](screenshots/tactics.png)
 
-### Formation Setup
-
 ![Formation Setup](screenshots/formation.png)
 
-### Team Configuration
-
-![Team Configuration](screenshots/team-configuration.png)
 
 ---
 
