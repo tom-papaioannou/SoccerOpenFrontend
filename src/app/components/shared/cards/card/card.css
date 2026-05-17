@@ -9,6 +9,7 @@
   width: 100%;
   min-width: 0;
   border-radius: 12px;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 
 .app-card {
@@ -19,8 +20,22 @@
   text-align: var(--card-text-align, inherit);
   box-shadow: none;
   padding: 16px;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
 }
 
 .app-card.mat-mdc-outlined-card {
   border-color: var(--card-outline-color, rgba(255, 255, 255, 0.32));
+}
+
+.cardBorder.card-interactive {
+  cursor: pointer;
+}
+
+.cardBorder.card-interactive:hover {
+  background: var(--card-shell-hover-bg, rgba(0, 0, 0, 0.58));
+}
+
+.app-card.app-card-interactive:hover {
+  box-shadow: var(--card-hover-shadow, 0 16px 32px rgba(0, 0, 0, 0.22));
+  transform: translateY(-2px);
 }

@@ -3,7 +3,7 @@
  * Licensed under the MIT License
  */
 
-import { Component, Input } from '@angular/core';
+import { booleanAttribute, Component, Input } from '@angular/core';
 import { MatCard } from '@angular/material/card';
 
 @Component({
@@ -14,4 +14,5 @@ import { MatCard } from '@angular/material/card';
 })
 export class Card {
   @Input() appearance: 'outlined' | 'raised' | 'filled' = 'outlined';
+  @Input({ transform: booleanAttribute }) hoverable = false;
 }
