@@ -1,0 +1,57 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.cardBorder {
+  width: 100%;
+  min-width: 0;
+  border-radius: 12px;
+  border-color: var(--card-border-color, rgba(255, 255, 255, 0.32));
+  background: var(--card-shell-bg, rgba(0, 0, 0, 0.5));
+  transition: background-color 0.2s ease;
+  cursor: default !important;
+}
+
+.app-card {
+  width: 100%;
+  border-radius: 12px;
+  background: var(--card-bg, transparent);
+  color: var(--card-color, white);
+  text-align: var(--card-text-align, inherit);
+  padding: 16px;
+  box-shadow: none !important;
+  transform: none !important;
+  transition: none;
+  cursor: default !important;
+}
+
+.app-card.mat-mdc-outlined-card {
+  border-color: var(--card-outline-color, rgba(255, 255, 255, 0.32));
+}
+
+/* Interactive only when hoverable = true */
+.cardBorder.card-interactive {
+  cursor: pointer !important;
+}
+
+.cardBorder.card-interactive .app-card {
+  cursor: pointer !important;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.cardBorder.card-interactive:hover {
+  background: var(--card-shell-hover-bg, rgba(0, 0, 0, 0.58)) !important;
+  box-shadow: var(--card-hover-shadow, 0 16px 32px rgba(0, 0, 0, 0.22)) !important;
+  transform: translateY(-2px) !important;
+}
+
+/* Safety: non-hoverable cards never react */
+.cardBorder:not(.card-interactive):hover {
+  background: var(--card-shell-bg, rgba(0, 0, 0, 0.5)) !important;
+}
+
+.cardBorder:not(.card-interactive):hover .app-card {
+  box-shadow: none !important;
+  transform: none !important;
+}

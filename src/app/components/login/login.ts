@@ -6,19 +6,19 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { MatCard } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { Router } from '@angular/router';
-import { ActionButton } from '../shared/buttons/action-button/action-button';
-import { FormTextfield } from '../shared/textfields/form-textfield/form-textfield';
-import { LinkButton } from '../shared/buttons/link-button/link-button';
 import { AuthService } from '../../services/auth.service';
+import { ActionButton } from '../shared/buttons/action-button/action-button';
+import { LinkButton } from '../shared/buttons/link-button/link-button';
+import { Card } from '../shared/cards/card/card';
+import { FormTextfield } from '../shared/textfields/form-textfield/form-textfield';
 
 @Component({
   selector: 'app-login',
   imports: [
-    MatCard,
+    Card,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,

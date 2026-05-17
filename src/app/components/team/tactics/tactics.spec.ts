@@ -6,13 +6,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { DebugElement } from '@angular/core';
 import { By } from '@angular/platform-browser';
 
 import { Tactics } from './tactics';
 import { Tactic, Formation } from '../../../models/tactic.model';
 import { TeamsService } from '../../../services/teams.service';
 import { Team } from '../../../models/competition.model';
+import { Card } from '../../shared/cards/card/card';
 
 describe('Tactics', () => {
   let component: Tactics;
@@ -120,6 +120,43 @@ describe('Tactics', () => {
       // Assert: Delete buttons should be present (one for each tactic)
       const deleteButtons = fixture.debugElement.queryAll(By.css('.delete-button'));
       expect(deleteButtons.length).toBe(3);
+    });
+  });
+
+  describe('shared card usage', () => {
+    it('should use hoverable shared cards for tactic tiles and the add card', () => {
+      const tactics: Tactic[] = [
+        {
+          tacticID: '1',
+          teamID: 'test-team',
+          name: 'Tactic 1',
+          isMain: true,
+          formation: Formation.Four_Four_Two
+        }
+      ];
+
+      component.tactics.set(tactics);
+      component.loading.set(false);
+      component.createMode.set(false);
+      fixture.detectChanges();
+
+      const cards = fixture.debugElement.queryAll(By.directive(Card))
+        .map((debugElement) => debugElement.componentInstance as Card);
+
+      expect(cards.length).toBe(2);
+      expect(cards.every((card) => card.hoverable)).toBeTrue();
+    });
+
+    it('should use a non-hoverable shared card for the create form', () => {
+      component.createMode.set(true);
+      component.loading.set(false);
+      fixture.detectChanges();
+
+      const cards = fixture.debugElement.queryAll(By.directive(Card))
+        .map((debugElement) => debugElement.componentInstance as Card);
+
+      expect(cards.length).toBe(1);
+      expect(cards[0].hoverable).toBeFalse();
     });
   });
 

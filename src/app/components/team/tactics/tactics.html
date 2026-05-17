@@ -21,49 +21,45 @@
   <!-- Create Form -->
   @if (createMode()) {
     <div class="flex-1 flex justify-center">
-      <mat-card class="mb-4 max-w-2xl">
-        <mat-card-header>
-          <mat-card-title>New Tactic</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <form [formGroup]="tacticForm" class="space-y-4 mt-4">
-            <app-form-textfield
-              [labelText]="'Name'"
-              [placeHolderText]="'Enter tactic name (1-30 characters)'"
-              [type]="'text'"
-              formControlName="Name">
-            </app-form-textfield>
+      <app-card class="mb-4 max-w-2xl tactic-form-card">
+        <div class="tactic-form-title">New Tactic</div>
+        <form [formGroup]="tacticForm" class="space-y-4 mt-4">
+          <app-form-textfield
+            [labelText]="'Name'"
+            [placeHolderText]="'Enter tactic name (1-30 characters)'"
+            [type]="'text'"
+            formControlName="Name">
+          </app-form-textfield>
 
-            <app-form-dropdown
-              [labelText]="'Formation'"
-              [placeHolderText]="'Select a formation'"
-              [options]="formationOptions"
-              [valueKey]="'value'"
-              [displayKey]="'label'"
-              formControlName="Formation">
-            </app-form-dropdown>
+          <app-form-dropdown
+            [labelText]="'Formation'"
+            [placeHolderText]="'Select a formation'"
+            [options]="formationOptions"
+            [valueKey]="'value'"
+            [displayKey]="'label'"
+            formControlName="Formation">
+          </app-form-dropdown>
 
-            <div class="flex items-center">
-              <mat-checkbox formControlName="isMain" color="primary">
-                Main
-              </mat-checkbox>
-            </div>
+          <div class="flex items-center">
+            <mat-checkbox formControlName="isMain" color="primary">
+              Main
+            </mat-checkbox>
+          </div>
 
-            <div class="flex justify-between items-center mt-4">
-              <app-action-button
-                [buttonText]="'Create'"
-                [disabled]="!tacticForm.valid || loading()"
-                (clicked)="saveTactic()">
-              </app-action-button>
-              <app-action-button
-                [buttonText]="'Cancel'"
-                [variant]="'secondary'"
-                (clicked)="cancel()">
-              </app-action-button>
-            </div>
-          </form>
-        </mat-card-content>
-      </mat-card>
+          <div class="flex justify-between items-center mt-4">
+            <app-action-button
+              [buttonText]="'Create'"
+              [disabled]="!tacticForm.valid || loading()"
+              (clicked)="saveTactic()">
+            </app-action-button>
+            <app-action-button
+              [buttonText]="'Cancel'"
+              [variant]="'secondary'"
+              (clicked)="cancel()">
+            </app-action-button>
+          </div>
+        </form>
+      </app-card>
     </div>
   }
 
@@ -72,7 +68,7 @@
     <div class="tactics-grid">
       <!-- Existing Tactics Cards -->
       @for (tactic of sortedTactics(); track tactic.tacticID) {
-        <mat-card class="tactic-card" [class.main-tactic]="tactic.isMain" (click)="viewTacticDetails(tactic)">
+        <app-card [class.main-tactic]="tactic.isMain" hoverable (click)="viewTacticDetails(tactic)">
           @if (tactics().length > 1) {
             <button 
               mat-icon-button 
@@ -82,7 +78,7 @@
               <mat-icon>close</mat-icon>
             </button>
           }
-          <mat-card-content class="tactic-card-content">
+          <div class="tactic-card-content">
             <div class="tactic-name">
               <span>{{ tactic.name }}</span>
               @if (tactic.isMain) {
@@ -105,17 +101,17 @@
                 }
               </div>
             </div>
-          </mat-card-content>
-        </mat-card>
+          </div>
+        </app-card>
       }
 
       <!-- Add New Tactic Card (shown when < 3 tactics) -->
       @if (canCreateNewTactic()) {
-        <mat-card class="tactic-card add-card" (click)="createNew()">
-          <mat-card-content class="tactic-card-content add-card-content">
+        <app-card hoverable (click)="createNew()">
+          <div class="tactic-card-content add-card-content">
             <mat-icon class="add-icon">add</mat-icon>
-          </mat-card-content>
-        </mat-card>
+          </div>
+        </app-card>
       }
     </div>
   }

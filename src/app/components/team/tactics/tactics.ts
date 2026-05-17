@@ -7,10 +7,10 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, signal, 
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { MatCard, MatCardHeader, MatCardTitle, MatCardContent } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { Card } from '../../shared/cards/card/card';
 import { FormTextfield } from '../../shared/textfields/form-textfield/form-textfield';
 import { FormDropdown } from '../../shared/dropdowns/form-dropdown/form-dropdown';
 import { ActionButton } from '../../shared/buttons/action-button/action-button';
@@ -32,10 +32,7 @@ interface FormationPreviewRow {
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    MatCard,
-    MatCardHeader,
-    MatCardTitle,
-    MatCardContent,
+    Card,
     MatButtonModule,
     MatIconModule,
     MatCheckboxModule,
