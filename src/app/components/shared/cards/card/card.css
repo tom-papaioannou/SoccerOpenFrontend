@@ -4,12 +4,13 @@
 }
 
 .cardBorder {
-  border-color: var(--card-border-color, rgba(255, 255, 255, 0.32));
-  background: var(--card-shell-bg, rgba(0, 0, 0, 0.5));
   width: 100%;
   min-width: 0;
   border-radius: 12px;
-  transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+  border-color: var(--card-border-color, rgba(255, 255, 255, 0.32));
+  background: var(--card-shell-bg, rgba(0, 0, 0, 0.5));
+  transition: background-color 0.2s ease;
+  cursor: default !important;
 }
 
 .app-card {
@@ -18,24 +19,50 @@
   background: var(--card-bg, transparent);
   color: var(--card-color, white);
   text-align: var(--card-text-align, inherit);
-  box-shadow: none;
   padding: 16px;
-  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  box-shadow: none !important;
+  transform: none !important;
+  transition: none;
+  cursor: default !important;
 }
 
 .app-card.mat-mdc-outlined-card {
   border-color: var(--card-outline-color, rgba(255, 255, 255, 0.32));
 }
 
+/* Interactive only when hoverable = true */
 .cardBorder.card-interactive {
-  cursor: pointer;
+  cursor: pointer !important;
+}
+
+.cardBorder.card-interactive .app-card {
+  cursor: pointer !important;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
 }
 
 .cardBorder.card-interactive:hover {
-  background: var(--card-shell-hover-bg, rgba(0, 0, 0, 0.58));
+  background: var(--card-shell-hover-bg, rgba(0, 0, 0, 0.58)) !important;
 }
 
-.app-card.app-card-interactive:hover {
-  box-shadow: var(--card-hover-shadow, 0 16px 32px rgba(0, 0, 0, 0.22));
-  transform: translateY(-2px);
+.cardBorder.card-interactive:hover{
+  box-shadow: var(--card-hover-shadow, 0 16px 32px rgba(0, 0, 0, 0.22)) !important;
+  transform: translateY(-2px) !important;
+}
+
+/* Safety: non-hoverable cards never react */
+.cardBorder:not(.card-interactive):hover {
+  background: var(--card-shell-bg, rgba(0, 0, 0, 0.5)) !important;
+}
+
+.cardBorder:not(.card-interactive):hover .app-card {
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+.cardBorder:not(.card-interactive):hover {
+  border-color: var(--card-border-color, rgba(255, 255, 255, 0.32)) !important;
+}
+
+.cardBorder:not(.card-interactive):hover .app-card {
+  border-color: var(--card-outline-color, rgba(255, 255, 255, 0.32)) !important;
 }
