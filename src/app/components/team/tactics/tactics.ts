@@ -11,9 +11,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { Card } from '../../shared/cards/card/card';
-import { FormTextfield } from '../../shared/textfields/form-textfield/form-textfield';
-import { FormDropdown } from '../../shared/dropdowns/form-dropdown/form-dropdown';
-import { ActionButton } from '../../shared/buttons/action-button/action-button';
 import { TacticsService } from '../../../services/tactics.service';
 import { Tactic, CreateTacticRequest, Formation } from '../../../models/tactic.model';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -35,10 +32,7 @@ interface FormationPreviewRow {
     Card,
     MatButtonModule,
     MatIconModule,
-    MatCheckboxModule,
-    FormTextfield,
-    FormDropdown,
-    ActionButton
+    MatCheckboxModule
   ],
   templateUrl: './tactics.html',
   styleUrl: './tactics.css',
@@ -171,10 +165,18 @@ export class Tactics implements OnInit {
     this.error.set(null);
 
     const formValue = this.tacticForm.value;
+    const name = (formValue.Name ?? '').trim();
+
+    if (name.length < 1 || name.length > 30) {
+      this.error.set('Tactic name must be between 1 and 30 characters.');
+      this.loading.set(false);
+      this.cdr.markForCheck();
+      return;
+    }
     
     const createRequest: CreateTacticRequest = {
       TeamID: this.teamsService.CurrentTeam?.teamID ?? "",
-      Name: formValue.Name,
+      Name: name,
       isMain: formValue.isMain ?? false,
       Formation: formValue.Formation
     };
@@ -183,8 +185,7 @@ export class Tactics implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
-          this.createMode.set(false);
-          this.tacticForm.reset({ isMain: false, Formation: Formation.None });
+          this.closeCreatePopup();
           this.loadTactics();
         },
         error: (err) => {
@@ -196,6 +197,14 @@ export class Tactics implements OnInit {
   }
 
   cancel(): void {
+    this.closeCreatePopup();
+  }
+
+  closeCreatePopup(): void {
+    if (this.loading()) {
+      return;
+    }
+
     this.createMode.set(false);
     this.tacticForm.reset({ isMain: false, Formation: Formation.None });
     this.cdr.markForCheck();

@@ -147,16 +147,27 @@ describe('Tactics', () => {
       expect(cards.every((card) => card.hoverable)).toBeTrue();
     });
 
-    it('should use a non-hoverable shared card for the create form', () => {
+    it('should show the create popup without adding an inline shared card', () => {
+      component.tactics.set([
+        {
+          tacticID: '1',
+          teamID: 'test-team',
+          name: 'Tactic 1',
+          isMain: true,
+          formation: Formation.Four_Four_Two
+        }
+      ]);
       component.createMode.set(true);
       component.loading.set(false);
       fixture.detectChanges();
 
       const cards = fixture.debugElement.queryAll(By.directive(Card))
         .map((debugElement) => debugElement.componentInstance as Card);
+      const popup = fixture.debugElement.query(By.css('.tactic-edit-popup'));
 
-      expect(cards.length).toBe(1);
-      expect(cards[0].hoverable).toBeFalse();
+      expect(cards.length).toBe(2);
+      expect(cards.every((card) => card.hoverable)).toBeTrue();
+      expect(popup).toBeTruthy();
     });
   });
 
