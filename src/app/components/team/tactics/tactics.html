@@ -72,7 +72,7 @@
   }
 
   @if (createMode()) {
-    <div class="tactic-popup-backdrop" (click)="closeCreatePopup()">
+    <div class="tactic-popup-backdrop" tabindex="0" (click)="closeCreatePopup()" (keydown.escape)="closeCreatePopup()">
       <section class="tactic-popup tactic-create-popup" role="dialog" aria-modal="true" aria-label="Create tactic" (click)="$event.stopPropagation()">
         <div class="tactic-popup-header">
           <h3>New Tactic</h3>
