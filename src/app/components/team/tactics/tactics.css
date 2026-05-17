@@ -2,6 +2,8 @@
   max-width: 1200px;
   margin: 0;
   --tactics-accent-color: #3b82f6;
+  --tactics-card-hover-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --tactics-add-card-hover-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 .space-y-4 > * + * {
@@ -39,7 +41,7 @@
 .tactic-card {
   min-height: 150px;
   position: relative;
-  --card-hover-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --card-hover-shadow: var(--tactics-card-hover-shadow);
 }
 
 /* Main Tactic Card with Blue Border */
@@ -163,7 +165,7 @@
   border-radius: 12px;
   --card-outline-color: transparent;
   --card-bg: #f9fafb;
-  --card-hover-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --card-hover-shadow: var(--tactics-add-card-hover-shadow);
 }
 
 .add-card:hover {
