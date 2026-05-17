@@ -55,11 +55,3 @@
   box-shadow: none !important;
   transform: none !important;
 }
-
-.cardBorder:not(.card-interactive):hover {
-  border-color: var(--card-border-color, rgba(255, 255, 255, 0.32)) !important;
-}
-
-.cardBorder:not(.card-interactive):hover .app-card {
-  border-color: var(--card-outline-color, rgba(255, 255, 255, 0.32)) !important;
-}

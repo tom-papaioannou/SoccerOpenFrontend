@@ -1,6 +1,7 @@
 .tactics-container {
   max-width: 1200px;
   margin: 0;
+  --tactics-accent-color: #3b82f6;
 }
 
 .space-y-4 > * + * {
@@ -43,7 +44,7 @@
 
 /* Main Tactic Card with Blue Border */
 .tactic-card.main-tactic {
-  --card-outline-color: #3b82f6;
+  --card-outline-color: var(--tactics-accent-color);
 }
 
 /* Delete Button */
@@ -166,7 +167,7 @@
 }
 
 .add-card:hover {
-  border-color: #3b82f6;
+  border-color: var(--tactics-accent-color);
   --card-bg: #eff6ff;
 }
 
@@ -183,5 +184,5 @@
 }
 
 .add-card:hover .add-icon {
-  color: #3b82f6;
+  color: var(--tactics-accent-color);
 }
