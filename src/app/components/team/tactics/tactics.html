@@ -68,7 +68,7 @@
     <div class="tactics-grid">
       <!-- Existing Tactics Cards -->
       @for (tactic of sortedTactics(); track tactic.tacticID) {
-        <app-card class="tactic-card" [class.main-tactic]="tactic.isMain" [hoverable]="true" (click)="viewTacticDetails(tactic)">
+        <app-card [class.main-tactic]="tactic.isMain" hoverable (click)="viewTacticDetails(tactic)">
           @if (tactics().length > 1) {
             <button 
               mat-icon-button 
@@ -107,7 +107,7 @@
 
       <!-- Add New Tactic Card (shown when < 3 tactics) -->
       @if (canCreateNewTactic()) {
-        <app-card class="tactic-card add-card" [hoverable]="true" (click)="createNew()">
+        <app-card hoverable (click)="createNew()">
           <div class="tactic-card-content add-card-content">
             <mat-icon class="add-icon">add</mat-icon>
           </div>

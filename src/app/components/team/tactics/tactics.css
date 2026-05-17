@@ -159,23 +159,11 @@
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.22);
 }
 
-/* Add Card Styles */
-.add-card {
-  border: 2px dashed #d1d5db;
-  border-radius: 12px;
-  --card-outline-color: transparent;
-  --card-bg: #f9fafb;
-  --card-hover-shadow: var(--tactics-add-card-hover-shadow);
-}
-
-.add-card:hover {
-  border-color: var(--tactics-accent-color);
-  --card-bg: #eff6ff;
-}
 
 .add-card-content {
   justify-content: center;
   align-items: center;
+  min-height: 322px;
 }
 
 .add-icon {
