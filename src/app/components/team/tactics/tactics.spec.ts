@@ -163,7 +163,7 @@ describe('Tactics', () => {
 
       const cards = fixture.debugElement.queryAll(By.directive(Card))
         .map((debugElement) => debugElement.componentInstance as Card);
-      const popup = fixture.debugElement.query(By.css('.tactic-edit-popup'));
+      const popup = fixture.debugElement.query(By.css('.tactic-create-popup'));
 
       expect(cards.length).toBe(2);
       expect(cards.every((card) => card.hoverable)).toBeTrue();

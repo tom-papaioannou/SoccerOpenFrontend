@@ -72,18 +72,18 @@
   }
 
   @if (createMode()) {
-    <div class="player-popup-backdrop" (click)="closeCreatePopup()">
-      <section class="player-popup tactic-edit-popup" role="dialog" aria-modal="true" aria-label="Create tactic" (click)="$event.stopPropagation()">
-        <div class="player-popup-header">
+    <div class="tactic-popup-backdrop" (click)="closeCreatePopup()">
+      <section class="tactic-popup tactic-create-popup" role="dialog" aria-modal="true" aria-label="Create tactic" (click)="$event.stopPropagation()">
+        <div class="tactic-popup-header">
           <h3>New Tactic</h3>
-          <button mat-icon-button type="button" (click)="closeCreatePopup()" aria-label="Close tactic creator" [disabled]="loading()">
+          <button mat-icon-button type="button" (click)="closeCreatePopup()" aria-label="Close create tactic dialog" [disabled]="loading()">
             <mat-icon>close</mat-icon>
           </button>
         </div>
 
         <form [formGroup]="tacticForm">
-          <label class="player-popup-field tactic-edit-field">
-            <span class="player-popup-label">Name</span>
+          <label class="tactic-popup-field tactic-edit-field">
+            <span class="tactic-popup-label">Name</span>
             <input class="tactic-edit-input"
               type="text"
               maxlength="30"
@@ -91,9 +91,9 @@
               aria-label="Tactic name" />
           </label>
 
-          <label class="player-popup-field tactic-edit-field">
-            <span class="player-popup-label">Formation</span>
-            <select class="role-select player-popup-select"
+          <label class="tactic-popup-field tactic-edit-field">
+            <span class="tactic-popup-label">Formation</span>
+            <select class="role-select tactic-popup-select"
               formControlName="Formation"
               aria-label="Tactic formation">
               @for (formation of formationOptions; track formation.value) {
@@ -102,8 +102,8 @@
             </select>
           </label>
 
-          <div class="player-popup-field tactic-main-field">
-            <span class="player-popup-label">Main</span>
+          <div class="tactic-popup-field tactic-main-field">
+            <span class="tactic-popup-label">Main</span>
             <mat-checkbox formControlName="isMain" color="primary" aria-label="Set tactic as main">
             </mat-checkbox>
           </div>

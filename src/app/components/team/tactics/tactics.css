@@ -171,7 +171,7 @@
   color: var(--tactics-accent-color);
 }
 
-.player-popup-backdrop {
+.tactic-popup-backdrop {
   position: fixed;
   inset: 0;
   z-index: 2000;
@@ -182,7 +182,7 @@
   background-color: rgba(0, 0, 0, 0.58);
 }
 
-.player-popup {
+.tactic-popup {
   width: min(420px, 100%);
   border: 1px solid rgba(148, 163, 184, 0.35);
   border-radius: 8px;
@@ -192,41 +192,41 @@
   padding: 16px;
 }
 
-.player-popup-header,
-.player-popup-field {
+.tactic-popup-header,
+.tactic-popup-field {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
 }
 
-.player-popup-header {
+.tactic-popup-header {
   margin-bottom: 16px;
 }
 
-.player-popup-header h3 {
+.tactic-popup-header h3 {
   margin: 0;
   font-size: 1.1rem;
   font-weight: 700;
 }
 
-.player-popup-field {
+.tactic-popup-field {
   padding: 10px 0;
 }
 
-.player-popup-label {
+.tactic-popup-label {
   color: #cbd5e1;
   font-size: 0.78rem;
   font-weight: 700;
   text-transform: uppercase;
 }
 
-.player-popup-select,
+.tactic-popup-select,
 .tactic-edit-input {
   width: 180px;
 }
 
-.player-popup-select,
+.tactic-popup-select,
 .tactic-edit-input {
   border-radius: 6px;
 }
@@ -250,7 +250,7 @@
   opacity: 0.6;
 }
 
-.tactic-edit-popup {
+.tactic-create-popup {
   width: min(520px, 100%);
 }
 
@@ -292,7 +292,7 @@
   }
 
   .tactic-edit-input,
-  .player-popup-select,
+  .tactic-popup-select,
   .tactic-main-field mat-checkbox {
     width: 100%;
   }
