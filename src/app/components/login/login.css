@@ -1,5 +1,7 @@
 .overlay {
-  background-color: rgba(255, 255, 255, 0.5);
-  color: white;
-  text-align: center;
+  --card-shell-bg: rgba(255, 255, 255, 0.12);
+  --card-bg: rgba(255, 255, 255, 0.5);
+  --card-color: white;
+  --card-text-align: center;
+  --card-outline-color: rgba(255, 255, 255, 0.35);
 }

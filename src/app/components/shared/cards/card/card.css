@@ -1,0 +1,24 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.cardBorder {
+  border-color: var(--card-border-color, rgba(255, 255, 255, 0.32));
+  background: var(--card-shell-bg, rgba(0, 0, 0, 0.5));
+  width: 100%;
+  min-width: 0;
+}
+
+.app-card {
+  width: 100%;
+  border-radius: 12px;
+  background: var(--card-bg, transparent);
+  color: var(--card-color, white);
+  text-align: var(--card-text-align, inherit);
+  box-shadow: none;
+}
+
+.app-card.mat-mdc-outlined-card {
+  border-color: var(--card-outline-color, rgba(255, 255, 255, 0.32));
+}
