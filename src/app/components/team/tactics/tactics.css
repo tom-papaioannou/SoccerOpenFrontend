@@ -7,6 +7,20 @@
   margin-top: 1rem;
 }
 
+.tactic-form-card,
+.tactic-card {
+  --card-shell-bg: transparent;
+  --card-shell-hover-bg: transparent;
+  --card-bg: #ffffff;
+  --card-color: inherit;
+  --card-outline-color: rgba(0, 0, 0, 0.12);
+}
+
+.tactic-form-title {
+  font-size: 1.25rem;
+  font-weight: 500;
+}
+
 .tactics-header {
   text-align: left;
 }
@@ -22,20 +36,14 @@
 
 /* Tactic Card Styles */
 .tactic-card {
-  cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
   min-height: 150px;
   position: relative;
-}
-
-.tactic-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --card-hover-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
 /* Main Tactic Card with Blue Border */
 .tactic-card.main-tactic {
-  border: 3px solid #3b82f6;
+  --card-outline-color: #3b82f6;
 }
 
 /* Delete Button */
@@ -151,15 +159,15 @@
 /* Add Card Styles */
 .add-card {
   border: 2px dashed #d1d5db;
-  cursor: pointer;
-  background-color: #f9fafb;
+  border-radius: 12px;
+  --card-outline-color: transparent;
+  --card-bg: #f9fafb;
+  --card-hover-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 .add-card:hover {
   border-color: #3b82f6;
-  background-color: #eff6ff;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --card-bg: #eff6ff;
 }
 
 .add-card-content {
