@@ -50,18 +50,18 @@
   right: 8px;
   width: 32px;
   height: 32px;
-  opacity: 0;
-  transition: opacity 0.2s, background-color 0.2s;
-  z-index: 10;
-}
-
-.tactic-card:hover .delete-button {
-  opacity: 1;
+   opacity: 1;
+   transition: background-color 0.2s, color 0.2s, transform 0.2s;
+   z-index: 10;
+  background-color: rgba(255, 255, 255, 0.88);
+  color: #475569;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.12);
 }
 
 .delete-button:hover {
   background-color: rgba(239, 68, 68, 0.1);
   color: #ef4444;
+  transform: scale(1.04);
 }
 
 .delete-button mat-icon {
@@ -254,6 +254,10 @@
   width: min(520px, 100%);
 }
 
+.tactic-delete-popup {
+  width: min(420px, 100%);
+}
+
 .tactic-edit-field,
 .tactic-main-field {
   align-items: baseline;
@@ -282,6 +286,12 @@
 
 .tactic-edit-actions button:hover:not(:disabled) {
   color: rgb(15, 23, 42);
+}
+
+.tactic-delete-message {
+  margin: 0;
+  color: #e2e8f0;
+  line-height: 1.6;
 }
 
 @media (max-width: 480px) {

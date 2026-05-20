@@ -47,6 +47,7 @@ export class Tactics implements OnInit {
   loading = signal(false);
   error = signal<string | null>(null);
   createMode = signal(false);
+  deleteConfirmationTactic = signal<Tactic | null>(null);
   teamKit = signal<Kit | null>(null);
 
   // Form
@@ -210,12 +211,26 @@ export class Tactics implements OnInit {
     this.cdr.markForCheck();
   }
 
-  deleteTactic(tactic: Tactic, event: Event): void {
+  openDeletePopup(tactic: Tactic, event: Event): void {
     // Prevent card click event from triggering
     event.stopPropagation();
-    
-    // Confirm deletion
-    if (!confirm(`Are you sure you want to delete the tactic "${tactic.name}"?`)) {
+    this.deleteConfirmationTactic.set(tactic);
+    this.cdr.markForCheck();
+  }
+
+  closeDeletePopup(): void {
+    if (this.loading()) {
+      return;
+    }
+
+    this.deleteConfirmationTactic.set(null);
+    this.cdr.markForCheck();
+  }
+
+  confirmDeleteTactic(): void {
+    const tactic = this.deleteConfirmationTactic();
+
+    if (!tactic) {
       return;
     }
 
@@ -230,6 +245,7 @@ export class Tactics implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
+          this.deleteConfirmationTactic.set(null);
           this.loading.set(false);
           this.loadTactics();
           this.cdr.markForCheck();

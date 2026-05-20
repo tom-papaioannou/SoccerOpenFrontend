@@ -28,7 +28,8 @@
             <button 
               mat-icon-button 
               class="delete-button"
-              (click)="deleteTactic(tactic, $event)"
+              type="button"
+              (click)="openDeletePopup(tactic, $event)"
               aria-label="Delete tactic">
               <mat-icon>close</mat-icon>
             </button>
@@ -115,6 +116,30 @@
             </button>
           </div>
         </form>
+      </section>
+    </div>
+  }
+
+  @if (deleteConfirmationTactic(); as tacticToDelete) {
+    <div class="tactic-popup-backdrop" tabindex="0" (click)="closeDeletePopup()" (keydown.escape)="closeDeletePopup()">
+      <section class="tactic-popup tactic-delete-popup" role="dialog" aria-modal="true" aria-label="Delete tactic confirmation" (click)="$event.stopPropagation()">
+        <div class="tactic-popup-header">
+          <h3>Delete Tactic</h3>
+          <button mat-icon-button type="button" (click)="closeDeletePopup()" aria-label="Close delete tactic dialog" [disabled]="loading()">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+
+        <p class="tactic-delete-message">
+          Are you sure you want to delete <strong>{{ tacticToDelete.name }}</strong>?
+        </p>
+
+        <div class="tactic-edit-actions">
+          <button mat-button type="button" (click)="closeDeletePopup()" [disabled]="loading()">Cancel</button>
+          <button mat-button color="warn" type="button" (click)="confirmDeleteTactic()" [disabled]="loading()">
+            Delete
+          </button>
+        </div>
       </section>
     </div>
   }
