@@ -10,18 +10,12 @@
   margin-top: 1rem;
 }
 
-.tactic-form-card,
 .tactic-card {
   --card-shell-bg: transparent;
   --card-shell-hover-bg: transparent;
   --card-bg: #ffffff;
   --card-color: inherit;
   --card-outline-color: rgba(0, 0, 0, 0.12);
-}
-
-.tactic-form-title {
-  font-size: 1.25rem;
-  font-weight: 500;
 }
 
 .tactics-header {
@@ -54,26 +48,37 @@
   position: absolute;
   top: 8px;
   right: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   width: 32px;
   height: 32px;
-  opacity: 0;
-  transition: opacity 0.2s, background-color 0.2s;
+  padding: 0;
+  opacity: 0.72;
+  transition: background-color 0.2s, color 0.2s, transform 0.2s, opacity 0.2s;
   z-index: 10;
+  background-color: rgba(255, 255, 255, 0.88);
+  color: #475569;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.12);
 }
 
-.tactic-card:hover .delete-button {
+.tactic-card:hover .delete-button,
+.delete-button:focus-visible {
   opacity: 1;
 }
 
 .delete-button:hover {
   background-color: rgba(239, 68, 68, 0.1);
   color: #ef4444;
+  transform: scale(1.04);
 }
 
 .delete-button mat-icon {
+  display: block;
   font-size: 20px;
   width: 20px;
   height: 20px;
+  line-height: 20px;
 }
 
 .tactic-card-content {
@@ -175,4 +180,141 @@
 
 .add-card:hover .add-icon {
   color: var(--tactics-accent-color);
+}
+
+.tactic-popup-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background-color: rgba(0, 0, 0, 0.58);
+}
+
+.tactic-popup {
+  width: min(420px, 100%);
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  border-radius: 8px;
+  background-color: rgb(15, 23, 42);
+  color: #f8fafc;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.45);
+  padding: 16px;
+}
+
+.tactic-popup-header,
+.tactic-popup-field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.tactic-popup-header {
+  margin-bottom: 16px;
+}
+
+.tactic-popup-header h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.tactic-popup-field {
+  padding: 10px 0;
+}
+
+.tactic-popup-label {
+  color: #cbd5e1;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.tactic-popup-select,
+.tactic-edit-input {
+  width: 180px;
+}
+
+.tactic-popup-select,
+.tactic-edit-input {
+  border-radius: 6px;
+}
+
+.role-select,
+.tactic-edit-input {
+  border: 1px solid rgba(148, 163, 184, 0.45);
+  background-color: rgba(15, 23, 42, 0.72);
+  color: #f8fafc;
+}
+
+.role-select {
+  min-width: 0;
+  cursor: pointer;
+  padding: 6px 8px;
+}
+
+.role-select:disabled,
+.tactic-edit-input:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
+.tactic-create-popup {
+  width: min(520px, 100%);
+}
+
+.tactic-delete-popup {
+  width: min(420px, 100%);
+}
+
+.tactic-edit-field,
+.tactic-main-field {
+  align-items: baseline;
+}
+
+.tactic-edit-input {
+  padding: 6px 8px;
+}
+
+.tactic-main-field {
+  color: #f8fafc;
+  font-weight: 700;
+}
+
+.tactic-main-field mat-checkbox {
+  width: 180px;
+  margin: 0;
+}
+
+.tactic-edit-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.tactic-edit-actions button:hover:not(:disabled) {
+  color: rgb(15, 23, 42);
+}
+
+.tactic-delete-message {
+  margin: 0;
+  color: #e2e8f0;
+  line-height: 1.6;
+}
+
+@media (max-width: 480px) {
+  .tactic-edit-field,
+  .tactic-main-field {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .tactic-edit-input,
+  .tactic-popup-select,
+  .tactic-main-field mat-checkbox {
+    width: 100%;
+  }
 }

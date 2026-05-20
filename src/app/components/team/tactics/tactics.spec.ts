@@ -7,10 +7,12 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { By } from '@angular/platform-browser';
+import { of } from 'rxjs';
 
 import { Tactics } from './tactics';
 import { Tactic, Formation } from '../../../models/tactic.model';
 import { TeamsService } from '../../../services/teams.service';
+import { TacticsService } from '../../../services/tactics.service';
 import { Team } from '../../../models/competition.model';
 import { Card } from '../../shared/cards/card/card';
 
@@ -18,6 +20,7 @@ describe('Tactics', () => {
   let component: Tactics;
   let fixture: ComponentFixture<Tactics>;
   let teamsService: TeamsService;
+  let tacticsService: TacticsService;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -32,6 +35,7 @@ describe('Tactics', () => {
     fixture = TestBed.createComponent(Tactics);
     component = fixture.componentInstance;
     teamsService = TestBed.inject(TeamsService);
+    tacticsService = TestBed.inject(TacticsService);
     fixture.detectChanges();
   });
 
@@ -121,6 +125,55 @@ describe('Tactics', () => {
       const deleteButtons = fixture.debugElement.queryAll(By.css('.delete-button'));
       expect(deleteButtons.length).toBe(3);
     });
+
+    it('should open a delete confirmation popup when the X button is clicked', () => {
+      component.tactics.set([
+        {
+          tacticID: '1',
+          teamID: 'test-team',
+          name: 'Tactic 1',
+          isMain: true,
+          formation: Formation.Four_Four_Two
+        },
+        {
+          tacticID: '2',
+          teamID: 'test-team',
+          name: 'Tactic 2',
+          isMain: false,
+          formation: Formation.Four_Three_Three
+        }
+      ]);
+      fixture.detectChanges();
+
+      const deleteButton = fixture.debugElement.query(By.css('.delete-button'));
+      deleteButton.triggerEventHandler('click', new MouseEvent('click'));
+      fixture.detectChanges();
+
+      const popup = fixture.debugElement.query(By.css('.tactic-delete-popup'));
+
+      expect(component.deleteConfirmationTactic()?.name).toBe('Tactic 1');
+      expect(popup.nativeElement.textContent).toContain('Are you sure you want to delete');
+    });
+
+    it('should delete the selected tactic when the popup is confirmed', () => {
+      const tacticToDelete: Tactic = {
+        tacticID: '2',
+        teamID: 'test-team',
+        name: 'Tactic 2',
+        isMain: false,
+        formation: Formation.Four_Three_Three
+      };
+      spyOn(tacticsService, 'deleteTactic').and.returnValue(of(void 0));
+      spyOn(component, 'loadTactics');
+
+      component.deleteConfirmationTactic.set(tacticToDelete);
+
+      component.confirmDeleteTactic();
+
+      expect(tacticsService.deleteTactic).toHaveBeenCalledWith('2');
+      expect(component.loadTactics).toHaveBeenCalled();
+      expect(component.deleteConfirmationTactic()).toBeNull();
+    });
   });
 
   describe('shared card usage', () => {
@@ -147,16 +200,27 @@ describe('Tactics', () => {
       expect(cards.every((card) => card.hoverable)).toBeTrue();
     });
 
-    it('should use a non-hoverable shared card for the create form', () => {
+    it('should show the create popup without adding an inline shared card', () => {
+      component.tactics.set([
+        {
+          tacticID: '1',
+          teamID: 'test-team',
+          name: 'Tactic 1',
+          isMain: true,
+          formation: Formation.Four_Four_Two
+        }
+      ]);
       component.createMode.set(true);
       component.loading.set(false);
       fixture.detectChanges();
 
       const cards = fixture.debugElement.queryAll(By.directive(Card))
         .map((debugElement) => debugElement.componentInstance as Card);
+      const popup = fixture.debugElement.query(By.css('.tactic-create-popup'));
 
-      expect(cards.length).toBe(1);
-      expect(cards[0].hoverable).toBeFalse();
+      expect(cards.length).toBe(2);
+      expect(cards.every((card) => card.hoverable)).toBeTrue();
+      expect(popup).toBeTruthy();
     });
   });
 

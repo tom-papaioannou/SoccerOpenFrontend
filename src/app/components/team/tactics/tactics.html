@@ -18,53 +18,8 @@
     </div>
   }
 
-  <!-- Create Form -->
-  @if (createMode()) {
-    <div class="flex-1 flex justify-center">
-      <app-card class="mb-4 max-w-2xl tactic-form-card">
-        <div class="tactic-form-title">New Tactic</div>
-        <form [formGroup]="tacticForm" class="space-y-4 mt-4">
-          <app-form-textfield
-            [labelText]="'Name'"
-            [placeHolderText]="'Enter tactic name (1-30 characters)'"
-            [type]="'text'"
-            formControlName="Name">
-          </app-form-textfield>
-
-          <app-form-dropdown
-            [labelText]="'Formation'"
-            [placeHolderText]="'Select a formation'"
-            [options]="formationOptions"
-            [valueKey]="'value'"
-            [displayKey]="'label'"
-            formControlName="Formation">
-          </app-form-dropdown>
-
-          <div class="flex items-center">
-            <mat-checkbox formControlName="isMain" color="primary">
-              Main
-            </mat-checkbox>
-          </div>
-
-          <div class="flex justify-between items-center mt-4">
-            <app-action-button
-              [buttonText]="'Create'"
-              [disabled]="!tacticForm.valid || loading()"
-              (clicked)="saveTactic()">
-            </app-action-button>
-            <app-action-button
-              [buttonText]="'Cancel'"
-              [variant]="'secondary'"
-              (clicked)="cancel()">
-            </app-action-button>
-          </div>
-        </form>
-      </app-card>
-    </div>
-  }
-
   <!-- Tactics Cards Grid -->
-  @if (!createMode() && !loading()) {
+  @if (!loading()) {
     <div class="tactics-grid">
       <!-- Existing Tactics Cards -->
       @for (tactic of sortedTactics(); track tactic.tacticID) {
@@ -73,7 +28,8 @@
             <button 
               mat-icon-button 
               class="delete-button"
-              (click)="deleteTactic(tactic, $event)"
+              type="button"
+              (click)="openDeletePopup(tactic, $event)"
               aria-label="Delete tactic">
               <mat-icon>close</mat-icon>
             </button>
@@ -113,6 +69,78 @@
           </div>
         </app-card>
       }
+    </div>
+  }
+
+  @if (createMode()) {
+    <div class="tactic-popup-backdrop" (click)="closeCreatePopup()">
+      <section class="tactic-popup tactic-create-popup" role="dialog" aria-modal="true" aria-label="Create tactic" tabindex="-1" (click)="$event.stopPropagation()" (keydown.escape)="closeCreatePopup()">
+        <div class="tactic-popup-header">
+          <h3>New Tactic</h3>
+          <button mat-icon-button type="button" (click)="closeCreatePopup()" aria-label="Close create tactic dialog" [disabled]="loading()">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+
+        <form [formGroup]="tacticForm">
+          <label class="tactic-popup-field tactic-edit-field">
+            <span class="tactic-popup-label">Name</span>
+            <input class="tactic-edit-input"
+              type="text"
+              maxlength="30"
+              formControlName="Name"
+              aria-label="Tactic name" />
+          </label>
+
+          <label class="tactic-popup-field tactic-edit-field">
+            <span class="tactic-popup-label">Formation</span>
+            <select class="role-select tactic-popup-select"
+              formControlName="Formation"
+              aria-label="Tactic formation">
+              @for (formation of formationOptions; track formation.value) {
+                <option [ngValue]="formation.value">{{ formation.label }}</option>
+              }
+            </select>
+          </label>
+
+          <div class="tactic-popup-field tactic-main-field">
+            <span class="tactic-popup-label">Main</span>
+            <mat-checkbox formControlName="isMain" color="primary" aria-label="Set tactic as main">
+            </mat-checkbox>
+          </div>
+
+          <div class="tactic-edit-actions">
+            <button mat-button type="button" (click)="cancel()" [disabled]="loading()">Cancel</button>
+            <button mat-button color="primary" type="button" (click)="saveTactic()" [disabled]="!tacticForm.valid || loading()">
+              Create
+            </button>
+          </div>
+        </form>
+      </section>
+    </div>
+  }
+
+  @if (deleteConfirmationTactic(); as tacticToDelete) {
+    <div class="tactic-popup-backdrop" (click)="closeDeletePopup()">
+      <section class="tactic-popup tactic-delete-popup" role="dialog" aria-modal="true" aria-label="Delete tactic confirmation" tabindex="-1" (click)="$event.stopPropagation()" (keydown.escape)="closeDeletePopup()">
+        <div class="tactic-popup-header">
+          <h3>Delete Tactic</h3>
+          <button mat-icon-button type="button" (click)="closeDeletePopup()" aria-label="Close delete tactic dialog" [disabled]="loading()">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+
+        <p class="tactic-delete-message">
+          Are you sure you want to delete <strong>{{ tacticToDelete.name }}</strong>?
+        </p>
+
+        <div class="tactic-edit-actions">
+          <button mat-button type="button" (click)="closeDeletePopup()" [disabled]="loading()">Cancel</button>
+          <button mat-button color="warn" type="button" (click)="confirmDeleteTactic()" [disabled]="loading()">
+            Delete
+          </button>
+        </div>
+      </section>
     </div>
   }
 </div>
