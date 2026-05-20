@@ -50,9 +50,9 @@
   right: 8px;
   width: 32px;
   height: 32px;
-   opacity: 1;
-   transition: background-color 0.2s, color 0.2s, transform 0.2s;
-   z-index: 10;
+  opacity: 1;
+  transition: background-color 0.2s, color 0.2s, transform 0.2s;
+  z-index: 10;
   background-color: rgba(255, 255, 255, 0.88);
   color: #475569;
   box-shadow: 0 4px 12px rgba(15, 23, 42, 0.12);
