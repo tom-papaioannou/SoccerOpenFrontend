@@ -73,7 +73,7 @@
   }
 
   @if (createMode()) {
-    <div class="tactic-popup-backdrop" tabindex="0" (click)="closeCreatePopup()" (keydown.escape)="closeCreatePopup()">
+    <div class="tactic-popup-backdrop" tabindex="0" (click)="closeCreatePopup()" (keydown.escape)="closeCreatePopup()" (keydown.enter)="closeCreatePopup()" (keydown.space)="$event.preventDefault(); closeCreatePopup()">
       <section class="tactic-popup tactic-create-popup" role="dialog" aria-modal="true" aria-label="Create tactic" (click)="$event.stopPropagation()">
         <div class="tactic-popup-header">
           <h3>New Tactic</h3>
@@ -121,7 +121,7 @@
   }
 
   @if (deleteConfirmationTactic(); as tacticToDelete) {
-    <div class="tactic-popup-backdrop" tabindex="0" (click)="closeDeletePopup()" (keydown.escape)="closeDeletePopup()">
+    <div class="tactic-popup-backdrop" tabindex="0" (click)="closeDeletePopup()" (keydown.escape)="closeDeletePopup()" (keydown.enter)="closeDeletePopup()" (keydown.space)="$event.preventDefault(); closeDeletePopup()">
       <section class="tactic-popup tactic-delete-popup" role="dialog" aria-modal="true" aria-label="Delete tactic confirmation" (click)="$event.stopPropagation()">
         <div class="tactic-popup-header">
           <h3>Delete Tactic</h3>

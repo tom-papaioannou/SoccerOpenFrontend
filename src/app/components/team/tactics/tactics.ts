@@ -169,7 +169,7 @@ export class Tactics implements OnInit {
     const name = (formValue.Name ?? '').trim();
 
     if (name.length < 1 || name.length > 30) {
-      this.error.set('Tactic name must be between 1 and 30 characters.');
+      this.error.set('Tactic name must contain at least 1 non-space character and be at most 30 characters.');
       this.loading.set(false);
       this.cdr.markForCheck();
       return;
