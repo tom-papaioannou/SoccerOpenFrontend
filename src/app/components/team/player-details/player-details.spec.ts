@@ -106,6 +106,17 @@ describe('PlayerDetails', () => {
     expect(element.querySelector('.bg-gradient-to-r')).toBeNull();
   });
 
+  it('should render the primary position next to the player name and remove the old position line', () => {
+    const element = fixture.nativeElement as HTMLElement;
+    const playerHeader = fixture.debugElement.queryAll(By.css('app-card h2'))[0].nativeElement as HTMLElement;
+    const standalonePosition = Array.from(element.querySelectorAll('app-card span'))
+      .find((span) => span.textContent?.trim() === 'Central Striker');
+
+    expect(playerHeader.textContent?.replace(/\s+/g, ' ').trim()).toBe('Test Player (Central Striker)');
+    expect(playerHeader.classList.contains('text-left')).toBeTrue();
+    expect(standalonePosition).toBeUndefined();
+  });
+
   it('should color stat values based on their threshold range', () => {
     const statValues = Array.from(
       fixture.nativeElement.querySelectorAll('span.text-sm.font-semibold')

@@ -24,10 +24,12 @@
       @if (transformedPositions.length > 0) {
         <div class="w-full sm:w-auto min-w-80">
           <app-card appearance="outlined">
-            <h2 class="text-xl font-semibold mb-4">{{playerName}}</h2>
+            <h2 class="mb-4 flex flex-wrap items-center gap-2 text-left">
+              <span class="text-xl font-semibold">{{ playerName }}</span>
+              <span class="text-base">({{ transformedPositions[0].position }})</span>
+            </h2>
             <div class="flex justify-between px-4">
               <div class="flex-1 flex flex-col items-start">
-                <span>{{transformedPositions[0].position}}</span>
                 @if (dateOfBirth) {
                   <span>{{ dateOfBirth }}@if (age !== null) { ({{ age }})}</span>
                 }
