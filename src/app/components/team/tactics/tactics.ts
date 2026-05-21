@@ -186,7 +186,7 @@ export class Tactics implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
-          this.closeCreatePopup();
+          this.closeCreatePopup(true);
           this.loadTactics();
         },
         error: (err) => {
@@ -201,8 +201,8 @@ export class Tactics implements OnInit {
     this.closeCreatePopup();
   }
 
-  closeCreatePopup(): void {
-    if (this.loading()) {
+  closeCreatePopup(force = false): void {
+    if (this.loading() && !force) {
       return;
     }
 
