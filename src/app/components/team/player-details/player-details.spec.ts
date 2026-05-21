@@ -125,9 +125,11 @@ describe('PlayerDetails', () => {
     const categorySections = fixture.debugElement.queryAll(By.css('app-card h3'));
     const statsColumns = fixture.debugElement.queryAll(By.css('.stats-category'));
     const statsGrid = fixture.debugElement.query(By.css('.stats-grid'));
+    const statRows = fixture.debugElement.queryAll(By.css('.stats-row'));
 
     expect(statsGrid).not.toBeNull();
     expect(statsColumns.length).toBe(categorySections.length);
+    expect(statRows.length).toBeGreaterThan(0);
     expect(categorySections.every((section) => section.nativeElement.classList.contains('text-left'))).toBeTrue();
   });
 
