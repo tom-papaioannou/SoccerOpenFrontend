@@ -89,7 +89,7 @@ describe('PlayerDetails', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should render shared cards for the player summary and stats sections', () => {
+  it('should render app-card containers for the player summary and stats sections', () => {
     const cards = fixture.debugElement.queryAll(By.css('app-card'));
 
     expect(cards.length).toBe(2);
@@ -121,7 +121,7 @@ describe('PlayerDetails', () => {
     expect(categoryTitles).not.toContain('Goalkeeping');
   });
 
-  it('should left align stat category titles and render styled stat columns', () => {
+  it('should left align stat category titles and render styled stat rows within the stat columns', () => {
     const categorySections = fixture.debugElement.queryAll(By.css('app-card h3'));
     const statsColumns = fixture.debugElement.queryAll(By.css('.stats-category'));
     const statsGrid = fixture.debugElement.query(By.css('.stats-grid'));

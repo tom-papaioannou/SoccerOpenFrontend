@@ -62,14 +62,14 @@
               @for (category of transformedStats; track category.category) {
                 <div class="stats-category max-w-72">
                   <h3 class="text-lg font-medium mb-3 text-left text-blue-400">{{ category.category }}</h3>
-                   <div class="space-y-2">
-                     @for (stat of category.stats; track stat.name) {
-                       <div class="stats-row flex items-center justify-between">
-                          <span class="text-sm">{{ stat.name }}</span>
-                          <span class="text-sm font-semibold" [ngClass]="getStatValueClass(stat.value)">
-                            {{ stat.value }}
-                          </span>
-                        </div>
+                  <div class="space-y-2">
+                    @for (stat of category.stats; track stat.name) {
+                      <div class="stats-row flex items-center justify-between">
+                        <span class="text-sm">{{ stat.name }}</span>
+                        <span class="text-sm font-semibold" [ngClass]="getStatValueClass(stat.value)">
+                          {{ stat.value }}
+                        </span>
+                      </div>
                     }
                   </div>
                 </div>
