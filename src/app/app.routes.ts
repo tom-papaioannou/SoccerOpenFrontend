@@ -30,6 +30,7 @@ export const routes: Routes = [
     { path: 'server/:id', canActivate: [authenticationGuard], component: ServerDetails },
     { path: 'competitions-management', canActivate: [authenticationGuard], component: CompetitionsManagement },
     { path: 'competition/:id', canActivate: [authenticationGuard], component: CompetitionDetails },
+    { path: 'player/:id', canActivate: [authenticationGuard], component: PlayerDetails },
     {
         path: 'competitions',
         canActivate: [authenticationGuard],
@@ -44,7 +45,6 @@ export const routes: Routes = [
         children:[
             { path: '', redirectTo: 'squad', pathMatch: "prefix" },
             { path: 'squad', component: Squad },
-            { path: 'player/:id', component: PlayerDetails },
             { path: 'tactics', component: Tactics },
             { path: 'tactics/:id', component: TacticsDetail },
             { path: 'fixtures', component: Fixtures },

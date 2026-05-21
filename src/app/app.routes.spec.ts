@@ -33,6 +33,11 @@ describe('App Routes', () => {
     expect(route?.canActivate).toContain(authenticationGuard);
   });
 
+  it('should have authenticationGuard on player/:id route', () => {
+    const route = routes.find(r => r.path === 'player/:id');
+    expect(route?.canActivate).toContain(authenticationGuard);
+  });
+
   it('should have authenticationGuard on competitions route', () => {
     const route = routes.find(r => r.path === 'competitions');
     expect(route?.canActivate).toContain(authenticationGuard);
@@ -47,6 +52,12 @@ describe('App Routes', () => {
     const teamRoute = routes.find(r => r.path === 'team');
     const informationRoute = teamRoute?.children?.find(c => c.path === 'information');
     expect(informationRoute).toBeTruthy();
+  });
+
+  it('should not include player/:id as a team child route', () => {
+    const teamRoute = routes.find(r => r.path === 'team');
+    const playerRoute = teamRoute?.children?.find(c => c.path === 'player/:id');
+    expect(playerRoute).toBeUndefined();
   });
 
   it('should have all routes except login and register protected', () => {

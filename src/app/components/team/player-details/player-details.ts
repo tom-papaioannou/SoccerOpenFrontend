@@ -6,12 +6,12 @@
 import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MatCard, MatCardContent } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { Subject, takeUntil } from 'rxjs';
 
 import { TeamsService } from '../../../services/teams.service';
+import { Card } from '../../shared/cards/card/card';
 import { DataTable } from '../../shared/tables/data-table/data-table';
 import { getPlayerPositionLabel, getPlayerRoleLabel } from '../../../utils/position-utils';
 import { calculateAge } from '../../../utils/date-utils';
@@ -69,10 +69,9 @@ interface TransformedStat {
   selector: 'app-player-details',
   imports: [
     CommonModule,
-    MatCard,
-    MatCardContent,
     MatButtonModule,
     MatIconModule,
+    Card,
     DataTable
   ],
   templateUrl: './player-details.html',
@@ -108,6 +107,7 @@ export class PlayerDetails implements OnInit, OnDestroy {
   transformedRoles: TransformedRole[] = [];
   transformedContracts: TransformedContract[] = [];
   transformedStats: TransformedStat[] = [];
+  hoveredStatKey: string | null = null;
 
   private destroy$ = new Subject<void>();
 
@@ -209,7 +209,9 @@ export class PlayerDetails implements OnInit, OnDestroy {
             { name: 'Crossing', value: stats.crossing },
             { name: 'Dribbling', value: stats.dribbling },
             { name: 'Control', value: stats.control },
-            { name: 'Kicking', value: stats.kicking }
+            { name: 'Kicking', value: stats.kicking },
+            { name: 'Tackling', value: stats.tackling },
+            { name: 'Goalkeeping', value: stats.goalkeeping }
           ]
         },
         {
@@ -229,18 +231,6 @@ export class PlayerDetails implements OnInit, OnDestroy {
             { name: 'Creativity', value: stats.creativity },
             { name: 'Decisions', value: stats.decisions },
             { name: 'Positioning', value: stats.positioning }
-          ]
-        },
-        {
-          category: 'Defensive',
-          stats: [
-            { name: 'Tackling', value: stats.tackling }
-          ]
-        },
-        {
-          category: 'Goalkeeping',
-          stats: [
-            { name: 'Goalkeeping', value: stats.goalkeeping }
           ]
         }
       ];
@@ -301,5 +291,17 @@ export class PlayerDetails implements OnInit, OnDestroy {
 
   goBack(): void {
     this.router.navigate(['/team/squad']);
+  }
+
+  getStatValueClass(value: number): string {
+    if (value <= 50) {
+      return 'text-gray-300';
+    }
+
+    if (value <= 75) {
+      return 'text-green-500';
+    }
+
+    return 'text-green-400';
   }
 }
