@@ -48,7 +48,7 @@ describe('PlayerDetails', () => {
           creativity: 67,
           decisions: 64,
           positioning: 69,
-          speed: 73,
+          speed: 82,
           acceleration: 74,
           strength: 62,
           jumping: 58,
@@ -104,5 +104,19 @@ describe('PlayerDetails', () => {
     expect(statsCardText).toContain('70');
     expect(element.querySelector('.bg-gray-700')).toBeNull();
     expect(element.querySelector('.bg-gradient-to-r')).toBeNull();
+  });
+
+  it('should color stat values based on their threshold range', () => {
+    const statValues = Array.from(
+      fixture.nativeElement.querySelectorAll('span.text-sm.font-semibold')
+    ) as HTMLElement[];
+
+    const lowValue = statValues.find((element) => element.textContent?.trim() === '10');
+    const mediumValue = statValues.find((element) => element.textContent?.trim() === '70');
+    const highValue = statValues.find((element) => element.textContent?.trim() === '82');
+
+    expect(lowValue?.classList.contains('text-red-400')).toBeTrue();
+    expect(mediumValue?.classList.contains('text-yellow-400')).toBeTrue();
+    expect(highValue?.classList.contains('text-green-400')).toBeTrue();
   });
 });

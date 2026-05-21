@@ -301,4 +301,16 @@ export class PlayerDetails implements OnInit, OnDestroy {
   goBack(): void {
     this.router.navigate(['/team/squad']);
   }
+
+  getStatValueClass(value: number): string {
+    if (value <= 50) {
+      return 'text-red-400';
+    }
+
+    if (value <= 75) {
+      return 'text-yellow-400';
+    }
+
+    return 'text-green-400';
+  }
 }

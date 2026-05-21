@@ -64,7 +64,9 @@
                     @for (stat of category.stats; track stat.name) {
                       <div class="flex justify-between items-center">
                         <span class="text-sm">{{ stat.name }}</span>
-                        <span class="text-sm font-semibold text-right">{{ stat.value }}</span>
+                        <span class="text-sm font-semibold text-right" [ngClass]="getStatValueClass(stat.value)">
+                          {{ stat.value }}
+                        </span>
                       </div>
                     }
                   </div>
