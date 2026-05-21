@@ -117,6 +117,8 @@ describe('PlayerDetails', () => {
 
     expect(technicalSection?.parentElement?.textContent).toContain('Tackling');
     expect(technicalSection?.parentElement?.textContent).toContain('Goalkeeping');
+    expect(technicalSection?.parentElement?.textContent).toContain('55');
+    expect(technicalSection?.parentElement?.textContent).toContain('10');
     expect(categoryTitles).not.toContain('Defensive');
     expect(categoryTitles).not.toContain('Goalkeeping');
   });
@@ -131,6 +133,23 @@ describe('PlayerDetails', () => {
     expect(statsColumns.length).toBe(categorySections.length);
     expect(statRows.length).toBeGreaterThan(0);
     expect(categorySections.every((section) => section.nativeElement.classList.contains('text-left'))).toBeTrue();
+  });
+
+  it('should add a hover class only to the hovered stat row', () => {
+    const statRows = fixture.debugElement.queryAll(By.css('.stats-row'));
+    const firstRow = statRows[0];
+    const secondRow = statRows[1];
+
+    firstRow.triggerEventHandler('mouseenter');
+    fixture.detectChanges();
+
+    expect(firstRow.nativeElement.classList.contains('stats-row-hovered')).toBeTrue();
+    expect(secondRow.nativeElement.classList.contains('stats-row-hovered')).toBeFalse();
+
+    firstRow.triggerEventHandler('mouseleave');
+    fixture.detectChanges();
+
+    expect(firstRow.nativeElement.classList.contains('stats-row-hovered')).toBeFalse();
   });
 
   it('should render the primary position next to the player name and remove the old position line', () => {

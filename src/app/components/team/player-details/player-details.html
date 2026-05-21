@@ -64,7 +64,11 @@
                   <h3 class="text-lg font-medium mb-3 text-left text-blue-400">{{ category.category }}</h3>
                   <div class="space-y-2">
                     @for (stat of category.stats; track stat.name) {
-                      <div class="stats-row flex items-center justify-between">
+                      <div
+                        class="stats-row flex items-center justify-between"
+                        [class.stats-row-hovered]="hoveredStatKey === category.category + ':' + stat.name"
+                        (mouseenter)="hoveredStatKey = category.category + ':' + stat.name"
+                        (mouseleave)="hoveredStatKey = null">
                         <span class="text-sm">{{ stat.name }}</span>
                         <span class="text-sm font-semibold" [ngClass]="getStatValueClass(stat.value)">
                           {{ stat.value }}

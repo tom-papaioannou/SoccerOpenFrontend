@@ -107,6 +107,7 @@ export class PlayerDetails implements OnInit, OnDestroy {
   transformedRoles: TransformedRole[] = [];
   transformedContracts: TransformedContract[] = [];
   transformedStats: TransformedStat[] = [];
+  hoveredStatKey: string | null = null;
 
   private destroy$ = new Subject<void>();
 
