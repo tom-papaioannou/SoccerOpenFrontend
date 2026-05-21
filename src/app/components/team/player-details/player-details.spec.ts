@@ -121,6 +121,16 @@ describe('PlayerDetails', () => {
     expect(categoryTitles).not.toContain('Goalkeeping');
   });
 
+  it('should left align stat category titles and render styled stat columns', () => {
+    const categorySections = fixture.debugElement.queryAll(By.css('app-card h3'));
+    const statsColumns = fixture.debugElement.queryAll(By.css('.stats-category'));
+    const statsGrid = fixture.debugElement.query(By.css('.stats-grid'));
+
+    expect(statsGrid).not.toBeNull();
+    expect(statsColumns.length).toBe(categorySections.length);
+    expect(categorySections.every((section) => section.nativeElement.classList.contains('text-left'))).toBeTrue();
+  });
+
   it('should render the primary position next to the player name and remove the old position line', () => {
     const element = fixture.nativeElement as HTMLElement;
     const playerHeader = fixture.debugElement.queryAll(By.css('app-card h2'))[0].nativeElement as HTMLElement;

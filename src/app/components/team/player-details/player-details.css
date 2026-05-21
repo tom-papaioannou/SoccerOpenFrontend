@@ -5,3 +5,32 @@
 h2 {
   color: white;
 }
+
+@media (min-width: 1024px) {
+  .stats-grid {
+    column-gap: 0;
+  }
+
+  .stats-category {
+    max-width: none;
+    border-left: 1px solid rgb(51 65 85);
+    padding-left: 1.5rem;
+  }
+
+  .stats-category:nth-child(2n + 1) {
+    border-left: 0;
+    padding-left: 0;
+  }
+}
+
+@media (min-width: 1280px) {
+  .stats-category:nth-child(2n + 1) {
+    border-left: 1px solid rgb(51 65 85);
+    padding-left: 1.5rem;
+  }
+
+  .stats-category:nth-child(3n + 1) {
+    border-left: 0;
+    padding-left: 0;
+  }
+}
