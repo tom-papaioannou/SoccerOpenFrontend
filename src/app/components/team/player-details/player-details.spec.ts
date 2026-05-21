@@ -95,4 +95,14 @@ describe('PlayerDetails', () => {
     expect(cards.length).toBe(2);
     expect(fixture.nativeElement.querySelector('mat-card')).toBeNull();
   });
+
+  it('should render stat labels and values without progress bars', () => {
+    const element = fixture.nativeElement as HTMLElement;
+    const statsCardText = fixture.debugElement.queryAll(By.css('app-card'))[1].nativeElement.textContent;
+
+    expect(statsCardText).toContain('Shooting');
+    expect(statsCardText).toContain('70');
+    expect(element.querySelector('.bg-gray-700')).toBeNull();
+    expect(element.querySelector('.bg-gradient-to-r')).toBeNull();
+  });
 });

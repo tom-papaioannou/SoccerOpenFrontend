@@ -64,15 +64,7 @@
                     @for (stat of category.stats; track stat.name) {
                       <div class="flex justify-between items-center">
                         <span class="text-sm">{{ stat.name }}</span>
-                        <div class="flex items-center gap-2">
-                          <div class="w-24 h-2 bg-gray-700 rounded-full overflow-hidden">
-                            <div 
-                              class="h-full bg-gradient-to-r from-blue-500 to-green-500 transition-all"
-                              [style.width.%]="stat.value">
-                            </div>
-                          </div>
-                          <span class="text-sm font-semibold w-8 text-right">{{ stat.value }}</span>
-                        </div>
+                        <span class="text-sm font-semibold text-right">{{ stat.value }}</span>
                       </div>
                     }
                   </div>
