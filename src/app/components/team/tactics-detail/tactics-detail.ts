@@ -474,6 +474,16 @@ export class TacticsDetail implements OnInit, OnDestroy {
           this.tactic.set(updatedTactic);
           this.editPopupOpen.set(false);
           this.editSaving.set(false);
+
+          const previousFormation = tactic.formation ?? Formation.Four_Four_Two;
+          const nextFormation = updatedTactic.formation ?? previousFormation;
+
+          if (nextFormation !== previousFormation) {
+            this.selectedPlayer.set(null);
+            this.loadTacticDetails(tacticID);
+            return;
+          }
+
           this.cdr.markForCheck();
         },
         error: (err) => {
