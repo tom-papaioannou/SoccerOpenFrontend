@@ -224,6 +224,31 @@ describe('Tactics', () => {
     });
   });
 
+  describe('create popup behavior', () => {
+    it('should close the create popup after a tactic is created successfully', () => {
+      spyOn(tacticsService, 'createTeamTactic').and.returnValue(of({
+        tacticID: '2',
+        teamID: 'test-team',
+        name: 'New Tactic',
+        isMain: false,
+        formation: Formation.Four_Three_Three
+      }));
+      spyOn(component, 'loadTactics');
+
+      component.createMode.set(true);
+      component.tacticForm.setValue({
+        Name: 'New Tactic',
+        isMain: false,
+        Formation: Formation.Four_Three_Three
+      });
+
+      component.saveTactic();
+
+      expect(component.createMode()).toBeFalse();
+      expect(component.loadTactics).toHaveBeenCalled();
+    });
+  });
+
   describe('ngOnInit behavior with CurrentTeam', () => {
     it('should call loadTactics when CurrentTeam is set', () => {
       // Arrange: Create a new component without triggering initial detectChanges
