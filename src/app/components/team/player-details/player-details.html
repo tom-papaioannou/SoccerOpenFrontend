@@ -23,67 +23,63 @@
       <!-- Personal Information -->
       @if (transformedPositions.length > 0) {
         <div class="w-full sm:w-auto min-w-80">
-          <mat-card>
-            <mat-card-content>
-              <h2 class="text-xl font-semibold mb-4">{{playerName}}</h2>
-              <div class="flex justify-between px-4">
-                <div class="flex-1 flex flex-col items-start">
-                  <span>{{transformedPositions[0].position}}</span>
-                  @if (dateOfBirth) {
-                    <span>{{ dateOfBirth }}@if (age !== null) { ({{ age }})}</span>
-                  }
-                  @if (placeOfBirth) {
-                    <span>{{ placeOfBirth }}</span>
-                  }
-                </div>
-                <div class="flex-1 flex flex-col items-end">
-                  <span>{{currentPlayerTeam}}</span>
-                </div>
+          <app-card appearance="outlined">
+            <h2 class="text-xl font-semibold mb-4">{{playerName}}</h2>
+            <div class="flex justify-between px-4">
+              <div class="flex-1 flex flex-col items-start">
+                <span>{{transformedPositions[0].position}}</span>
+                @if (dateOfBirth) {
+                  <span>{{ dateOfBirth }}@if (age !== null) { ({{ age }})}</span>
+                }
+                @if (placeOfBirth) {
+                  <span>{{ placeOfBirth }}</span>
+                }
               </div>
-              @if (transformedContracts.length > 0) {
-                <h2 class="text-xl font-semibold my-4">History</h2>
-                <app-data-table
-                  [data]="transformedContracts"
-                  [columns]="$any(contractsColumns)"
-                  class="players-theme">
-                </app-data-table>
-              }
-            </mat-card-content>
-          </mat-card>
+              <div class="flex-1 flex flex-col items-end">
+                <span>{{currentPlayerTeam}}</span>
+              </div>
+            </div>
+            @if (transformedContracts.length > 0) {
+              <h2 class="text-xl font-semibold my-4">History</h2>
+              <app-data-table
+                [data]="transformedContracts"
+                [columns]="$any(contractsColumns)"
+                class="players-theme">
+              </app-data-table>
+            }
+          </app-card>
         </div>
       }
 
       <!-- Player Stats Section -->
       @if (transformedStats.length > 0) {
         <div class="w-full sm:w-auto sm:flex-1">
-          <mat-card>
-            <mat-card-content>
-              <h2 class="text-xl font-semibold mb-4">Stats</h2>
-              <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-                @for (category of transformedStats; track category.category) {
-                  <div class="max-w-72">
-                    <h3 class="text-lg font-medium mb-3 text-blue-400">{{ category.category }}</h3>
-                    <div class="space-y-2">
-                      @for (stat of category.stats; track stat.name) {
-                        <div class="flex justify-between items-center">
-                          <span class="text-sm">{{ stat.name }}</span>
-                          <div class="flex items-center gap-2">
-                            <div class="w-24 h-2 bg-gray-700 rounded-full overflow-hidden">
-                              <div 
-                                class="h-full bg-gradient-to-r from-blue-500 to-green-500 transition-all"
-                                [style.width.%]="stat.value">
-                              </div>
+          <app-card appearance="outlined">
+            <h2 class="text-xl font-semibold mb-4">Stats</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+              @for (category of transformedStats; track category.category) {
+                <div class="max-w-72">
+                  <h3 class="text-lg font-medium mb-3 text-blue-400">{{ category.category }}</h3>
+                  <div class="space-y-2">
+                    @for (stat of category.stats; track stat.name) {
+                      <div class="flex justify-between items-center">
+                        <span class="text-sm">{{ stat.name }}</span>
+                        <div class="flex items-center gap-2">
+                          <div class="w-24 h-2 bg-gray-700 rounded-full overflow-hidden">
+                            <div 
+                              class="h-full bg-gradient-to-r from-blue-500 to-green-500 transition-all"
+                              [style.width.%]="stat.value">
                             </div>
-                            <span class="text-sm font-semibold w-8 text-right">{{ stat.value }}</span>
                           </div>
+                          <span class="text-sm font-semibold w-8 text-right">{{ stat.value }}</span>
                         </div>
-                      }
-                    </div>
+                      </div>
+                    }
                   </div>
-                }
-              </div>
-            </mat-card-content>
-          </mat-card>
+                </div>
+              }
+            </div>
+          </app-card>
         </div>
       }
     </div>

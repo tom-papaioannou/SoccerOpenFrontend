@@ -6,12 +6,12 @@
 import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MatCard, MatCardContent } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { Subject, takeUntil } from 'rxjs';
 
 import { TeamsService } from '../../../services/teams.service';
+import { Card } from '../../shared/cards/card/card';
 import { DataTable } from '../../shared/tables/data-table/data-table';
 import { getPlayerPositionLabel, getPlayerRoleLabel } from '../../../utils/position-utils';
 import { calculateAge } from '../../../utils/date-utils';
@@ -69,10 +69,9 @@ interface TransformedStat {
   selector: 'app-player-details',
   imports: [
     CommonModule,
-    MatCard,
-    MatCardContent,
     MatButtonModule,
     MatIconModule,
+    Card,
     DataTable
   ],
   templateUrl: './player-details.html',
