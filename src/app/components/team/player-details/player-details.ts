@@ -208,7 +208,9 @@ export class PlayerDetails implements OnInit, OnDestroy {
             { name: 'Crossing', value: stats.crossing },
             { name: 'Dribbling', value: stats.dribbling },
             { name: 'Control', value: stats.control },
-            { name: 'Kicking', value: stats.kicking }
+            { name: 'Kicking', value: stats.kicking },
+            { name: 'Tackling', value: stats.tackling },
+            { name: 'Goalkeeping', value: stats.goalkeeping }
           ]
         },
         {
@@ -228,18 +230,6 @@ export class PlayerDetails implements OnInit, OnDestroy {
             { name: 'Creativity', value: stats.creativity },
             { name: 'Decisions', value: stats.decisions },
             { name: 'Positioning', value: stats.positioning }
-          ]
-        },
-        {
-          category: 'Defensive',
-          stats: [
-            { name: 'Tackling', value: stats.tackling }
-          ]
-        },
-        {
-          category: 'Goalkeeping',
-          stats: [
-            { name: 'Goalkeeping', value: stats.goalkeeping }
           ]
         }
       ];

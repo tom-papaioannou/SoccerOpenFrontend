@@ -101,9 +101,24 @@ describe('PlayerDetails', () => {
     const statsCardText = fixture.debugElement.queryAll(By.css('app-card'))[1].nativeElement.textContent;
 
     expect(statsCardText).toContain('Shooting');
+    expect(statsCardText).toContain('Tackling');
+    expect(statsCardText).toContain('Goalkeeping');
     expect(statsCardText).toContain('70');
     expect(element.querySelector('.bg-gray-700')).toBeNull();
     expect(element.querySelector('.bg-gradient-to-r')).toBeNull();
+  });
+
+  it('should group tackling and goalkeeping under the technical stats column', () => {
+    const categorySections = fixture.debugElement.queryAll(By.css('app-card h3'));
+    const technicalSection = categorySections.find(
+      (section) => section.nativeElement.textContent.trim() === 'Technical'
+    )?.nativeElement as HTMLElement | undefined;
+    const categoryTitles = categorySections.map((section) => section.nativeElement.textContent.trim());
+
+    expect(technicalSection?.parentElement?.textContent).toContain('Tackling');
+    expect(technicalSection?.parentElement?.textContent).toContain('Goalkeeping');
+    expect(categoryTitles).not.toContain('Defensive');
+    expect(categoryTitles).not.toContain('Goalkeeping');
   });
 
   it('should render the primary position next to the player name and remove the old position line', () => {
