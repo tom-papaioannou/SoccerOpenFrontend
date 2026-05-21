@@ -323,6 +323,6 @@ export class Squad implements OnInit, OnDestroy {
   }
 
   onPlayerClick(person: TransformedPlayer): void {
-    this.router.navigate(['/team/player', person.personID]);
+    this.router.navigate(['/player', person.personID]);
   }
 }
