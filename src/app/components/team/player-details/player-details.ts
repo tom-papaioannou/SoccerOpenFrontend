@@ -295,11 +295,11 @@ export class PlayerDetails implements OnInit, OnDestroy {
 
   getStatValueClass(value: number): string {
     if (value <= 50) {
-      return 'text-red-400';
+      return 'text-gray-300';
     }
 
     if (value <= 75) {
-      return 'text-yellow-400';
+      return 'text-green-500';
     }
 
     return 'text-green-400';
