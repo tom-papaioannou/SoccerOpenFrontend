@@ -463,6 +463,7 @@ export class TacticsDetail implements OnInit, OnDestroy {
       leftCornerTakerID: model.leftCornerTakerID || null,
       rightCornerTakerID: model.rightCornerTakerID || null
     };
+    const previousFormation = tactic.formation ?? Formation.Four_Four_Two;
 
     this.editSaving.set(true);
     this.error.set(null);
@@ -474,6 +475,15 @@ export class TacticsDetail implements OnInit, OnDestroy {
           this.tactic.set(updatedTactic);
           this.editPopupOpen.set(false);
           this.editSaving.set(false);
+
+          const nextFormation = updatedTactic.formation ?? previousFormation;
+
+          if (nextFormation !== previousFormation) {
+            this.selectedPlayer.set(null);
+            this.loadTacticDetails(tacticID);
+            return;
+          }
+
           this.cdr.markForCheck();
         },
         error: (err) => {
