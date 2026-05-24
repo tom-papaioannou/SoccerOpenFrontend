@@ -8,26 +8,31 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { Subject, takeUntil } from 'rxjs';
+import { forkJoin, Subject, takeUntil } from 'rxjs';
 
 import { TeamsService } from '../../../services/teams.service';
+import { NationService } from '../../../services/nation.service';
 import { Card } from '../../shared/cards/card/card';
 import { DataTable } from '../../shared/tables/data-table/data-table';
-import { getPlayerPositionLabel, getPlayerRoleLabel } from '../../../utils/position-utils';
+import { getPlayerPositionLabel, getPlayerRoleLabel, getPositionPitchRow } from '../../../utils/position-utils';
+import { getNationFlagUrl } from '../../../utils/nation-map-utils';
 import { calculateAge } from '../../../utils/date-utils';
-import { PlayerStats } from '../../../models/player-enums.model';
+import { PlayerPosition, PlayerStats } from '../../../models/player-enums.model';
+import { INation } from '../../../models/nation.model';
 
 interface PlayerDetailsResponse {
   name: string;
   surname: string;
   dateOfBirth?: string;
   placeOfBirth?: string;
+  nationID?: string | null;
   playerStats: PlayerStats | null;
   playerTrainedPositions: Array<{
     playerPosition: number;
     playerTrainedPositionAdaptation: number;
   }>;
   playerTrainedRoles: Array<{
+    playerPosition: number;
     playerRole: number;
     playerTrainedRoleAdaptation: number;
   }>;
@@ -42,11 +47,18 @@ interface PlayerDetailsResponse {
 
 interface TransformedPosition {
   position: string;
+  positionValue: number;
   adaptation: number;
+}
+
+interface TrainedPositionPitchNode extends TransformedPosition {
+  left: string;
+  top: string;
 }
 
 interface TransformedRole {
   role: string;
+  positionValue: number;
   adaptation: number;
 }
 
@@ -81,10 +93,13 @@ interface TransformedStat {
 export class PlayerDetails implements OnInit, OnDestroy {
   playerDetails: PlayerDetailsResponse | null = null;
   currentPlayerTeam = '-';
+  currentContractExpiry = '';
   playerName = '';
   dateOfBirth = '';
   age: number | null = null;
   placeOfBirth = '';
+  nationalityName = '';
+  nationalityFlagUrl = '';
   loading = true;
   error: string | null = null;
 
@@ -104,10 +119,23 @@ export class PlayerDetails implements OnInit, OnDestroy {
   ];
 
   transformedPositions: TransformedPosition[] = [];
+  trainedPositionPitchNodes: TrainedPositionPitchNode[] = [];
   transformedRoles: TransformedRole[] = [];
   transformedContracts: TransformedContract[] = [];
   transformedStats: TransformedStat[] = [];
   hoveredStatKey: string | null = null;
+  hoveredRoleKey: string | null = null;
+  selectedPositionValue: number | null = null;
+
+  get trainedPositionLabels(): string {
+    return this.transformedPositions.map(position => position.position).join(', ');
+  }
+
+  get selectedPositionRoles(): TransformedRole[] {
+    return this.selectedPositionValue === null
+      ? []
+      : this.transformedRoles.filter(role => role.positionValue === this.selectedPositionValue);
+  }
 
   private destroy$ = new Subject<void>();
 
@@ -115,6 +143,7 @@ export class PlayerDetails implements OnInit, OnDestroy {
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly teamsService: TeamsService,
+    private readonly nationService: NationService,
     private readonly cdr: ChangeDetectorRef
   ) {}
 
@@ -136,15 +165,21 @@ export class PlayerDetails implements OnInit, OnDestroy {
 
   private loadPlayerDetails(playerId: string): void {
     this.loading = true;
-    this.teamsService.getPlayerDetails(playerId)
+    forkJoin({
+      player: this.teamsService.getPlayerDetails(playerId),
+      nations: this.nationService.getAll()
+    })
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (data: PlayerDetailsResponse) => {
+        next: ({ player: data, nations }: { player: PlayerDetailsResponse; nations: INation[] }) => {
           this.playerDetails = data;
           this.playerName = `${data.name || ''} ${data.surname || ''}`.trim();
           this.dateOfBirth = this.formatDateOfBirth(data.dateOfBirth);
           this.age = calculateAge(data.dateOfBirth);
           this.placeOfBirth = data.placeOfBirth || '';
+          const nation = data.nationID ? nations.find(item => item.nationID === data.nationID) : undefined;
+          this.nationalityName = nation?.name ?? '';
+          this.nationalityFlagUrl = nation ? getNationFlagUrl(nation) : '';
           this.transformPositions();
           this.transformRoles();
           this.transformContracts();
@@ -166,10 +201,59 @@ export class PlayerDetails implements OnInit, OnDestroy {
       this.transformedPositions = this.playerDetails.playerTrainedPositions
         .map(p => ({
           position: getPlayerPositionLabel(p.playerPosition) || 'Unknown',
+          positionValue: p.playerPosition,
           adaptation: p.playerTrainedPositionAdaptation
         }))
         .sort((a, b) => b.adaptation - a.adaptation);
+      this.trainedPositionPitchNodes = this.createTrainedPositionPitchNodes();
+      this.selectedPositionValue = this.trainedPositionPitchNodes[0]?.positionValue ?? null;
     }
+  }
+
+  private createTrainedPositionPitchNodes(): TrainedPositionPitchNode[] {
+    return this.transformedPositions
+      .filter(position => getPositionPitchRow(position.positionValue) >= 0)
+      .map(position => ({
+        ...position,
+        left: `${this.getPitchPositionLeft(position.positionValue)}%`,
+        top: `${this.getPitchPositionTop(position.positionValue)}%`
+      }));
+  }
+
+  private getPitchPositionLeft(position: number): number {
+    switch (position) {
+      case PlayerPosition.LeftBack:
+      case PlayerPosition.LeftWingBack:
+      case PlayerPosition.LeftDefensiveMidfielder:
+      case PlayerPosition.LeftMidfielder:
+      case PlayerPosition.LeftWinger:
+      case PlayerPosition.LeftAttackingMidfielder:
+      case PlayerPosition.LeftStriker:
+        return 20;
+      case PlayerPosition.LeftCenterBack:
+      case PlayerPosition.LeftCenterMidfielder:
+        return 35;
+      case PlayerPosition.RightCenterBack:
+      case PlayerPosition.RightCenterMidfielder:
+        return 65;
+      case PlayerPosition.RightBack:
+      case PlayerPosition.RightWingBack:
+      case PlayerPosition.RightDefensiveMidfielder:
+      case PlayerPosition.RightMidfielder:
+      case PlayerPosition.RightWinger:
+      case PlayerPosition.RightAttackingMidfielder:
+      case PlayerPosition.RightStriker:
+        return 80;
+      default:
+        return 50;
+    }
+  }
+
+  private getPitchPositionTop(position: number): number {
+    const rowIndex = getPositionPitchRow(position);
+    const pitchTopByRow = [88, 73, 59, 45, 29, 14];
+
+    return pitchTopByRow[rowIndex] ?? 50;
   }
 
   private transformRoles(): void {
@@ -177,6 +261,7 @@ export class PlayerDetails implements OnInit, OnDestroy {
       this.transformedRoles = this.playerDetails.playerTrainedRoles
         .map(r => ({
           role: getPlayerRoleLabel(r.playerRole) || 'Unknown',
+          positionValue: r.playerPosition,
           adaptation: r.playerTrainedRoleAdaptation
         }))
         .sort((a, b) => b.adaptation - a.adaptation);
@@ -185,8 +270,13 @@ export class PlayerDetails implements OnInit, OnDestroy {
 
   private transformContracts(): void {
     if (this.playerDetails?.contracts) {
-      if(new Date(this.playerDetails.contracts[0].endDate) > new Date()){
-        this.currentPlayerTeam = this.playerDetails.contracts[0].team?.name;
+      const activeContract = this.playerDetails.contracts.find(
+        contract => new Date(contract.endDate) > new Date()
+      );
+
+      if (activeContract) {
+        this.currentPlayerTeam = activeContract.team?.name;
+        this.currentContractExpiry = this.formatDateOfBirth(activeContract.endDate);
       }
       this.transformedContracts = this.playerDetails.contracts
         .map(c => ({
@@ -291,6 +381,11 @@ export class PlayerDetails implements OnInit, OnDestroy {
 
   goBack(): void {
     this.router.navigate(['/team/squad']);
+  }
+
+  selectTrainedPosition(positionValue: number): void {
+    this.selectedPositionValue = positionValue;
+    this.hoveredRoleKey = null;
   }
 
   getStatValueClass(value: number): string {
