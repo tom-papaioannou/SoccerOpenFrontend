@@ -20,14 +20,18 @@ import { Register } from './components/register/register';
 import { Servers } from './components/servers/servers';
 import { ServerDetails } from './components/server-details/server-details';
 import { guestsGuard } from './guards/guests-guard';
+import { AdminPanel } from './components/admin-panel/admin-panel';
+import { defaultLandingGuard } from './guards/default-landing.guard';
 
 export const routes: Routes = [
+    { path: '', pathMatch: 'full', canActivate: [defaultLandingGuard], component: Home },
     { path: 'home', canActivate: [authenticationGuard], component: Home },
     // { path: 'error', component: Home },
     { path: 'login', canActivate: [guestsGuard], component: Login },
     { path: 'register', canActivate: [authenticationGuard], component: Register },
     { path: 'servers', canActivate: [authenticationGuard], component: Servers },
     { path: 'server/:id', canActivate: [authenticationGuard], component: ServerDetails },
+    { path: 'adminpanel', canActivate: [authenticationGuard], component: AdminPanel },
     { path: 'competitions-management', canActivate: [authenticationGuard], component: CompetitionsManagement },
     { path: 'competition/:id', canActivate: [authenticationGuard], component: CompetitionDetails },
     { path: 'player/:id', canActivate: [authenticationGuard], component: PlayerDetails },

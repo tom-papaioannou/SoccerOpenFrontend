@@ -19,7 +19,7 @@
           <a routerLink="competitions-management" routerLinkActive="active">Competitions</a>
         }
         @else if(role === "Admin"){
-          <a routerLink="" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
+          <a routerLink="adminpanel" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Admin</a>
           <a routerLink="register" routerLinkActive="active">Users</a>
           <a routerLink="servers" routerLinkActive="active">Servers</a>
           <a routerLink="about" routerLinkActive="active">Logs</a>
