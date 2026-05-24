@@ -50,7 +50,7 @@ export class Login{
       next: (result) => {
         this.authService.afterSuccessfulLogin(result);
         this.role = this.authService.getRole();
-        this.router.navigate(['/home']);
+        this.router.navigate([this.authService.getDefaultAuthenticatedRoute()]);
       },
       error: (error) => {
         console.error(error);

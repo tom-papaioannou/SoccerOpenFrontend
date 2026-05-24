@@ -66,9 +66,13 @@ export class AuthService {
   getRole(): string {
     const t = this.token;
     if (!t) return '';
-    const payload = jwtDecode<any>(t);
-    const role = payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
-    return (role as any) ?? '';
+    const payload = jwtDecode<JwtPayload & Record<string, unknown>>(t);
+    const role = payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] ?? payload.role;
+    return typeof role === 'string' ? role : '';
+  }
+
+  getDefaultAuthenticatedRoute(): string {
+    return this.getRole().toLowerCase() === 'admin' ? '/adminpanel' : '/home';
   }
 
   getUserID(): string {

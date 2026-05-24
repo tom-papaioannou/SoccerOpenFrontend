@@ -6,6 +6,7 @@
 import { routes } from './app.routes';
 import { authenticationGuard } from './guards/authentication.guard';
 import { guestsGuard } from './guards/guests-guard';
+import { defaultLandingGuard } from './guards/default-landing.guard';
 
 describe('App Routes', () => {
   it('should have authenticationGuard on home route', () => {
@@ -13,14 +14,24 @@ describe('App Routes', () => {
     expect(homeRoute?.canActivate).toContain(authenticationGuard);
   });
 
+  it('should send the empty route through default landing selection', () => {
+    const route = routes.find(r => r.path === '');
+    expect(route?.canActivate).toContain(defaultLandingGuard);
+  });
+
+  it('should have authenticationGuard on adminpanel route', () => {
+    const route = routes.find(r => r.path === 'adminpanel');
+    expect(route?.canActivate).toContain(authenticationGuard);
+  });
+
   it('should have guestsGuard on login route', () => {
     const loginRoute = routes.find(r => r.path === 'login');
     expect(loginRoute?.canActivate).toContain(guestsGuard);
   });
 
-  it('should have guestsGuard on register route', () => {
+  it('should have authenticationGuard on register route', () => {
     const registerRoute = routes.find(r => r.path === 'register');
-    expect(registerRoute?.canActivate).toContain(guestsGuard);
+    expect(registerRoute?.canActivate).toContain(authenticationGuard);
   });
 
   it('should have authenticationGuard on competitions-management route', () => {
@@ -60,14 +71,14 @@ describe('App Routes', () => {
     expect(playerRoute).toBeUndefined();
   });
 
-  it('should have all routes except login and register protected', () => {
+  it('should have authenticationGuard on component routes except login and default landing', () => {
     const routesWithComponents = routes.filter(r => 
       r.component !== undefined && 
-      r.path !== 'login' && 
-      r.path !== 'register'
+      r.path !== '' &&
+      r.path !== 'login'
     );
     
-    // All routes with components (except login and register) should have authenticationGuard
+    // All routed screens except login use authenticated access.
     routesWithComponents.forEach(route => {
       expect(route.canActivate).toContain(authenticationGuard);
     });

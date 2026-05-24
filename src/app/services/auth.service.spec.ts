@@ -76,6 +76,21 @@ describe('AuthService', () => {
     });
   });
 
+  describe('getDefaultAuthenticatedRoute', () => {
+    it('should send admins to the admin panel', () => {
+      const mockToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiQWRtaW4iLCJleHAiOjk5OTk5OTk5OTl9.placeholder';
+
+      sessionStorage.setItem('token', mockToken);
+      service = TestBed.inject(AuthService);
+
+      expect(service.getDefaultAuthenticatedRoute()).toBe('/adminpanel');
+    });
+
+    it('should send other roles to home', () => {
+      expect(service.getDefaultAuthenticatedRoute()).toBe('/home');
+    });
+  });
+
   describe('afterSuccessfulLogin', () => {
     it('should not store role in sessionStorage', () => {
       const result = { role: 'admin', token: 'some-token' };

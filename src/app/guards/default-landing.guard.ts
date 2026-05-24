@@ -7,14 +7,9 @@ import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 
-export const guestsGuard: CanActivateFn = (route, state) => {
+export const defaultLandingGuard: CanActivateFn = () => {
   const authService = inject(AuthService);
   const router = inject(Router);
-  if (authService.isLoggedIn()) {
-    router.navigate([authService.getDefaultAuthenticatedRoute()]);
-    return false;
-  }
 
-  authService.emitChange();
-  return true;
+  return router.parseUrl(authService.getDefaultAuthenticatedRoute());
 };
