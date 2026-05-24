@@ -3,7 +3,9 @@
     <button mat-icon-button (click)="goBack()" class="mr-2">
       <mat-icon>arrow_back</mat-icon>
     </button>
-    <h1 class="text-2xl font-bold">{{ playerName }}</h1>
+    <h1 class="text-2xl font-bold">
+      {{ playerName }}@if (transformedPositions.length > 0) { ({{ trainedPositionLabels }})}
+    </h1>
   </div>
 
   @if (loading) {
@@ -19,29 +21,43 @@
   }
 
   @if (!loading && !error && playerDetails) {
-    <div class="flex flex-col sm:flex-row gap-6">
+    <div class="flex flex-col sm:flex-row gap-6 items-start">
       <!-- Personal Information -->
       @if (transformedPositions.length > 0) {
         <div class="w-full sm:w-auto min-w-80">
           <app-card appearance="outlined">
-            <h2 class="mb-4 flex flex-wrap items-center gap-2 text-left">
-              <span class="text-lg">{{ playerName }} ({{ transformedPositions[0].position }})</span>
-            </h2>
-            <div class="flex justify-between px-4">
-              <div class="flex-1 flex flex-col items-start">
+            <h3 class="stats-category-title text-lg font-medium mb-3 text-left text-white">Personal</h3>
+            <div class="personal-details-layout">
+              <div class="player-portrait-placeholder" aria-hidden="true"></div>
+              <div class="personal-details-content">
+                @if (nationalityName) {
+                  <div class="nationality-line">
+                    <span>{{ nationalityName }}</span>
+                    @if (nationalityFlagUrl) {
+                      <img
+                        class="nationality-flag"
+                        [src]="nationalityFlagUrl"
+                        [alt]="nationalityName + ' flag'">
+                    }
+                  </div>
+                }
                 @if (dateOfBirth) {
-                  <span>{{ dateOfBirth }}@if (age !== null) { ({{ age }})}</span>
+                  <span>{{ dateOfBirth }}</span>
+                }
+                @if (age !== null) {
+                  <span>{{ age }} years old</span>
                 }
                 @if (placeOfBirth) {
                   <span>{{ placeOfBirth }}</span>
                 }
-              </div>
-              <div class="flex-1 flex flex-col items-end">
                 <span>{{currentPlayerTeam}}</span>
+                @if (currentContractExpiry) {
+                  <span>Expires: {{ currentContractExpiry }}</span>
+                }
               </div>
             </div>
             @if (transformedContracts.length > 0) {
-              <h2 class="text-xl font-semibold my-4">History</h2>
+              <h3 class="stats-category-title text-lg font-medium mb-3 text-left text-white">History</h3>
               <app-data-table
                 [data]="transformedContracts"
                 [columns]="$any(contractsColumns)"
@@ -56,11 +72,10 @@
       @if (transformedStats.length > 0) {
         <div class="w-full sm:w-auto sm:flex-1" style="max-width:862px">
           <app-card>
-            <h2 class="text-xl font-semibold mb-4">Stats</h2>
             <div class="stats-grid grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-y-6">
               @for (category of transformedStats; track category.category) {
                 <div class="stats-category max-w-72">
-                  <h3 class="text-lg font-medium mb-3 text-left text-blue-400">{{ category.category }}</h3>
+                  <h3 class="stats-category-title text-lg font-medium mb-3 text-left text-white">{{ category.category }}</h3>
                   <div class="space-y-2">
                     @for (stat of category.stats; track stat.name) {
                       <div
@@ -78,6 +93,55 @@
                 </div>
               }
             </div>
+          </app-card>
+        </div>
+      }
+
+      @if (trainedPositionPitchNodes.length > 0) {
+        <div class="trained-positions-card w-full sm:w-auto">
+          <app-card>
+            <h3 class="stats-category-title text-lg font-medium mb-3 text-left text-white">Positions</h3>
+            <div class="trained-position-pitch" aria-label="Trained positions pitch">
+              <img
+                src="assets/images/tactics/SimpleBackground.png"
+                alt=""
+                class="trained-position-pitch-image">
+              <div class="trained-position-pitch-overlay">
+                @for (position of trainedPositionPitchNodes; track position.positionValue) {
+                  <button
+                    type="button"
+                    class="trained-position-node"
+                    [class.trained-position-node-selected]="selectedPositionValue === position.positionValue"
+                    [style.left]="position.left"
+                    [style.top]="position.top"
+                    [attr.aria-label]="'Show roles for ' + position.position"
+                    (click)="selectTrainedPosition(position.positionValue)">
+                    {{ position.position }}
+                  </button>
+                }
+              </div>
+            </div>
+            @if (selectedPositionValue !== null) {
+              <div class="trained-position-roles">
+                <h3 class="stats-category-title text-lg font-medium mb-3 text-left text-white">Roles</h3>
+                @if (selectedPositionRoles.length > 0) {
+                  @for (role of selectedPositionRoles; track role.role + ':' + role.positionValue) {
+                    <div
+                      class="stats-row trained-position-role-row flex items-center justify-between"
+                      [class.stats-row-hovered]="hoveredRoleKey === role.role"
+                      (mouseenter)="hoveredRoleKey = role.role"
+                      (mouseleave)="hoveredRoleKey = null">
+                      <span class="text-sm">{{ role.role }}</span>
+                      <span class="text-sm font-semibold" [ngClass]="getStatValueClass(role.adaptation)">
+                        {{ role.adaptation }}
+                      </span>
+                    </div>
+                  }
+                } @else {
+                  <p class="trained-position-empty text-sm">No trained roles</p>
+                }
+              </div>
+            }
           </app-card>
         </div>
       }
