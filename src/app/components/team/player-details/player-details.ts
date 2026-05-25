@@ -32,6 +32,8 @@ interface PlayerDetailsResponse {
   dateOfBirth?: string;
   placeOfBirth?: string;
   nationID?: string | null;
+  weight: number;
+  height: number;
   playerStats: PlayerStats | null;
   playerTrainedPositions: Array<{
     playerPosition: PlayerPosition;
@@ -44,7 +46,8 @@ interface PlayerDetailsResponse {
   }>;
   contracts: Array<{
     startDate: string;
-    endDate: string;
+    endDate?: string | null;
+    wage: number;
     team: {
       name: string;
     };
@@ -104,8 +107,11 @@ export class PlayerDetails implements OnInit, OnDestroy {
   dateOfBirth = '';
   age: number | null = null;
   placeOfBirth = '';
+  weight: number | null = null;
+  height: number | null = null;
   nationalityName = '';
   nationalityFlagUrl = '';
+  currentPlayerWage: number | null = null;
   loading = true;
   error: string | null = null;
 
@@ -193,6 +199,8 @@ export class PlayerDetails implements OnInit, OnDestroy {
           this.dateOfBirth = this.formatDateOfBirth(data.dateOfBirth);
           this.age = calculateAge(data.dateOfBirth);
           this.placeOfBirth = data.placeOfBirth || '';
+          this.weight = data.weight;
+          this.height = data.height;
           const nation = data.nationID ? nations.find(item => item.nationID === data.nationID) : undefined;
           this.nationalityName = nation?.name ?? '';
           this.nationalityFlagUrl = nation ? getNationFlagUrl(nation) : '';
@@ -257,7 +265,7 @@ export class PlayerDetails implements OnInit, OnDestroy {
       case PlayerPosition.LeftWinger:
       case PlayerPosition.LeftAttackingMidfielder:
       case PlayerPosition.LeftStriker:
-        return 20;
+        return 12;
       case PlayerPosition.LeftCenterBack:
       case PlayerPosition.LeftCenterMidfielder:
         return 35;
@@ -271,7 +279,7 @@ export class PlayerDetails implements OnInit, OnDestroy {
       case PlayerPosition.RightWinger:
       case PlayerPosition.RightAttackingMidfielder:
       case PlayerPosition.RightStriker:
-        return 80;
+        return 88;
       default:
         return 50;
     }
@@ -279,7 +287,7 @@ export class PlayerDetails implements OnInit, OnDestroy {
 
   private getPitchPositionTop(position: PlayerPosition): number {
     const rowIndex = getPositionPitchRow(position);
-    const pitchTopByRow = [88, 73, 59, 45, 29, 14];
+    const pitchTopByRow = [94, 84, 68, 47, 30, 15];
 
     return pitchTopByRow[rowIndex] ?? 50;
   }
@@ -299,12 +307,13 @@ export class PlayerDetails implements OnInit, OnDestroy {
   private transformContracts(): void {
     if (this.playerDetails?.contracts) {
       const activeContract = this.playerDetails.contracts.find(
-        contract => new Date(contract.endDate) > new Date()
+        contract => !contract.endDate || new Date(contract.endDate) > new Date()
       );
 
       if (activeContract) {
         this.currentPlayerTeam = activeContract.team?.name;
-        this.currentContractExpiry = this.formatDateOfBirth(activeContract.endDate);
+        this.currentContractExpiry = this.formatDateOfBirth(activeContract.endDate ?? undefined);
+        this.currentPlayerWage = activeContract.wage;
       }
       this.transformedContracts = this.playerDetails.contracts
         .map(c => ({
@@ -376,10 +385,16 @@ export class PlayerDetails implements OnInit, OnDestroy {
     return `${day}/${month}/${year}`;
   }
 
-  private formatContractPeriod(startDateString: string, endDateString: string): string {
-    if (!startDateString || !endDateString) return '-';
-    
+  private formatContractPeriod(startDateString: string, endDateString?: string | null): string {
+    if (!startDateString) return '-';
+
     const startDate = new Date(startDateString);
+    if (isNaN(startDate.getTime())) return '-';
+
+    if (!endDateString) {
+      return `${startDate.getUTCFullYear()} -`;
+    }
+    
     const endDate = new Date(endDateString);
     const now = new Date();
     
