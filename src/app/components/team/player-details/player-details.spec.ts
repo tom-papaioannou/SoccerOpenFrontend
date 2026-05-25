@@ -37,6 +37,8 @@ describe('PlayerDetails', () => {
         dateOfBirth: '2000-01-01T00:00:00Z',
         placeOfBirth: 'Athens',
         nationID: 'greece-id',
+        weight: 78,
+        height: 184,
         playerStats: {
           shooting: 70,
           passing: 68,
@@ -94,6 +96,7 @@ describe('PlayerDetails', () => {
           {
             startDate: '2025-07-01T00:00:00Z',
             endDate: '2027-06-30T00:00:00Z',
+            wage: 3200,
             team: { name: 'Test FC' }
           }
         ]
@@ -131,17 +134,17 @@ describe('PlayerDetails', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should render app-card containers for the player summary, stats, and positions sections', () => {
+  it('should render separate app-card containers for personal, history, stats, and positions sections', () => {
     const cards = fixture.debugElement.queryAll(By.css('app-card'));
 
-    expect(cards.length).toBe(3);
+    expect(cards.length).toBe(4);
     expect(fixture.nativeElement.querySelector('mat-card')).toBeNull();
   });
 
   it('should render stat labels and values without progress bars', () => {
     const element = fixture.nativeElement as HTMLElement;
-    const statsCardText = fixture.debugElement.queryAll(By.css('app-card'))[1].nativeElement.textContent;
-    const statsCardHeading = fixture.debugElement.queryAll(By.css('app-card'))[1].query(By.css('h2'));
+    const statsCardText = fixture.debugElement.queryAll(By.css('app-card'))[2].nativeElement.textContent;
+    const statsCardHeading = fixture.debugElement.queryAll(By.css('app-card'))[2].query(By.css('h2'));
 
     expect(statsCardHeading).toBeNull();
     expect(statsCardText).toContain('Shooting');
@@ -153,7 +156,7 @@ describe('PlayerDetails', () => {
   });
 
   it('should group tackling and goalkeeping under the technical stats column', () => {
-    const statsCard = fixture.debugElement.queryAll(By.css('app-card'))[1];
+    const statsCard = fixture.debugElement.queryAll(By.css('app-card'))[2];
     const categorySections = statsCard.queryAll(By.css('h3'));
     const technicalSection = categorySections.find(
       (section) => section.nativeElement.textContent.trim() === 'Technical'
@@ -169,7 +172,7 @@ describe('PlayerDetails', () => {
   });
 
   it('should left align stat category titles and render styled stat rows within the stat columns', () => {
-    const statsCard = fixture.debugElement.queryAll(By.css('app-card'))[1];
+    const statsCard = fixture.debugElement.queryAll(By.css('app-card'))[2];
     const categorySections = statsCard.queryAll(By.css('h3'));
     const statsColumns = statsCard.queryAll(By.css('.stats-category'));
     const statsGrid = statsCard.query(By.css('.stats-grid'));
@@ -200,18 +203,26 @@ describe('PlayerDetails', () => {
     expect(firstRow.nativeElement.classList.contains('stats-row-hovered')).toBeFalse();
   });
 
-  it('should use the personal section title instead of a player name and position line in the summary card', () => {
+  it('should render personal details separately from the history card', () => {
     const element = fixture.nativeElement as HTMLElement;
     const summaryCard = fixture.debugElement.queryAll(By.css('app-card'))[0];
+    const historyCard = fixture.debugElement.queryAll(By.css('app-card'))[1];
+    const playerOverviewGrid = fixture.debugElement.query(By.css('.player-overview-grid'));
     const summaryTitles = summaryCard.queryAll(By.css('h3'));
     const personalTitle = summaryTitles[0].nativeElement as HTMLElement;
-    const historyTitle = summaryTitles[1].nativeElement as HTMLElement;
+    const historyTitle = historyCard.query(By.css('h3')).nativeElement as HTMLElement;
 
     expect(personalTitle.textContent?.trim()).toBe('Personal');
     expect(personalTitle.classList.contains('stats-category-title')).toBeTrue();
+    expect(summaryTitles.length).toBe(1);
     expect(historyTitle.textContent?.trim()).toBe('History');
     expect(historyTitle.classList.contains('stats-category-title')).toBeTrue();
+    expect(historyCard.query(By.css('app-data-table'))).not.toBeNull();
+    expect(playerOverviewGrid.query(By.css('.personal-card'))).toBe(summaryCard);
+    expect(playerOverviewGrid.query(By.css('.history-card'))).toBe(historyCard);
     expect(summaryCard.query(By.css('.player-portrait-placeholder'))).not.toBeNull();
+    expect(summaryCard.query(By.css('.player-team-name')).nativeElement.textContent.trim()).toBe('Test FC');
+    expect(summaryCard.query(By.css('.player-team-name')).nativeElement.tagName).toBe('STRONG');
     expect(summaryCard.query(By.css('.nationality-line')).nativeElement.textContent).toContain('Greece');
     expect(summaryCard.query(By.css('.nationality-flag')).nativeElement.getAttribute('src'))
       .toBe('https://flagcdn.com/w40/gr.png');
@@ -219,7 +230,10 @@ describe('PlayerDetails', () => {
     expect(summaryCard.nativeElement.textContent).toContain(`${component.age} years old`);
     expect(summaryCard.nativeElement.textContent).not.toContain(`(${component.age})`);
     expect(summaryCard.nativeElement.textContent).toContain('Test FC');
-    expect(summaryCard.nativeElement.textContent).toContain('Contract expires: 30/06/2027');
+    expect(summaryCard.nativeElement.textContent).toContain('until 30/06/2027');
+    expect(summaryCard.nativeElement.textContent).toContain('184 cm');
+    expect(summaryCard.nativeElement.textContent).toContain('78 kg');
+    expect(summaryCard.nativeElement.textContent).toContain('3200 € per week');
     expect(summaryCard.nativeElement.textContent).not.toContain('Test Player (Central Striker)');
     expect(Array.from(element.querySelectorAll('app-card span'))
       .some((span) => span.textContent?.trim() === 'Central Striker')).toBeFalse();
@@ -233,7 +247,7 @@ describe('PlayerDetails', () => {
   });
 
   it('should draw central triplets as one generic pitch node', () => {
-    const positionsCard = fixture.debugElement.queryAll(By.css('app-card'))[2];
+    const positionsCard = fixture.debugElement.queryAll(By.css('app-card'))[3];
     const positionNodes = positionsCard.queryAll(By.css('.trained-position-node'));
     const positionLabels = positionNodes.map(node => node.nativeElement.textContent.trim());
     const strikerNode = positionNodes.find(node => node.nativeElement.textContent.trim() === 'ST');
@@ -250,7 +264,7 @@ describe('PlayerDetails', () => {
   });
 
   it('should show hoverable trained roles for the selected pitch position', () => {
-    const positionsCard = fixture.debugElement.queryAll(By.css('app-card'))[2];
+    const positionsCard = fixture.debugElement.queryAll(By.css('app-card'))[3];
     const positionNodes = positionsCard.queryAll(By.css('.trained-position-node'));
     const strikerNode = positionNodes.find(node => node.nativeElement.textContent.trim() === 'ST');
     const midfieldNode = positionNodes.find(node => node.nativeElement.textContent.trim() === 'CM');

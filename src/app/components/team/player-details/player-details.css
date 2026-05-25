@@ -24,7 +24,8 @@ h2 {
 }
 
 .player-portrait-placeholder {
-  height: 15rem;
+  height: auto;
+  min-height: 0;
   border: 1px solid rgba(255, 255, 255, 0.32);
   border-radius: 0.375rem;
   background-color: rgb(30 41 59 / 0.65);
@@ -33,16 +34,66 @@ h2 {
 .personal-details-layout {
   display: grid;
   grid-template-columns: minmax(8rem, 1fr) minmax(8rem, 1fr);
+  grid-template-rows: auto auto;
   gap: 1rem;
   margin-bottom: 1rem;
 }
 
-.personal-details-content {
+.personal-details-content,
+.personal-contract-content {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
   gap: 0.5rem;
   text-align: right;
+}
+
+.player-team-name {
+  display: block;
+  align-self: start;
+  font-weight: 700;
+}
+
+.player-overview-grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.personal-card,
+.history-card,
+.player-stats-card {
+  min-width: 0;
+}
+
+@media (min-width: 640px) {
+  .player-overview-grid {
+    grid-template-columns: minmax(20rem, auto) minmax(0, 1fr);
+    grid-template-areas:
+      "personal stats"
+      "history .";
+    align-items: stretch;
+    max-width: calc(20rem + 862px + 1.5rem);
+  }
+
+  .personal-card {
+    grid-area: personal;
+  }
+
+  .history-card {
+    grid-area: history;
+  }
+
+  .player-stats-card {
+    grid-area: stats;
+    max-width: 862px;
+  }
+
+  .personal-card ::ng-deep .cardBorder,
+  .personal-card ::ng-deep .app-card,
+  .player-stats-card ::ng-deep .cardBorder,
+  .player-stats-card ::ng-deep .app-card {
+    height: 100%;
+  }
 }
 
 .nationality-line {
