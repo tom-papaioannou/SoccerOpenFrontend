@@ -9,7 +9,7 @@ import { ColumnDef, DataTable } from "../../shared/tables/data-table/data-table"
 import { TeamsService } from '../../../services/teams.service';
 import { Person, PlayerPosition, PlayerRole } from '../../../models/player-enums.model';
 import { forkJoin, Subject, takeUntil } from 'rxjs';
-import { getPlayerPositionLabel, getPlayerRoleLabel, positionSortOrder } from '../../../utils/position-utils';
+import { getGroupedPlayerPositionLabel, getPlayerRoleLabel, positionSortOrder } from '../../../utils/position-utils';
 import { calculateAge } from '../../../utils/date-utils';
 import { MatSelectModule } from '@angular/material/select';
 import { NationService } from '../../../services/nation.service';
@@ -188,7 +188,7 @@ export class Squad implements OnInit, OnDestroy {
         name,
         nationalityFlagUrl: nation ? getNationFlagUrl(nation) : '',
         nationalityName: nation?.name ?? '',
-        position: getPlayerPositionLabel(bestPosition),
+        position: getGroupedPlayerPositionLabel(bestPosition),
         positionValue: bestPosition, // Include raw enum value for sorting
         role: getPlayerRoleLabel(bestRole),
         roleValue: bestRole,

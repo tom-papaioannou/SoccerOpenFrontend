@@ -74,6 +74,53 @@ export function getPlayerPositionLabel(position?: PlayerPosition): string {
 }
 
 /**
+ * Collapses central left/center/right variants to one display position.
+ */
+export function getGroupedPlayerPosition(position?: PlayerPosition): PlayerPosition | undefined {
+  switch (position) {
+    case PlayerPosition.RightCenterBack:
+    case PlayerPosition.CentralCenterBack:
+    case PlayerPosition.LeftCenterBack:
+      return PlayerPosition.CentralCenterBack;
+    case PlayerPosition.RightDefensiveMidfielder:
+    case PlayerPosition.CentralDefensiveMidfielder:
+    case PlayerPosition.LeftDefensiveMidfielder:
+      return PlayerPosition.CentralDefensiveMidfielder;
+    case PlayerPosition.RightCenterMidfielder:
+    case PlayerPosition.CentralCenterMidfielder:
+    case PlayerPosition.LeftCenterMidfielder:
+      return PlayerPosition.CentralCenterMidfielder;
+    case PlayerPosition.RightAttackingMidfielder:
+    case PlayerPosition.CentralAttackingMidfielder:
+    case PlayerPosition.LeftAttackingMidfielder:
+      return PlayerPosition.CentralAttackingMidfielder;
+    case PlayerPosition.RightStriker:
+    case PlayerPosition.CentralStriker:
+    case PlayerPosition.LeftStriker:
+      return PlayerPosition.CentralStriker;
+    default:
+      return position;
+  }
+}
+
+export function getGroupedPlayerPositionLabel(position?: PlayerPosition): string {
+  switch (getGroupedPlayerPosition(position)) {
+    case PlayerPosition.CentralCenterBack:
+      return 'CB';
+    case PlayerPosition.CentralDefensiveMidfielder:
+      return 'DM';
+    case PlayerPosition.CentralCenterMidfielder:
+      return 'CM';
+    case PlayerPosition.CentralAttackingMidfielder:
+      return 'AM';
+    case PlayerPosition.CentralStriker:
+      return 'ST';
+    default:
+      return getPlayerPositionLabel(position);
+  }
+}
+
+/**
  * Get the display label for a player role
  * @param role The PlayerRole enum value
  * @returns The abbreviated role label (e.g., 'GK', 'CB', 'AF')
