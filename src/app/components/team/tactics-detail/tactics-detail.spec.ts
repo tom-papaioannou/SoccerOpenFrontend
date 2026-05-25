@@ -9,7 +9,7 @@ import { of } from 'rxjs';
 import { TacticsDetail } from './tactics-detail';
 import { TacticsService } from '../../../services/tactics.service';
 import { TeamsService } from '../../../services/teams.service';
-import { Formation, Tactic } from '../../../models/tactic.model';
+import { Formation, SquadUnit, Tactic } from '../../../models/tactic.model';
 import { PlayerPosition, PlayerRole } from '../../../models/player-enums.model';
 
 describe('TacticsDetail', () => {
@@ -138,5 +138,34 @@ describe('TacticsDetail', () => {
 
     expect(component.loadTacticDetails).not.toHaveBeenCalled();
     expect(component.tactic()).toEqual(updatedTactic);
+  });
+
+  it('should group the BP value without changing the POS value', () => {
+    component.playerTactics.set([{
+      playerTacticID: 'midfielder-tactic',
+      tacticID: baseTactic.tacticID!,
+      playerPosition: PlayerPosition.LeftCenterMidfielder,
+      playerRole: PlayerRole.CentralMidfielder,
+      squadUnit: SquadUnit.Starting,
+      person: {
+        personID: 'midfielder',
+        name: 'Test',
+        surname: 'Midfielder',
+        playerTrainedPositions: [{
+          playerPosition: PlayerPosition.RightCenterMidfielder,
+          playerTrainedPositionAdaptation: 90
+        }],
+        playerTrainedRoles: [{
+          playerPosition: PlayerPosition.RightCenterMidfielder,
+          playerRole: PlayerRole.CentralMidfielder,
+          playerTrainedRoleAdaptation: 80
+        }]
+      }
+    }]);
+
+    const player = component.mainTableData[0];
+
+    expect(player.position).toBe('LCM');
+    expect(player.bestTrainedPosition).toBe('CM');
   });
 });

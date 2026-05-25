@@ -58,6 +58,9 @@ describe('PlayerDetails', () => {
         },
         playerTrainedPositions: [
           { playerPosition: PlayerPosition.CentralStriker, playerTrainedPositionAdaptation: 88 },
+          { playerPosition: PlayerPosition.LeftCenterMidfielder, playerTrainedPositionAdaptation: 81 },
+          { playerPosition: PlayerPosition.CentralCenterMidfielder, playerTrainedPositionAdaptation: 80 },
+          { playerPosition: PlayerPosition.RightCenterMidfielder, playerTrainedPositionAdaptation: 79 },
           { playerPosition: PlayerPosition.LeftWinger, playerTrainedPositionAdaptation: 71 }
         ],
         playerTrainedRoles: [
@@ -65,6 +68,21 @@ describe('PlayerDetails', () => {
             playerPosition: PlayerPosition.CentralStriker,
             playerRole: PlayerRole.AdvancedForward,
             playerTrainedRoleAdaptation: 85
+          },
+          {
+            playerPosition: PlayerPosition.LeftCenterMidfielder,
+            playerRole: PlayerRole.BoxToBoxMidfielder,
+            playerTrainedRoleAdaptation: 84
+          },
+          {
+            playerPosition: PlayerPosition.CentralCenterMidfielder,
+            playerRole: PlayerRole.CentralMidfielder,
+            playerTrainedRoleAdaptation: 82
+          },
+          {
+            playerPosition: PlayerPosition.RightCenterMidfielder,
+            playerRole: PlayerRole.AdvancedPlaymaker,
+            playerTrainedRoleAdaptation: 80
           },
           {
             playerPosition: PlayerPosition.LeftWinger,
@@ -207,24 +225,26 @@ describe('PlayerDetails', () => {
       .some((span) => span.textContent?.trim() === 'Central Striker')).toBeFalse();
   });
 
-  it('should include all trained positions in the page title', () => {
+  it('should group central triplets in the page title', () => {
     const pageTitle = fixture.debugElement.query(By.css('h1')).nativeElement as HTMLElement;
 
     expect(pageTitle.textContent?.replace(/\s+/g, ' ').trim())
-      .toBe('Test Player (CST, LW)');
+      .toBe('Test Player (ST, CM, LW)');
   });
 
-  it('should draw a pitch node with an abbreviation for each trained position', () => {
+  it('should draw central triplets as one generic pitch node', () => {
     const positionsCard = fixture.debugElement.queryAll(By.css('app-card'))[2];
     const positionNodes = positionsCard.queryAll(By.css('.trained-position-node'));
     const positionLabels = positionNodes.map(node => node.nativeElement.textContent.trim());
-    const strikerNode = positionNodes.find(node => node.nativeElement.textContent.trim() === 'CST');
+    const strikerNode = positionNodes.find(node => node.nativeElement.textContent.trim() === 'ST');
+    const midfieldNode = positionNodes.find(node => node.nativeElement.textContent.trim() === 'CM');
     const leftWingNode = positionNodes.find(node => node.nativeElement.textContent.trim() === 'LW');
 
     expect(positionsCard.nativeElement.textContent).toContain('Positions');
     expect(positionsCard.query(By.css('.trained-position-pitch'))).not.toBeNull();
-    expect(positionLabels).toEqual(['CST', 'LW']);
+    expect(positionLabels).toEqual(['ST', 'CM', 'LW']);
     expect(strikerNode?.nativeElement.style.left).toBe('50%');
+    expect(midfieldNode?.nativeElement.style.left).toBe('50%');
     expect(leftWingNode?.nativeElement.style.left).toBe('20%');
     expect(leftWingNode?.nativeElement.style.top).not.toBe(strikerNode?.nativeElement.style.top);
   });
@@ -232,7 +252,8 @@ describe('PlayerDetails', () => {
   it('should show hoverable trained roles for the selected pitch position', () => {
     const positionsCard = fixture.debugElement.queryAll(By.css('app-card'))[2];
     const positionNodes = positionsCard.queryAll(By.css('.trained-position-node'));
-    const strikerNode = positionNodes.find(node => node.nativeElement.textContent.trim() === 'CST');
+    const strikerNode = positionNodes.find(node => node.nativeElement.textContent.trim() === 'ST');
+    const midfieldNode = positionNodes.find(node => node.nativeElement.textContent.trim() === 'CM');
     const leftWingNode = positionNodes.find(node => node.nativeElement.textContent.trim() === 'LW');
 
     let roleRows = positionsCard.queryAll(By.css('.trained-position-role-row'));
@@ -250,6 +271,16 @@ describe('PlayerDetails', () => {
     fixture.detectChanges();
 
     expect(roleRows[0].nativeElement.classList.contains('stats-row-hovered')).toBeTrue();
+
+    midfieldNode?.triggerEventHandler('click');
+    fixture.detectChanges();
+
+    roleRows = positionsCard.queryAll(By.css('.trained-position-role-row'));
+    expect(midfieldNode?.nativeElement.classList.contains('trained-position-node-selected')).toBeTrue();
+    expect(roleRows.length).toBe(3);
+    expect(positionsCard.nativeElement.textContent).toContain('BTBM');
+    expect(positionsCard.nativeElement.textContent).toContain('CM');
+    expect(positionsCard.nativeElement.textContent).toContain('AP');
 
     leftWingNode?.triggerEventHandler('click');
     fixture.detectChanges();

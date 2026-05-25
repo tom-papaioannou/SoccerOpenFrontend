@@ -16,7 +16,13 @@ import { Tactic, Formation, PlayerTactic, SquadUnit, UpdateTacticRequest } from 
 import { TeamsService } from '../../../services/teams.service';
 import { Kit } from '../../../models/competition.model';
 import { Person, PlayerPosition, PlayerRole } from '../../../models/player-enums.model';
-import { getPlayerPositionLabel, getPlayerRoleLabel, positionSortOrder, getPositionPitchRow } from '../../../utils/position-utils';
+import {
+  getGroupedPlayerPositionLabel,
+  getPlayerPositionLabel,
+  getPlayerRoleLabel,
+  positionSortOrder,
+  getPositionPitchRow
+} from '../../../utils/position-utils';
 import { FormsModule } from '@angular/forms';
 
 function getPlayerRoleOptionLabel(role: PlayerRole): string {
@@ -526,7 +532,7 @@ export class TacticsDetail implements OnInit, OnDestroy {
         positionValue: pt.playerPosition, // Include raw enum value for sorting
         roleValue: pt.playerRole,
         suitability: this.getPlayerSuitability(pt.person, pt.playerPosition, pt.playerRole),
-        bestTrainedPosition: getPlayerPositionLabel(this.getBestTrainedPosition(pt.person)),
+        bestTrainedPosition: getGroupedPlayerPositionLabel(this.getBestTrainedPosition(pt.person)),
         bestTrainedRole: getPlayerRoleLabel(this.getBestTrainedRole(pt.person)),
         playerTacticID: pt.playerTacticID,
         person: pt.person,

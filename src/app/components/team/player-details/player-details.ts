@@ -14,7 +14,13 @@ import { TeamsService } from '../../../services/teams.service';
 import { NationService } from '../../../services/nation.service';
 import { Card } from '../../shared/cards/card/card';
 import { DataTable } from '../../shared/tables/data-table/data-table';
-import { getPlayerPositionLabel, getPlayerRoleLabel, getPositionPitchRow } from '../../../utils/position-utils';
+import {
+  getGroupedPlayerPosition,
+  getGroupedPlayerPositionLabel,
+  getPlayerPositionLabel,
+  getPlayerRoleLabel,
+  getPositionPitchRow
+} from '../../../utils/position-utils';
 import { getNationFlagUrl } from '../../../utils/nation-map-utils';
 import { calculateAge } from '../../../utils/date-utils';
 import { PlayerPosition, PlayerStats } from '../../../models/player-enums.model';
@@ -28,11 +34,11 @@ interface PlayerDetailsResponse {
   nationID?: string | null;
   playerStats: PlayerStats | null;
   playerTrainedPositions: Array<{
-    playerPosition: number;
+    playerPosition: PlayerPosition;
     playerTrainedPositionAdaptation: number;
   }>;
   playerTrainedRoles: Array<{
-    playerPosition: number;
+    playerPosition: PlayerPosition;
     playerRole: number;
     playerTrainedRoleAdaptation: number;
   }>;
@@ -47,7 +53,7 @@ interface PlayerDetailsResponse {
 
 interface TransformedPosition {
   position: string;
-  positionValue: number;
+  positionValue: PlayerPosition;
   adaptation: number;
 }
 
@@ -58,7 +64,7 @@ interface TrainedPositionPitchNode extends TransformedPosition {
 
 interface TransformedRole {
   role: string;
-  positionValue: number;
+  positionValue: PlayerPosition;
   adaptation: number;
 }
 
@@ -125,16 +131,26 @@ export class PlayerDetails implements OnInit, OnDestroy {
   transformedStats: TransformedStat[] = [];
   hoveredStatKey: string | null = null;
   hoveredRoleKey: string | null = null;
-  selectedPositionValue: number | null = null;
+  selectedPositionValue: PlayerPosition | null = null;
 
   get trainedPositionLabels(): string {
-    return this.transformedPositions.map(position => position.position).join(', ');
+    return this.transformedPositions.reduce<string[]>((labels, position) => {
+      const label = getGroupedPlayerPositionLabel(position.positionValue);
+
+      if (!labels.includes(label)) {
+        labels.push(label);
+      }
+
+      return labels;
+    }, []).join(', ');
   }
 
   get selectedPositionRoles(): TransformedRole[] {
     return this.selectedPositionValue === null
       ? []
-      : this.transformedRoles.filter(role => role.positionValue === this.selectedPositionValue);
+      : this.transformedRoles.filter(
+          role => getGroupedPlayerPosition(role.positionValue) === this.selectedPositionValue
+        );
   }
 
   private destroy$ = new Subject<void>();
@@ -211,16 +227,28 @@ export class PlayerDetails implements OnInit, OnDestroy {
   }
 
   private createTrainedPositionPitchNodes(): TrainedPositionPitchNode[] {
-    return this.transformedPositions
+    const nodes = new Map<PlayerPosition, TrainedPositionPitchNode>();
+
+    this.transformedPositions
       .filter(position => getPositionPitchRow(position.positionValue) >= 0)
-      .map(position => ({
-        ...position,
-        left: `${this.getPitchPositionLeft(position.positionValue)}%`,
-        top: `${this.getPitchPositionTop(position.positionValue)}%`
-      }));
+      .forEach(position => {
+        const displayPositionValue = getGroupedPlayerPosition(position.positionValue)!;
+
+        if (!nodes.has(displayPositionValue)) {
+          nodes.set(displayPositionValue, {
+            ...position,
+            position: getGroupedPlayerPositionLabel(displayPositionValue),
+            positionValue: displayPositionValue,
+            left: `${this.getPitchPositionLeft(displayPositionValue)}%`,
+            top: `${this.getPitchPositionTop(displayPositionValue)}%`
+          });
+        }
+      });
+
+    return Array.from(nodes.values());
   }
 
-  private getPitchPositionLeft(position: number): number {
+  private getPitchPositionLeft(position: PlayerPosition): number {
     switch (position) {
       case PlayerPosition.LeftBack:
       case PlayerPosition.LeftWingBack:
@@ -249,7 +277,7 @@ export class PlayerDetails implements OnInit, OnDestroy {
     }
   }
 
-  private getPitchPositionTop(position: number): number {
+  private getPitchPositionTop(position: PlayerPosition): number {
     const rowIndex = getPositionPitchRow(position);
     const pitchTopByRow = [88, 73, 59, 45, 29, 14];
 
@@ -383,7 +411,7 @@ export class PlayerDetails implements OnInit, OnDestroy {
     this.router.navigate(['/team/squad']);
   }
 
-  selectTrainedPosition(positionValue: number): void {
+  selectTrainedPosition(positionValue: PlayerPosition): void {
     this.selectedPositionValue = positionValue;
     this.hoveredRoleKey = null;
   }
