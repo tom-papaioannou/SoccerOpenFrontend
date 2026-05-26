@@ -28,7 +28,12 @@
           <app-card class="personal-card" appearance="outlined">
               <h3 class="stats-category-title text-lg font-medium mb-3 text-left text-white">Personal</h3>
               <div class="personal-details-layout">
-                <div class="player-portrait-placeholder" aria-hidden="true"></div>
+                <div class="player-portrait-placeholder">
+                  <img
+                    class="player-portrait-image"
+                    src="assets/player-card.png"
+                    alt="Player portrait">
+                </div>
                 <div class="personal-details-content">
                   @if (nationalityName) {
                     <div class="nationality-line">

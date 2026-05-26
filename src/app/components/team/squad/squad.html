@@ -27,11 +27,26 @@
         }
     </ng-template>
 
-    <app-data-table
-        [data]="people"
-        class="players-theme"
-        [columns]="$any(displayedColumns)"
-        [initialSort]="{ active: 'position', direction: 'asc' }"
-        (rowClick)="onPlayerClick($event)">
-    </app-data-table>
+    <app-card appearance="outlined">
+        <header class="squad-header">
+            <h1 class="squad-team-name">{{ teamName }}</h1>
+            @if (leagueName) {
+                <button
+                    type="button"
+                    class="squad-league-name"
+                    [disabled]="!leagueID"
+                    (click)="openCompetition()">
+                    {{ leagueName }}
+                </button>
+            }
+        </header>
+
+        <app-data-table
+            [data]="people"
+            class="players-theme"
+            [columns]="$any(displayedColumns)"
+            [initialSort]="{ active: 'position', direction: 'asc' }"
+            (rowClick)="onPlayerClick($event)">
+        </app-data-table>
+    </app-card>
 </div>

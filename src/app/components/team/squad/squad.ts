@@ -15,6 +15,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { NationService } from '../../../services/nation.service';
 import { INation } from '../../../models/nation.model';
 import { getNationFlagUrl } from '../../../utils/nation-map-utils';
+import { Card } from '../../shared/cards/card/card';
 
 interface TransformedPlayer {
   personID: string;
@@ -29,6 +30,10 @@ interface TransformedPlayer {
   roleValue?: PlayerRole;
   ppr: number | string;
   age: number | string;
+  wage: number | string;
+  wageValue?: number | null;
+  contract: string;
+  contractEndDateValue?: string | null;
 }
 
 interface ShirtNumberOption {
@@ -40,7 +45,8 @@ interface ShirtNumberOption {
   selector: 'app-squad',
   imports: [
     DataTable,
-    MatSelectModule
+    MatSelectModule,
+    Card
   ],
   templateUrl: './squad.html',
   styleUrl: './squad.css',
@@ -61,6 +67,9 @@ export class Squad implements OnInit, OnDestroy {
   displayedColumns: ColumnDef<TransformedPlayer>[] = [];
   shirtNumberOptions: ShirtNumberOption[] = [];
   people: TransformedPlayer[] = [];
+  teamName = '';
+  leagueID: string | null = null;
+  leagueName = '';
   private nationsByID = new Map<string, INation>();
   private currentTeamID: string | null = null;
   private destroy$ = new Subject<void>();
@@ -85,11 +94,11 @@ export class Squad implements OnInit, OnDestroy {
       sortAccessor: (row: TransformedPlayer) => row.shirtNumberValue,
       cellTemplate: this.shirtNumberTemplate
     },
-    { key: 'name', header: 'Name', width: '32%', sortable: true },
+    { key: 'name', header: 'Name', width: '20%', sortable: true },
     {
       key: 'nationalityFlagUrl',
       header: 'Nationality',
-      width: '14%',
+      width: '12%',
       align: 'center',
       headerClass: 'text-center',
       cellClass: 'text-center',
@@ -100,7 +109,7 @@ export class Squad implements OnInit, OnDestroy {
     { 
       key: 'position', 
       header: 'Position',
-      width: '15%',
+      width: '12%',
       sortable: true,
       sortAccessor: (row: TransformedPlayer) => row.positionValue,
       comparator: this.positionComparator
@@ -108,20 +117,40 @@ export class Squad implements OnInit, OnDestroy {
     {
       key: 'role',
       header: 'Role',
-      width: '12%',
+      width: '11%',
       sortable: true,
       sortAccessor: (row: TransformedPlayer) => row.roleValue
     },
     {
       key: 'ppr',
       header: 'PPR',
-      width: '10%',
+      width: '8%',
       align: 'center',
       headerClass: 'text-center',
       cellClass: 'text-center',
       sortable: true
     },
-    { key: 'age', header: 'Age', width: '15%', align: 'right', headerClass:'text-end', cellClass:'text-end' }
+    { key: 'age', header: 'Age', width: '7%', align: 'right', headerClass:'text-end', cellClass:'text-end' },
+    {
+      key: 'wage',
+      header: 'Wage',
+      width: '12%',
+      align: 'right',
+      headerClass: 'text-end',
+      cellClass: 'text-end',
+      sortable: true,
+      sortAccessor: (row: TransformedPlayer) => row.wageValue
+    },
+    {
+      key: 'contract',
+      header: 'Contract',
+      width: '13%',
+      align: 'right',
+      headerClass: 'text-end',
+      cellClass: 'text-end',
+      sortable: true,
+      sortAccessor: (row: TransformedPlayer) => row.contractEndDateValue
+    }
   ];
 
     // Subscribe to currentTeamObservable to wait for team to be set
@@ -131,6 +160,9 @@ export class Squad implements OnInit, OnDestroy {
         next: (team) => {
           if (team?.teamID) {
             this.currentTeamID = team.teamID;
+            this.teamName = team.name;
+            this.leagueID = team.leagueID ?? null;
+            this.leagueName = team.leagueName ?? '';
             this.loadPlayers(team.teamID);
           }
         },
@@ -193,9 +225,29 @@ export class Squad implements OnInit, OnDestroy {
         role: getPlayerRoleLabel(bestRole),
         roleValue: bestRole,
         ppr: ppr !== null ? ppr : '-',
-        age: age !== null ? age : '-'
+        age: age !== null ? age : '-',
+        wage: person.wage !== undefined ? `${person.wage} € / week` : '-',
+        wageValue: person.wage ?? null,
+        contract: this.formatContractEndDate(person.endDate),
+        contractEndDateValue: person.endDate ?? null
       };
     });
+  }
+
+  private formatContractEndDate(endDate: string | null | undefined): string {
+    if (!endDate) {
+      return '-';
+    }
+
+    const date = new Date(endDate);
+    if (isNaN(date.getTime())) {
+      return '-';
+    }
+
+    const day = String(date.getUTCDate()).padStart(2, '0');
+    const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+
+    return `${day}/${month}/${date.getUTCFullYear()}`;
   }
 
   private getBestPlayerPosition(person: Person): PlayerPosition | undefined {
@@ -324,5 +376,11 @@ export class Squad implements OnInit, OnDestroy {
 
   onPlayerClick(person: TransformedPlayer): void {
     this.router.navigate(['/player', person.personID]);
+  }
+
+  openCompetition(): void {
+    if (this.leagueID) {
+      this.router.navigate(['/competition', this.leagueID]);
+    }
   }
 }
