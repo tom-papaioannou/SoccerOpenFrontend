@@ -4,6 +4,34 @@
   --dt-cell-color: white;
 }
 
+.squad-header {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  margin: 0 0 1rem;
+  color: white;
+}
+
+.squad-team-name {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.squad-league-name {
+  border: 0;
+  background: transparent;
+  color: rgb(193 193 193);
+  font-size: 0.95rem;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.squad-league-name:disabled {
+  text-decoration: none;
+  cursor: default;
+}
+
 .dark-theme {
   --dt-header-bg: #222;
   --dt-header-color: #eee;

@@ -43,6 +43,8 @@ export interface TeamCompetitions {
 export interface Team {
   teamID?: string;
   name: string;
+  leagueID?: string | null;
+  leagueName?: string | null;
   stadium?: Stadium;
   kit: Kit;
 }
