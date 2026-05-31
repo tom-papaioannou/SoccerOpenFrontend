@@ -58,6 +58,11 @@ describe('PlayerDetails', () => {
           jumping: 58,
           stamina: 75
         },
+        healthAndFitness: {
+          healthStatus: 1,
+          physicalCondition: 91,
+          mentalCondition: 87
+        },
         playerTrainedPositions: [
           { playerPosition: PlayerPosition.CentralStriker, playerTrainedPositionAdaptation: 88 },
           { playerPosition: PlayerPosition.LeftCenterMidfielder, playerTrainedPositionAdaptation: 81 },
@@ -134,10 +139,10 @@ describe('PlayerDetails', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should render separate app-card containers for personal, history, stats, and positions sections', () => {
+  it('should render separate app-card containers for personal, health, stats, history, and positions sections', () => {
     const cards = fixture.debugElement.queryAll(By.css('app-card'));
 
-    expect(cards.length).toBe(4);
+    expect(cards.length).toBe(5);
     expect(fixture.nativeElement.querySelector('mat-card')).toBeNull();
   });
 
@@ -206,7 +211,7 @@ describe('PlayerDetails', () => {
   it('should render personal details separately from the history card', () => {
     const element = fixture.nativeElement as HTMLElement;
     const summaryCard = fixture.debugElement.queryAll(By.css('app-card'))[0];
-    const historyCard = fixture.debugElement.queryAll(By.css('app-card'))[1];
+    const historyCard = fixture.debugElement.queryAll(By.css('app-card'))[3];
     const playerOverviewGrid = fixture.debugElement.query(By.css('.player-overview-grid'));
     const summaryTitles = summaryCard.queryAll(By.css('h3'));
     const personalTitle = summaryTitles[0].nativeElement as HTMLElement;
@@ -239,6 +244,22 @@ describe('PlayerDetails', () => {
       .some((span) => span.textContent?.trim() === 'Central Striker')).toBeFalse();
   });
 
+  it('should render health check details under the personal card', () => {
+    const healthCard = fixture.debugElement.queryAll(By.css('app-card'))[1];
+    const playerOverviewGrid = fixture.debugElement.query(By.css('.player-overview-grid'));
+    const healthRows = healthCard.queryAll(By.css('.stats-row'));
+
+    expect(healthCard.query(By.css('h3')).nativeElement.textContent.trim()).toBe('Health Check');
+    expect(playerOverviewGrid.query(By.css('.health-card'))).toBe(healthCard);
+    expect(healthRows.length).toBe(3);
+    expect(healthCard.nativeElement.textContent).toContain('Health Status');
+    expect(healthCard.nativeElement.textContent).toContain('Healthy');
+    expect(healthCard.nativeElement.textContent).toContain('Physical');
+    expect(healthCard.nativeElement.textContent).toContain('91');
+    expect(healthCard.nativeElement.textContent).toContain('Mental');
+    expect(healthCard.nativeElement.textContent).toContain('87');
+  });
+
   it('should group central triplets in the page title', () => {
     const pageTitle = fixture.debugElement.query(By.css('h1')).nativeElement as HTMLElement;
 
@@ -247,7 +268,7 @@ describe('PlayerDetails', () => {
   });
 
   it('should draw central triplets as one generic pitch node', () => {
-    const positionsCard = fixture.debugElement.queryAll(By.css('app-card'))[3];
+    const positionsCard = fixture.debugElement.queryAll(By.css('app-card'))[4];
     const positionNodes = positionsCard.queryAll(By.css('.trained-position-node'));
     const positionLabels = positionNodes.map(node => node.nativeElement.textContent.trim());
     const strikerNode = positionNodes.find(node => node.nativeElement.textContent.trim() === 'ST');
@@ -264,7 +285,7 @@ describe('PlayerDetails', () => {
   });
 
   it('should show hoverable trained roles for the selected pitch position', () => {
-    const positionsCard = fixture.debugElement.queryAll(By.css('app-card'))[3];
+    const positionsCard = fixture.debugElement.queryAll(By.css('app-card'))[4];
     const positionNodes = positionsCard.queryAll(By.css('.trained-position-node'));
     const strikerNode = positionNodes.find(node => node.nativeElement.textContent.trim() === 'ST');
     const midfieldNode = positionNodes.find(node => node.nativeElement.textContent.trim() === 'CM');

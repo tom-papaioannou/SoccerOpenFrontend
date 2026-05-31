@@ -69,6 +69,7 @@ h2 {
 }
 
 .personal-card,
+.health-card,
 .history-card,
 .player-stats-card {
   min-width: 0;
@@ -79,13 +80,17 @@ h2 {
     grid-template-columns: 18rem minmax(0, 1fr);
     grid-template-areas:
       "personal stats"
-      "history .";
+      "health history";
     align-items: stretch;
     max-width: calc(18rem + 894px + 1.5rem);
   }
 
   .personal-card {
     grid-area: personal;
+  }
+
+  .health-card {
+    grid-area: health;
   }
 
   .history-card {
@@ -103,10 +108,18 @@ h2 {
 
   .personal-card ::ng-deep .cardBorder,
   .personal-card ::ng-deep .app-card,
+  .health-card ::ng-deep .cardBorder,
+  .health-card ::ng-deep .app-card,
   .player-stats-card ::ng-deep .cardBorder,
   .player-stats-card ::ng-deep .app-card {
     height: 100%;
   }
+}
+
+.health-check-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
 }
 
 .nationality-line {
@@ -125,6 +138,7 @@ h2 {
 }
 
 .trained-positions-card {
+  display: flex;
   flex: 0 0 auto;
 }
 
@@ -143,6 +157,22 @@ h2 {
 @media (min-width: 640px) {
   .trained-positions-card {
     width: 18rem;
+    align-self: stretch;
+  }
+
+  .trained-positions-card app-card,
+  .trained-positions-card ::ng-deep .cardBorder,
+  .trained-positions-card ::ng-deep .app-card {
+    height: 100%;
+  }
+
+  .trained-positions-card ::ng-deep .app-card {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .trained-position-overview {
+    flex: 0 0 auto;
   }
 }
 
@@ -185,7 +215,7 @@ h2 {
 }
 
 .trained-position-roles {
-  margin-top: 1rem;
+  margin-top: var(--trained-roles-margin-top, 1rem);
 }
 
 .trained-position-role-row + .trained-position-role-row {

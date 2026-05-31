@@ -3,7 +3,16 @@
  * Licensed under the MIT License
  */
 
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import {
+  AfterViewChecked,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  HostListener,
+  OnDestroy,
+  OnInit
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
@@ -23,7 +32,7 @@ import {
 } from '../../../utils/position-utils';
 import { getNationFlagUrl } from '../../../utils/nation-map-utils';
 import { calculateAge } from '../../../utils/date-utils';
-import { PlayerPosition, PlayerStats } from '../../../models/player-enums.model';
+import { HealthStatus, PersonHealthAndFitness, PlayerPosition, PlayerStats } from '../../../models/player-enums.model';
 import { INation } from '../../../models/nation.model';
 
 interface PlayerDetailsResponse {
@@ -35,6 +44,7 @@ interface PlayerDetailsResponse {
   weight: number;
   height: number;
   playerStats: PlayerStats | null;
+  healthAndFitness: PersonHealthAndFitness | null;
   playerTrainedPositions: Array<{
     playerPosition: PlayerPosition;
     playerTrainedPositionAdaptation: number;
@@ -99,7 +109,7 @@ interface TransformedStat {
   styleUrl: './player-details.css',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PlayerDetails implements OnInit, OnDestroy {
+export class PlayerDetails implements OnInit, OnDestroy, AfterViewChecked {
   playerDetails: PlayerDetailsResponse | null = null;
   currentPlayerTeam = '-';
   currentContractExpiry = '';
@@ -160,13 +170,15 @@ export class PlayerDetails implements OnInit, OnDestroy {
   }
 
   private destroy$ = new Subject<void>();
+  private rolesMarginTop = '';
 
   constructor(
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly teamsService: TeamsService,
     private readonly nationService: NationService,
-    private readonly cdr: ChangeDetectorRef
+    private readonly cdr: ChangeDetectorRef,
+    private readonly elementRef: ElementRef<HTMLElement>
   ) {}
 
   ngOnInit(): void {
@@ -183,6 +195,15 @@ export class PlayerDetails implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  ngAfterViewChecked(): void {
+    this.alignRolesTitle();
+  }
+
+  @HostListener('window:resize')
+  onWindowResize(): void {
+    this.alignRolesTitle();
   }
 
   private loadPlayerDetails(playerId: string): void {
@@ -441,5 +462,50 @@ export class PlayerDetails implements OnInit, OnDestroy {
     }
 
     return 'text-green-400';
+  }
+
+  getHealthStatusLabel(status: HealthStatus | number | null | undefined): string {
+    switch (status) {
+      case HealthStatus.Healthy:
+        return 'Healthy';
+      case HealthStatus.Injured:
+        return 'Injured';
+      case HealthStatus.Sick:
+        return 'Sick';
+      case HealthStatus.None:
+        return 'None';
+      default:
+        return '-';
+    }
+  }
+
+  private alignRolesTitle(): void {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    const host = this.elementRef.nativeElement;
+    const rolesSection = host.querySelector<HTMLElement>('.trained-position-roles');
+    const rolesTitle = host.querySelector<HTMLElement>('.trained-position-roles-title');
+    const targetTitle = host.querySelector<HTMLElement>('.history-card .stats-category-title')
+      ?? host.querySelector<HTMLElement>('.health-card .stats-category-title');
+
+    if (!rolesSection || !rolesTitle || !targetTitle || window.innerWidth < 640) {
+      rolesSection?.style.removeProperty('--trained-roles-margin-top');
+      this.rolesMarginTop = '';
+      return;
+    }
+
+    const currentMarginTop = Number.parseFloat(getComputedStyle(rolesSection).marginTop) || 0;
+    const nextMarginTop = Math.max(
+      0,
+      currentMarginTop + targetTitle.getBoundingClientRect().top - rolesTitle.getBoundingClientRect().top
+    );
+    const nextMarginTopValue = `${nextMarginTop.toFixed(2)}px`;
+
+    if (nextMarginTopValue !== this.rolesMarginTop) {
+      rolesSection.style.setProperty('--trained-roles-margin-top', nextMarginTopValue);
+      this.rolesMarginTop = nextMarginTopValue;
+    }
   }
 }

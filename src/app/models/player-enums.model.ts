@@ -124,6 +124,25 @@ export interface Person {
   playerTrainedPositions?: PlayerTrainedPosition[];
   playerTrainedRoles?: PlayerTrainedRole[];
   playerStats?: PlayerStats;
+  healthAndFitness?: PersonHealthAndFitness | null;
+}
+
+/**
+ * HealthStatus enum matching backend
+ */
+export enum HealthStatus {
+  None = 0,
+  Healthy = 1,
+  Injured = 2,
+  Sick = 3
+}
+
+export interface PersonHealthAndFitness {
+  personHealthAndFitnessID?: string;
+  personID?: string;
+  physicalCondition: number;
+  mentalCondition: number;
+  healthStatus: HealthStatus;
 }
 
 /**

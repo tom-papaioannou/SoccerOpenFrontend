@@ -21,7 +21,7 @@
   }
 
   @if (!loading && !error && playerDetails) {
-    <div class="flex flex-col sm:flex-row gap-6 items-start">
+    <div class="player-details-layout flex flex-col sm:flex-row gap-6 items-start sm:items-stretch">
       <div class="player-overview-grid w-full sm:flex-1">
         <!-- Personal Information -->
         @if (transformedPositions.length > 0) {
@@ -74,16 +74,29 @@
               </div>
             </app-card>
 
-            @if (transformedContracts.length > 0) {
-              <app-card class="history-card" appearance="outlined">
-                <h3 class="stats-category-title text-lg font-medium mb-3 text-left text-white">History</h3>
-                <app-data-table
-                  [data]="transformedContracts"
-                  [columns]="$any(contractsColumns)"
-                  class="players-theme">
-                </app-data-table>
-              </app-card>
-            }
+            <app-card class="health-card" appearance="outlined">
+              <h3 class="stats-category-title text-lg font-medium mb-3 text-left text-white">Health Check</h3>
+              <div class="health-check-details">
+                <div class="stats-row flex items-center justify-between">
+                  <span class="text-sm">Health Status</span>
+                  <span class="text-sm font-semibold">
+                    {{ getHealthStatusLabel(playerDetails.healthAndFitness?.healthStatus) }}
+                  </span>
+                </div>
+                <div class="stats-row flex items-center justify-between">
+                  <span class="text-sm">Physical</span>
+                  <span class="text-sm font-semibold" [ngClass]="getStatValueClass(playerDetails.healthAndFitness?.physicalCondition ?? 0)">
+                    {{ playerDetails.healthAndFitness?.physicalCondition ?? '-' }}
+                  </span>
+                </div>
+                <div class="stats-row flex items-center justify-between">
+                  <span class="text-sm">Mental</span>
+                  <span class="text-sm font-semibold" [ngClass]="getStatValueClass(playerDetails.healthAndFitness?.mentalCondition ?? 0)">
+                    {{ playerDetails.healthAndFitness?.mentalCondition ?? '-' }}
+                  </span>
+                </div>
+              </div>
+            </app-card>
         }
 
         <!-- Player Stats Section -->
@@ -112,35 +125,48 @@
               </div>
             </app-card>
         }
+
+        @if (transformedContracts.length > 0) {
+          <app-card class="history-card" appearance="outlined">
+            <h3 class="stats-category-title text-lg font-medium mb-3 text-left text-white">History</h3>
+            <app-data-table
+              [data]="transformedContracts"
+              [columns]="$any(contractsColumns)"
+              class="players-theme">
+            </app-data-table>
+          </app-card>
+        }
       </div>
 
       @if (trainedPositionPitchNodes.length > 0) {
         <div class="trained-positions-card w-full sm:w-auto">
           <app-card>
-            <h3 class="stats-category-title text-lg font-medium mb-3 text-left text-white">Positions</h3>
-            <div class="trained-position-pitch" aria-label="Trained positions pitch">
-              <img
-                src="assets/images/tactics/SimpleBackground.png"
-                alt=""
-                class="trained-position-pitch-image">
-              <div class="trained-position-pitch-overlay">
-                @for (position of trainedPositionPitchNodes; track position.positionValue) {
-                  <button
-                    type="button"
-                    class="trained-position-node"
-                    [class.trained-position-node-selected]="selectedPositionValue === position.positionValue"
-                    [style.left]="position.left"
-                    [style.top]="position.top"
-                    [attr.aria-label]="'Show roles for ' + position.position"
-                    (click)="selectTrainedPosition(position.positionValue)">
-                    {{ position.position }}
-                  </button>
-                }
+            <div class="trained-position-overview">
+              <h3 class="stats-category-title text-lg font-medium mb-3 text-left text-white">Positions</h3>
+              <div class="trained-position-pitch" aria-label="Trained positions pitch">
+                <img
+                  src="assets/images/tactics/SimpleBackground.png"
+                  alt=""
+                  class="trained-position-pitch-image">
+                <div class="trained-position-pitch-overlay">
+                  @for (position of trainedPositionPitchNodes; track position.positionValue) {
+                    <button
+                      type="button"
+                      class="trained-position-node"
+                      [class.trained-position-node-selected]="selectedPositionValue === position.positionValue"
+                      [style.left]="position.left"
+                      [style.top]="position.top"
+                      [attr.aria-label]="'Show roles for ' + position.position"
+                      (click)="selectTrainedPosition(position.positionValue)">
+                      {{ position.position }}
+                    </button>
+                  }
+                </div>
               </div>
             </div>
             @if (selectedPositionValue !== null) {
               <div class="trained-position-roles">
-                <h3 class="stats-category-title text-lg font-medium mb-3 text-left text-white">Roles</h3>
+                <h3 class="trained-position-roles-title stats-category-title text-lg font-medium mb-3 text-left text-white">Roles</h3>
                 @if (selectedPositionRoles.length > 0) {
                   @for (role of selectedPositionRoles; track role.role + ':' + role.positionValue) {
                     <div
