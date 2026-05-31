@@ -2,3 +2,13 @@
   max-width: 1200px;
   margin: 0 auto;
 }
+
+.server-details-content {
+  width: 100%;
+}
+
+.server-section {
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  border-radius: 12px;
+  padding: 1rem;
+}

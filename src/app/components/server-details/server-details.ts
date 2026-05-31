@@ -6,10 +6,10 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { DataTable } from '../shared/tables/data-table/data-table';
+import { Card } from '../shared/cards/card/card';
 import { ServerService } from '../../services/server.service';
 import { AuthService } from '../../services/auth.service';
 import { IServerInfo } from '../../models/server.model';
@@ -19,10 +19,10 @@ import { calculateAge } from '../../utils/date-utils';
   selector: 'app-server-details',
   imports: [
     CommonModule,
-    MatCardModule,
     MatButtonModule,
     MatIconModule,
-    DataTable
+    DataTable,
+    Card
   ],
   templateUrl: './server-details.html',
   styleUrl: './server-details.css'

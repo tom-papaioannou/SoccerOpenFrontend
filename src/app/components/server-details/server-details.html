@@ -1,68 +1,62 @@
 <div class="server-details-container p-4">
-  <!-- Header with back button -->
-  <div class="mb-4 flex items-center gap-4">
-    @if (showBackButton) {
-      <button mat-icon-button (click)="goBack()" aria-label="Go back">
-        <mat-icon>arrow_back</mat-icon>
-      </button>
-    }
-    <h2 class="text-2xl font-bold">Server Details</h2>
-  </div>
-
-  @if (loading()) {
-    <div class="flex justify-center items-center py-8">
-      <div class="text-lg">Loading server details...</div>
-    </div>
-  } @else if (error()) {
-    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-      {{ error() }}
-    </div>
-  } @else if (server()) {
-    <!-- Server Info Card -->
-    <mat-card class="mb-6">
-      <mat-card-content class="p-4">
-        <h3 class="text-xl font-bold text-blue-600 mb-2">{{ server()!.name }}</h3>
-      </mat-card-content>
-    </mat-card>
-
-    <!-- Persons Table -->
-    <mat-card class="mb-6">
-      <mat-card-content class="p-4">
-        <h4 class="text-lg font-semibold mb-4">Persons</h4>
-
-        @if (server()!.persons && server()!.persons.length > 0) {
-          <app-data-table
-            [data]="server()!.persons"
-            [columns]="$any(personColumns)"
-            [pageSize]="10">
-          </app-data-table>
-        } @else {
-          <div class="text-center py-8 text-gray-500">
-            <mat-icon class="text-4xl mb-2 opacity-50">people</mat-icon>
-            <p>No persons in this server yet</p>
-          </div>
+  <app-card appearance="outlined">
+    <div class="server-details-content">
+      <div class="mb-4 flex items-center gap-4">
+        @if (showBackButton) {
+          <button mat-icon-button (click)="goBack()" aria-label="Go back">
+            <mat-icon>arrow_back</mat-icon>
+          </button>
         }
-      </mat-card-content>
-    </mat-card>
+        <h2 class="text-2xl font-bold">Server Details</h2>
+      </div>
 
-    <!-- Competitions Table -->
-    <mat-card>
-      <mat-card-content class="p-4">
-        <h4 class="text-lg font-semibold mb-4">Competitions</h4>
+      @if (loading()) {
+        <div class="flex items-center justify-center py-8">
+          <div class="text-lg">Loading server details...</div>
+        </div>
+      } @else if (error()) {
+        <div class="mb-4 rounded border border-red-400 bg-red-100 px-4 py-3 text-red-700">
+          {{ error() }}
+        </div>
+      } @else if (server()) {
+        <div class="server-section mb-6">
+          <h3 class="text-xl font-bold text-blue-600">{{ server()!.name }}</h3>
+        </div>
 
-        @if (server()!.competitions && server()!.competitions.length > 0) {
-          <app-data-table
-            [data]="server()!.competitions"
-            [columns]="$any(competitionColumns)"
-            [pageSize]="10">
-          </app-data-table>
-        } @else {
-          <div class="text-center py-8 text-gray-500">
-            <mat-icon class="text-4xl mb-2 opacity-50">sports_soccer</mat-icon>
-            <p>No competitions in this server yet</p>
-          </div>
-        }
-      </mat-card-content>
-    </mat-card>
-  }
+        <div class="server-section mb-6">
+          <h4 class="mb-4 text-lg font-semibold">Persons</h4>
+
+          @if (server()!.persons && server()!.persons.length > 0) {
+            <app-data-table
+              [data]="server()!.persons"
+              [columns]="$any(personColumns)"
+              [pageSize]="10">
+            </app-data-table>
+          } @else {
+            <div class="text-center py-8 text-gray-500">
+              <mat-icon class="mb-2 text-4xl opacity-50">people</mat-icon>
+              <p>No persons in this server yet</p>
+            </div>
+          }
+        </div>
+
+        <div class="server-section">
+          <h4 class="mb-4 text-lg font-semibold">Competitions</h4>
+
+          @if (server()!.competitions && server()!.competitions.length > 0) {
+            <app-data-table
+              [data]="server()!.competitions"
+              [columns]="$any(competitionColumns)"
+              [pageSize]="10">
+            </app-data-table>
+          } @else {
+            <div class="text-center py-8 text-gray-500">
+              <mat-icon class="mb-2 text-4xl opacity-50">sports_soccer</mat-icon>
+              <p>No competitions in this server yet</p>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </app-card>
 </div>
