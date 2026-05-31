@@ -1,4 +1,26 @@
-.server-details-container {
-  max-width: 1200px;
-  margin: 0 auto;
+.server-details-content {
+  width: 100%;
+}
+
+.server-section {
+  border: 1px dashed light-dark(
+    var(--server-section-border-color-light, rgba(255, 255, 255, 1)),
+    var(--server-section-border-color-dark, var(--card-outline-color, rgba(255, 255, 255, 1)))
+  );
+  border-radius: 12px;
+  padding: 1rem;
+}
+
+.server-empty-state {
+  color: light-dark(rgba(51, 65, 85, 0.9), rgba(255, 255, 255, 0.72));
+}
+
+.server-error-state {
+  border: 1px solid light-dark(rgba(220, 38, 38, 0.35), rgba(248, 113, 113, 0.6));
+  background: light-dark(rgba(254, 242, 242, 0.96), rgba(127, 29, 29, 0.34));
+  color: light-dark(rgb(153, 27, 27), rgb(254, 202, 202));
+}
+
+.server-title {
+  color: light-dark(rgb(255, 255, 255), rgb(255, 255, 255));
 }
