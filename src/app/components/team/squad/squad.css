@@ -53,6 +53,14 @@
   padding: 4px 6px 4px 8px;
 }
 
+.shirt-number-readonly {
+  display: inline-block;
+  min-width: 62px;
+  max-width: 100%;
+  color: white;
+  text-align: right;
+}
+
 :host ::ng-deep .shirt-number-select .mat-mdc-select-value,
 :host ::ng-deep .shirt-number-select .mat-mdc-select-arrow {
   color: white;

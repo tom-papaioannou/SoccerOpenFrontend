@@ -47,8 +47,9 @@ export const routes: Routes = [
     },
     { path: 'team', canActivate: [authenticationGuard], component: Team,
         children:[
-            { path: '', redirectTo: 'squad', pathMatch: "prefix" },
+            { path: '', redirectTo: 'squad', pathMatch: "full" },
             { path: 'squad', component: Squad },
+            { path: ':teamID/squad', component: Squad },
             { path: 'tactics', component: Tactics },
             { path: 'tactics/:id', component: TacticsDetail },
             { path: 'fixtures', component: Fixtures },

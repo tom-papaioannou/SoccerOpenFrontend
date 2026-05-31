@@ -45,6 +45,7 @@ export interface Team {
   name: string;
   leagueID?: string | null;
   leagueName?: string | null;
+  isOwned?: boolean;
   stadium?: Stadium;
   kit: Kit;
 }
