@@ -24,10 +24,10 @@
 }
 
 .competition-parent-link {
-  background: rgba(37, 99, 235, 0.12);
-  border: 1px solid rgba(37, 99, 235, 0.28);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.24);
   border-radius: 0.375rem;
-  color: #1d4ed8;
+  color: #fff;
   cursor: pointer;
   font-size: 0.85rem;
   font-weight: 600;
@@ -37,8 +37,41 @@
 }
 
 .competition-parent-link:hover {
-  background: rgba(37, 99, 235, 0.2);
-  border-color: rgba(37, 99, 235, 0.48);
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.38);
+}
+
+.competition-team-link {
+  background: transparent;
+  border: 0;
+  color: #fff;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 600;
+  padding: 0;
+  text-align: left;
+}
+
+.competition-team-link:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+
+.card-header-icon {
+  border-radius: 2px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.18);
+  display: inline-block;
+  height: 0.72rem;
+  vertical-align: middle;
+  width: 0.48rem;
+}
+
+.yellow-card-header {
+  background: #facc15;
+}
+
+.red-card-header {
+  background: #dc2626;
 }
 
 .empty-teams {

@@ -7,7 +7,12 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment.development';
-import { Competition, CompetitionPayload, TeamCompetitions } from '../models/competition.model';
+import {
+  Competition,
+  CompetitionPayload,
+  CompetitionTableRow,
+  TeamCompetitions
+} from '../models/competition.model';
 
 @Injectable({ providedIn: 'root' })
 export class CompetitionService {
@@ -37,6 +42,10 @@ export class CompetitionService {
 
   getById(competitionId: string): Observable<Competition> {
     return this.http.get<Competition>(`${this.apiUrl}/${competitionId}`);
+  }
+
+  getCompetitionTable(competitionId: string): Observable<CompetitionTableRow[]> {
+    return this.http.get<CompetitionTableRow[]>(`${this.apiUrl}/${competitionId}/table`);
   }
 
   create(payload: CompetitionPayload): Observable<Competition> {

@@ -35,6 +35,19 @@ export interface CompetitionParent {
   name?: string | null;
 }
 
+export interface CompetitionTableRow {
+  position: number;
+  teamID: string;
+  teamName: string;
+  points: number;
+  wins: number;
+  draws: number;
+  losses: number;
+  yellowCards: number;
+  redCards: number;
+  matchesPlayed: number;
+}
+
 export interface TeamCompetitions {
   teamID: string;
   competitions: Competition[];
