@@ -1,16 +1,11 @@
-.server-details-container {
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
 .server-details-content {
   width: 100%;
 }
 
 .server-section {
-  border: 1px solid light-dark(
-    var(--server-section-border-color-light, rgba(15, 23, 42, 0.16)),
-    var(--server-section-border-color-dark, var(--card-outline-color, rgba(255, 255, 255, 0.32)))
+  border: 1px dashed light-dark(
+    var(--server-section-border-color-light, rgba(255, 255, 255, 1)),
+    var(--server-section-border-color-dark, var(--card-outline-color, rgba(255, 255, 255, 1)))
   );
   border-radius: 12px;
   padding: 1rem;
@@ -27,5 +22,5 @@
 }
 
 .server-title {
-  color: light-dark(rgb(37, 99, 235), rgb(147, 197, 253));
+  color: light-dark(rgb(255, 255, 255), rgb(255, 255, 255));
 }

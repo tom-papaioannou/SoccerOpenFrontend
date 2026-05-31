@@ -1,4 +1,4 @@
-<div class="server-details-container p-4">
+<div class="p-2">
   <app-card appearance="outlined">
     <div class="server-details-content">
       <div class="mb-4 flex items-center gap-4">
@@ -20,11 +20,11 @@
         </div>
       } @else if (server()) {
         <div class="server-section mb-6">
-          <h3 class="server-title text-xl font-bold">{{ server()!.name }}</h3>
+          <h3 class="server-title text-xl font-bold  flex justify-start">{{ server()!.name }}</h3>
         </div>
 
         <div class="server-section mb-6">
-          <h4 class="mb-4 text-lg font-semibold">Persons</h4>
+          <h4 class="mb-4 text-lg font-semibold flex justify-start">Persons</h4>
 
           @if (server()!.persons && server()!.persons.length > 0) {
             <app-data-table
@@ -41,7 +41,7 @@
         </div>
 
         <div class="server-section">
-          <h4 class="mb-4 text-lg font-semibold">Competitions</h4>
+          <h4 class="mb-4 text-lg font-semibold  flex justify-start">Competitions</h4>
 
           @if (server()!.competitions && server()!.competitions.length > 0) {
             <app-data-table
