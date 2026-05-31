@@ -4,7 +4,7 @@
  */
 
 import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef, TemplateRef, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ColumnDef, DataTable } from "../../shared/tables/data-table/data-table";
 import { TeamsService } from '../../../services/teams.service';
 import { Person, PlayerPosition, PlayerRole } from '../../../models/player-enums.model';
@@ -16,6 +16,7 @@ import { NationService } from '../../../services/nation.service';
 import { INation } from '../../../models/nation.model';
 import { getNationFlagUrl } from '../../../utils/nation-map-utils';
 import { Card } from '../../shared/cards/card/card';
+import { Team } from '../../../models/competition.model';
 
 interface TransformedPlayer {
   personID: string;
@@ -70,6 +71,7 @@ export class Squad implements OnInit, OnDestroy {
   teamName = '';
   leagueID: string | null = null;
   leagueName = '';
+  canEditShirtNumbers = false;
   private nationsByID = new Map<string, INation>();
   private currentTeamID: string | null = null;
   private destroy$ = new Subject<void>();
@@ -78,6 +80,7 @@ export class Squad implements OnInit, OnDestroy {
     private readonly teamsService: TeamsService,
     private readonly nationService: NationService,
     private readonly cdr: ChangeDetectorRef,
+    private readonly route: ActivatedRoute,
     private readonly router: Router
   ) {}
 
@@ -153,19 +156,25 @@ export class Squad implements OnInit, OnDestroy {
     }
   ];
 
-    // Subscribe to currentTeamObservable to wait for team to be set
+    const routeTeamID = this.route.snapshot.paramMap.get('teamID');
+
+    if (routeTeamID) {
+      this.teamsService.getTeamInformation(routeTeamID)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: (team) => this.setTeam(team, team.isOwned === true),
+          error: (error) => {
+            console.error('Error getting team information:', error);
+          }
+        });
+
+      return;
+    }
+
     this.teamsService.currentTeamObservable
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (team) => {
-          if (team?.teamID) {
-            this.currentTeamID = team.teamID;
-            this.teamName = team.name;
-            this.leagueID = team.leagueID ?? null;
-            this.leagueName = team.leagueName ?? '';
-            this.loadPlayers(team.teamID);
-          }
-        },
+        next: (team) => this.setTeam(team, true),
         error: (error) => {
           console.error('Error getting current team:', error);
         }
@@ -197,6 +206,20 @@ export class Squad implements OnInit, OnDestroy {
           this.shirtNumberOptions = this.buildShirtNumberOptions(this.people);
         }
       });
+  }
+
+  private setTeam(team: Team, canEditShirtNumbers: boolean): void {
+    if (!team?.teamID) {
+      return;
+    }
+
+    this.currentTeamID = team.teamID;
+    this.teamName = team.name;
+    this.leagueID = team.leagueID ?? null;
+    this.leagueName = team.leagueName ?? '';
+    this.canEditShirtNumbers = canEditShirtNumbers;
+    this.loadPlayers(team.teamID);
+    this.cdr.markForCheck();
   }
 
   private transformPlayers(people: Person[]): TransformedPlayer[] {
@@ -335,7 +358,7 @@ export class Squad implements OnInit, OnDestroy {
   }
 
   onShirtNumberSelectionChange(shirtNumber: number, person: TransformedPlayer): void {
-    if (!this.currentTeamID || !shirtNumber || shirtNumber === person.shirtNumberValue) {
+    if (!this.canEditShirtNumbers || !this.currentTeamID || !shirtNumber || shirtNumber === person.shirtNumberValue) {
       return;
     }
 

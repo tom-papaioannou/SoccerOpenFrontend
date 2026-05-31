@@ -1,18 +1,24 @@
 <div class="p-2">
     <ng-template #shirtNumberTemplate let-player>
-        <mat-select
-            class="shirt-number-select"
-            panelClass="shirt-number-select-panel"
-            [value]="player.shirtNumberValue"
-            (click)="onShirtNumberDropdownClick($event)"
-            (selectionChange)="onShirtNumberSelectionChange($event.value, player)">
-            <mat-select-trigger>
+        @if (canEditShirtNumbers) {
+            <mat-select
+                class="shirt-number-select"
+                panelClass="shirt-number-select-panel"
+                [value]="player.shirtNumberValue"
+                (click)="onShirtNumberDropdownClick($event)"
+                (selectionChange)="onShirtNumberSelectionChange($event.value, player)">
+                <mat-select-trigger>
+                    {{ player.shirtNumberValue ?? '-' }}
+                </mat-select-trigger>
+                @for (option of shirtNumberOptions; track option.value) {
+                    <mat-option [value]="option.value">{{ option.label }}</mat-option>
+                }
+            </mat-select>
+        } @else {
+            <span class="shirt-number-readonly">
                 {{ player.shirtNumberValue ?? '-' }}
-            </mat-select-trigger>
-            @for (option of shirtNumberOptions; track option.value) {
-                <mat-option [value]="option.value">{{ option.label }}</mat-option>
-            }
-        </mat-select>
+            </span>
+        }
     </ng-template>
 
     <ng-template #nationalityTemplate let-player>

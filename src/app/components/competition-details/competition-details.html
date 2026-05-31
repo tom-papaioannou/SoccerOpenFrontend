@@ -24,7 +24,8 @@
       <app-data-table
         [data]="teams()"
         [columns]="$any(displayedColumns)"
-        class="teams-theme">
+        class="teams-theme"
+        (rowClick)="openTeamSquad($event)">
       </app-data-table>
     } @else {
       <div class="empty-teams py-8 text-gray-500">

@@ -10,7 +10,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { DataTable } from '../shared/tables/data-table/data-table';
 import { CompetitionService } from '../../services/competition.service';
-import { Competition } from '../../models/competition.model';
+import { Competition, Team } from '../../models/competition.model';
 
 @Component({
   selector: 'app-competition-details',
@@ -76,6 +76,12 @@ export class CompetitionDetails implements OnInit {
   openNationCompetitions(competition: Competition): void {
     if (competition.nationID) {
       this.router.navigate(['/nations', competition.nationID, 'competitions']);
+    }
+  }
+
+  openTeamSquad(team: Team): void {
+    if (team.teamID) {
+      this.router.navigate(['/team', team.teamID, 'squad']);
     }
   }
 }

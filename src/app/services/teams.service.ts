@@ -39,6 +39,10 @@ export class TeamsService {
     return this.http.get(`${environment.apiUrl}/api/teams/getCurrentTeam`);
   }
 
+  getTeamInformation(teamID: string): Observable<Team> {
+    return this.http.get<Team>(`${environment.apiUrl}/api/teams/getTeamInformation/${teamID}`);
+  }
+
   getTeamSquad(teamID: string): Observable<Person[]> {
     return this.http.get<Person[]>(`${environment.apiUrl}/api/teams/getTeamSquad/${teamID}`);
   }
