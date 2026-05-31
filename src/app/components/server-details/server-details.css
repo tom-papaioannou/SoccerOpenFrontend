@@ -9,8 +9,8 @@
 
 .server-section {
   border: 1px solid light-dark(
-    var(--server-section-border-color, rgba(15, 23, 42, 0.16)),
-    var(--card-outline-color, rgba(255, 255, 255, 0.32))
+    var(--server-section-border-color-light, rgba(15, 23, 42, 0.16)),
+    var(--server-section-border-color-dark, var(--card-outline-color, rgba(255, 255, 255, 0.32)))
   );
   border-radius: 12px;
   padding: 1rem;
