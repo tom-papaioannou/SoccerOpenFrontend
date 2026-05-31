@@ -15,12 +15,12 @@
           <div class="text-lg">Loading server details...</div>
         </div>
       } @else if (error()) {
-        <div class="mb-4 rounded border border-red-400 bg-red-100 px-4 py-3 text-red-700">
+        <div class="server-error-state mb-4 rounded px-4 py-3">
           {{ error() }}
         </div>
       } @else if (server()) {
         <div class="server-section mb-6">
-          <h3 class="text-xl font-bold text-blue-600">{{ server()!.name }}</h3>
+          <h3 class="server-title text-xl font-bold">{{ server()!.name }}</h3>
         </div>
 
         <div class="server-section mb-6">
