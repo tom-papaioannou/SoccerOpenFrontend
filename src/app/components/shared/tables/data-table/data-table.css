@@ -74,6 +74,35 @@
   justify-content: center;
 }
 
+.mat-sort-header-container {
+  width: 100%;
+}
+
+.mat-sort-header-content {
+  flex: 1;
+}
+
+.mat-sort-header-arrow {
+  display: none;
+}
+
+[aria-sort="ascending"] .mat-sort-header-arrow,
+[aria-sort="descending"] .mat-sort-header-arrow {
+  display: inline-flex;
+}
+
+.dt-header-right {
+  text-align: right !important;
+}
+
+.dt-header-right .mat-sort-header-container {
+  justify-content: flex-end !important;
+}
+
+.dt-header-right .mat-sort-header-content {
+  text-align: right;
+}
+
 .mat-mdc-paginator {
   background: transparent;
   color: var(--dt-cell-color, white);

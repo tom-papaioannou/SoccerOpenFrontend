@@ -9,7 +9,12 @@
           [disabled]="col.sortable !== true"
           [style.width]="col.width"
           [ngClass]="col.headerClass">
-          {{ col.header }}
+          @if (!col.headerTemplate) {
+            {{ col.header }}
+          }
+          @else {
+            <ng-container *ngTemplateOutlet="col.headerTemplate"></ng-container>
+          }
         </th>
 
         <td mat-cell *matCellDef="let row"

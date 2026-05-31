@@ -1,37 +1,58 @@
-<div class="competition-details-container p-4">
-  @if (loading()) {
-    <div class="flex justify-center items-center py-8">
-      <div class="text-lg">Loading competition details...</div>
-    </div>
-  } @else if (error()) {
-    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-      {{ error() }}
-    </div>
-  } @else if (competition()) {
-    <div class="competition-summary">
-      <h2>{{ competition()!.competitionName }}</h2>
-      @if (competition()!.nation?.name) {
+<div class="p-2">
+  <app-card appearance="outlined">
+    <div class="competition-details-container p-4">
+      <ng-template #teamNameTemplate let-row>
         <button
           type="button"
-          class="competition-parent-link"
-          (click)="openNationCompetitions(competition()!)">
-          {{ competition()!.nation!.name }}
+          class="competition-team-link"
+          (click)="openTeamSquad(row)">
+          {{ row.teamName }}
         </button>
+      </ng-template>
+
+      <ng-template #yellowCardHeaderTemplate>
+        <span class="card-header-icon yellow-card-header" aria-label="Yellow cards"></span>
+      </ng-template>
+
+      <ng-template #redCardHeaderTemplate>
+        <span class="card-header-icon red-card-header" aria-label="Red cards"></span>
+      </ng-template>
+
+      @if (loading()) {
+        <div class="flex justify-center items-center py-8">
+          <div class="text-lg">Loading competition details...</div>
+        </div>
+      } @else if (error()) {
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+          {{ error() }}
+        </div>
+      } @else if (competition()) {
+        <div class="competition-summary">
+          <h2>{{ competition()!.competitionName }}</h2>
+          @if (competition()!.nation?.name) {
+            <button
+              type="button"
+              class="competition-parent-link"
+              (click)="openNationCompetitions(competition()!)">
+              {{ competition()!.nation!.name }}
+            </button>
+          }
+        </div>
+
+        @if (tableRows().length > 0) {
+          <app-data-table
+            [data]="tableRows()"
+            [columns]="$any(displayedColumns)"
+            [initialSort]="{ active: 'position', direction: 'asc' }"
+            class="teams-theme">
+          </app-data-table>
+        } @else {
+          <div class="empty-teams py-8 text-gray-500">
+            <mat-icon class="text-4xl mb-2 opacity-50">sports_soccer</mat-icon>
+            <p>No teams in this competition yet</p>
+          </div>
+        }
       }
     </div>
-
-    @if (teams().length > 0) {
-      <app-data-table
-        [data]="teams()"
-        [columns]="$any(displayedColumns)"
-        class="teams-theme"
-        (rowClick)="openTeamSquad($event)">
-      </app-data-table>
-    } @else {
-      <div class="empty-teams py-8 text-gray-500">
-        <mat-icon class="text-4xl mb-2 opacity-50">sports_soccer</mat-icon>
-        <p>No teams in this competition yet</p>
-      </div>
-    }
-  }
+  </app-card>
 </div>

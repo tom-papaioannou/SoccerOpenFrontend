@@ -3,14 +3,16 @@
  * Licensed under the MIT License
  */
 
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
-import { DataTable } from '../shared/tables/data-table/data-table';
+import { forkJoin } from 'rxjs';
+import { ColumnDef, DataTable } from '../shared/tables/data-table/data-table';
 import { CompetitionService } from '../../services/competition.service';
-import { Competition, Team } from '../../models/competition.model';
+import { Competition, CompetitionTableRow } from '../../models/competition.model';
+import { Card } from '../shared/cards/card/card';
 
 @Component({
   selector: 'app-competition-details',
@@ -18,23 +20,24 @@ import { Competition, Team } from '../../models/competition.model';
     CommonModule,
     MatCardModule,
     MatIconModule,
-    DataTable
+    DataTable,
+    Card
   ],
   templateUrl: './competition-details.html',
   styleUrl: './competition-details.css'
 })
 export class CompetitionDetails implements OnInit {
+  @ViewChild('teamNameTemplate', { static: true }) teamNameTemplate!: TemplateRef<{ $implicit: CompetitionTableRow; value: string }>;
+  @ViewChild('yellowCardHeaderTemplate', { static: true }) yellowCardHeaderTemplate!: TemplateRef<void>;
+  @ViewChild('redCardHeaderTemplate', { static: true }) redCardHeaderTemplate!: TemplateRef<void>;
+
   competition = signal<Competition | null>(null);
   loading = signal(true);
   error = signal<string | null>(null);
 
-  displayedColumns = [
-    { key: 'name', header: 'Team Name', width: '40%', sortable: true },
-    { key: 'country', header: 'Country', sortable: true },
-    { key: 'stadium', header: 'Stadium', width: '30%' }
-  ];
+  displayedColumns: ColumnDef<CompetitionTableRow>[] = [];
 
-  teams = signal<any[]>([]);
+  tableRows = signal<CompetitionTableRow[]>([]);
 
   constructor(
     private route: ActivatedRoute,
@@ -43,6 +46,18 @@ export class CompetitionDetails implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.displayedColumns = [
+      { key: 'position', header: '', width: '6%' },
+      { key: 'teamName', header: 'Team', width: '34%', cellTemplate: this.teamNameTemplate },
+      { key: 'points', header: 'P', width: '8%' },
+      { key: 'wins', header: 'W', width: '8%' },
+      { key: 'draws', header: 'D', width: '8%' },
+      { key: 'losses', header: 'L', width: '8%' },
+      { key: 'yellowCards', header: 'YC', width: '8%', headerTemplate: this.yellowCardHeaderTemplate },
+      { key: 'redCards', header: 'RC', width: '8%', headerTemplate: this.redCardHeaderTemplate },
+      { key: 'matchesPlayed', header: 'MP', width: '12%' }
+    ];
+
     const competitionId = this.route.snapshot.paramMap.get('id');
     if (competitionId) {
       this.loadCompetition(competitionId);
@@ -56,13 +71,13 @@ export class CompetitionDetails implements OnInit {
     this.loading.set(true);
     this.error.set(null);
 
-    this.competitionService.getById(id).subscribe({
-      next: (competition) => {
+    forkJoin({
+      competition: this.competitionService.getById(id),
+      tableRows: this.competitionService.getCompetitionTable(id)
+    }).subscribe({
+      next: ({ competition, tableRows }) => {
         this.competition.set(competition);
-        // Extract teams from competition if available
-        if (competition.teams && competition.teams.length > 0) {
-          this.teams.set(competition.teams);
-        }
+        this.tableRows.set(tableRows);
         this.loading.set(false);
       },
       error: (err) => {
@@ -79,9 +94,9 @@ export class CompetitionDetails implements OnInit {
     }
   }
 
-  openTeamSquad(team: Team): void {
-    if (team.teamID) {
-      this.router.navigate(['/team', team.teamID, 'squad']);
+  openTeamSquad(row: CompetitionTableRow): void {
+    if (row.teamID) {
+      this.router.navigate(['/team', row.teamID, 'squad']);
     }
   }
 }

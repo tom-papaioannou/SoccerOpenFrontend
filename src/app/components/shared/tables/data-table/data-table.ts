@@ -128,6 +128,7 @@ export interface ColumnDef<T = any> {
   sticky?: boolean;
   headerClass?: string;
   cellClass?: string;
+  headerTemplate?: TemplateRef<void>;
   cellTemplate?: TemplateRef<{ $implicit: T; value: any }>;
   sortable?: boolean;
   sortAccessor?: (row: T) => unknown;
