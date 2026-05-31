@@ -16,6 +16,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { FormTextfield } from '../shared/textfields/form-textfield/form-textfield';
 import { FormDropdown } from '../shared/dropdowns/form-dropdown/form-dropdown';
+import { ActionButton } from '../shared/buttons/action-button/action-button';
+import { Card } from '../shared/cards/card/card';
 import { ContinentService } from '../../services/continent.service';
 import { CompetitionService } from '../../services/competition.service';
 import { DeviceService } from '../../services/device.service';
@@ -39,7 +41,9 @@ import { AuthService } from '../../services/auth.service';
     MatInputModule,
     MatSidenavModule,
     FormTextfield,
-    FormDropdown
+    FormDropdown,
+    ActionButton,
+    Card
   ],
   templateUrl: './competitions-management.html',
   styleUrl: './competitions-management.css',

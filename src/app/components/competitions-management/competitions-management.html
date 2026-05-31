@@ -83,8 +83,8 @@
           <h4 class="text-lg font-semibold mb-4">Competitions</h4>
 
           <!-- Add Competition Form -->
-          <mat-card class="mb-4">
-            <mat-card-content class="p-4 bg-gray-300 rounded-xl">
+          <app-card class="mb-4 competition-form-card" appearance="outlined">
+            <div>
               <h5 class="font-medium mb-3">Add Competition</h5>
               <form [formGroup]="competitionForm" class="space-y-3">
                 <app-form-textfield
@@ -112,19 +112,15 @@
                   formControlName="Priority">
                 </app-form-dropdown>
 
-                <button
-                  mat-raised-button
-                  color="primary"
-                  type="button"
+                <app-action-button
+                  [buttonText]="'Add Competition'"
                   [disabled]="!competitionForm.valid || competitionsBusy()"
-                  (click)="addCompetition()"
-                  class="w-full">
-                  <mat-icon>add</mat-icon>
-                  Add Competition
-                </button>
+                  (clicked)="addCompetition()"
+                  [variant]="'primary'">
+                </app-action-button>
               </form>
-            </mat-card-content>
-          </mat-card>
+            </div>
+          </app-card>
 
           <!-- Competitions List -->
           @if (competitionsBusy()) {

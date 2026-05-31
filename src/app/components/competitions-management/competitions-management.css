@@ -23,6 +23,13 @@
   border-left: 4px solid #66bb6a;
 }
 
+.competition-form-card {
+  --card-shell-bg: transparent;
+  --card-bg: #d1d5db;
+  --card-color: inherit;
+  --card-outline-color: rgba(0, 0, 0, 0.12);
+}
+
 /* Drawer styles */
 .drawer-container {
   position: fixed;
