@@ -1,3 +1,18 @@
-<div class="h-full">
+<div class="team-page">
+    <nav class="team-tabs" aria-label="Team sections">
+        <a
+            [routerLink]="squadLink"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }">
+            Squad
+        </a>
+        <a
+            [routerLink]="fixturesLink"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }">
+            Fixtures
+        </a>
+    </nav>
+
     <router-outlet></router-outlet>
 </div>

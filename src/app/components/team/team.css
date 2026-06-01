@@ -1,0 +1,41 @@
+.team-page {
+  min-height: 100%;
+  text-align: center;
+}
+
+.team-tabs {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin: 8px 8px 0;
+  padding: 4px;
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 8px;
+  background: rgba(0,0,0,0.28);
+}
+
+.team-tabs a {
+  min-width: 96px;
+  padding: 8px 14px;
+  border-radius: 6px;
+  color: rgba(255,255,255,0.78);
+  text-decoration: none;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.team-tabs a.active {
+  background: rgba(255,255,255,0.16);
+  color: white;
+}
+
+.team-tabs a:hover {
+  background: rgba(255,255,255,0.1);
+  color: white;
+}
+
+@media (min-width: 600px) {
+  .team-page {
+    text-align: left;
+  }
+}

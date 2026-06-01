@@ -92,6 +92,14 @@ export class Home implements OnDestroy {
     }
   }
 
+  openSquad(): void {
+    this.router.navigate(['/team', 'squad']);
+  }
+
+  openFixtures(): void {
+    this.router.navigate(['/team', 'fixtures']);
+  }
+
   private updateStadiumInformation(team: Team | undefined): void {
     this.stadiumName = team?.stadium?.name ?? "-";
     this.stadiumCity = team?.stadium?.city ?? "-";

@@ -45,15 +45,16 @@ export const routes: Routes = [
         canActivate: [authenticationGuard],
         loadComponent: () => import('./components/nation-competitions/nation-competitions').then(m => m.NationCompetitions)
     },
+    { path: 'team/tactics', canActivate: [authenticationGuard], component: Tactics },
+    { path: 'team/tactics/:id', canActivate: [authenticationGuard], component: TacticsDetail },
+    { path: 'team/information', canActivate: [authenticationGuard], component: Information },
     { path: 'team', canActivate: [authenticationGuard], component: Team,
-        children:[
-            { path: '', redirectTo: 'squad', pathMatch: "full" },
+        children: [
+            { path: '', redirectTo: 'squad', pathMatch: 'full' },
             { path: 'squad', component: Squad },
-            { path: ':teamID/squad', component: Squad },
-            { path: 'tactics', component: Tactics },
-            { path: 'tactics/:id', component: TacticsDetail },
             { path: 'fixtures', component: Fixtures },
-            { path: 'information', component: Information }
+            { path: ':teamID/squad', component: Squad },
+            { path: ':teamID/fixtures', component: Fixtures }
         ]
     },
     { path: '**', redirectTo: '/home' },

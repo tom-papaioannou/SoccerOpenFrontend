@@ -59,16 +59,27 @@ describe('App Routes', () => {
     expect(teamRoute?.canActivate).toContain(authenticationGuard);
   });
 
-  it('should include information child route under team', () => {
+  it('should include squad and fixtures child routes under team', () => {
     const teamRoute = routes.find(r => r.path === 'team');
-    const informationRoute = teamRoute?.children?.find(c => c.path === 'information');
+    const squadRoute = teamRoute?.children?.find(c => c.path === 'squad');
+    const fixturesRoute = teamRoute?.children?.find(c => c.path === 'fixtures');
+
+    expect(squadRoute).toBeTruthy();
+    expect(fixturesRoute).toBeTruthy();
+  });
+
+  it('should keep information outside the team tab route', () => {
+    const informationRoute = routes.find(r => r.path === 'team/information');
     expect(informationRoute).toBeTruthy();
   });
 
-  it('should not include player/:id as a team child route', () => {
+  it('should not include player or tactics as team tab child routes', () => {
     const teamRoute = routes.find(r => r.path === 'team');
     const playerRoute = teamRoute?.children?.find(c => c.path === 'player/:id');
+    const tacticsRoute = teamRoute?.children?.find(c => c.path === 'tactics');
+
     expect(playerRoute).toBeUndefined();
+    expect(tacticsRoute).toBeUndefined();
   });
 
   it('should have authenticationGuard on component routes except login and default landing', () => {
