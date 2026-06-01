@@ -34,6 +34,15 @@
   min-height: 0;
 }
 
+.dashboard-link-table {
+  cursor: pointer;
+}
+
+.dashboard-link-table:focus-visible {
+  outline: 2px solid rgba(255,255,255,0.78);
+  outline-offset: -4px;
+}
+
 .dashboard-kits-card {
   flex: 1;
 }

@@ -4,6 +4,8 @@
  */
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
+import { provideRouter } from '@angular/router';
 
 import { Team } from './team';
 
@@ -13,7 +15,10 @@ describe('Team', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Team]
+      imports: [Team],
+      providers: [
+        provideRouter([])
+      ]
     })
     .compileComponents();
 
@@ -24,5 +29,13 @@ describe('Team', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should render squad and fixtures tabs', () => {
+    const tabs = fixture.debugElement.queryAll(By.css('.team-tabs a'));
+
+    expect(tabs.length).toBe(2);
+    expect(tabs[0].nativeElement.textContent.trim()).toBe('Squad');
+    expect(tabs[1].nativeElement.textContent.trim()).toBe('Fixtures');
   });
 });

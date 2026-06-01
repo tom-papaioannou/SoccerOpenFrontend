@@ -105,7 +105,14 @@
   </div>
 
   @if(showPlayersTable){
-    <div class="p-2 lg:col-span-2 max-w-[600px] min-w-0 dashboard-column dashboard-table">
+    <div
+      class="p-2 lg:col-span-2 max-w-[600px] min-w-0 dashboard-column dashboard-table dashboard-link-table"
+      role="button"
+      tabindex="0"
+      aria-label="Open squad"
+      (click)="openSquad()"
+      (keydown.enter)="openSquad()"
+      (keydown.space)="openSquad()">
       <app-data-table
         [data]="people"
         [columns]="$any(displayedColumns)">
@@ -113,7 +120,14 @@
     </div>
   }
 
-  <div class="p-2 lg:col-span-2 max-w-[600px] min-w-0 dashboard-column dashboard-table dashboard-fixtures-column">
+  <div
+    class="p-2 lg:col-span-2 max-w-[600px] min-w-0 dashboard-column dashboard-table dashboard-fixtures-column dashboard-link-table"
+    role="button"
+    tabindex="0"
+    aria-label="Open fixtures"
+    (click)="openFixtures()"
+    (keydown.enter)="openFixtures()"
+    (keydown.space)="openFixtures()">
     <app-data-table
       class="dashboard-fixtures-table"
       [data]="fixtures"
