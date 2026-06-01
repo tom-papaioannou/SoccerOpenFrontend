@@ -12,10 +12,11 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { forkJoin } from 'rxjs';
 import { CdkDrag, CdkDragStart, CdkDragMove, CdkDragEnd, CdkDragDrop, CdkDropList, CdkDragHandle, CdkDragPlaceholder } from '@angular/cdk/drag-drop';
 import { TacticsService } from '../../../services/tactics.service';
-import { Tactic, Formation, PlayerTactic, SquadUnit, UpdateTacticRequest } from '../../../models/tactic.model';
+import { Tactic, Formation, PassingMentality, PlayerTactic, SquadUnit, TacticMentality, UpdateTacticRequest } from '../../../models/tactic.model';
 import { TeamsService } from '../../../services/teams.service';
 import { Kit } from '../../../models/competition.model';
 import { Person, PlayerPosition, PlayerRole } from '../../../models/player-enums.model';
+import { Card } from '../../shared/cards/card/card';
 import {
   getGroupedPlayerPositionLabel,
   getPlayerPositionLabel,
@@ -163,10 +164,14 @@ interface TacticEditModel {
   name: string;
   isMain: boolean;
   formation: Formation;
+  tacticMentality: TacticMentality;
+  passingMentality: PassingMentality;
   captainID: string | null;
   penaltyTakerID: string | null;
   leftCornerTakerID: string | null;
   rightCornerTakerID: string | null;
+  leftFreeKickTakerID: string | null;
+  rightFreeKickTakerID: string | null;
 }
 
 export interface PitchRowPlayer {
@@ -209,6 +214,7 @@ export interface PlayerTacticTableRow {
     CdkDropList,
     CdkDragHandle,
     CdkDragPlaceholder,
+    Card,
     FormsModule
 ],
   templateUrl: './tactics-detail.html',
@@ -236,10 +242,14 @@ export class TacticsDetail implements OnInit, OnDestroy {
     name: '',
     isMain: false,
     formation: Formation.Four_Four_Two,
+    tacticMentality: TacticMentality.Balanced,
+    passingMentality: PassingMentality.Balanced,
     captainID: null,
     penaltyTakerID: null,
     leftCornerTakerID: null,
-    rightCornerTakerID: null
+    rightCornerTakerID: null,
+    leftFreeKickTakerID: null,
+    rightFreeKickTakerID: null
   });
 
   /** Tracks the position of the currently dragged player (null when not dragging) */
@@ -257,6 +267,20 @@ export class TacticsDetail implements OnInit, OnDestroy {
     { value: Formation.Three_Five_Two, label: '3-5-2' },
     { value: Formation.Five_Three_Two, label: '5-3-2' },
     { value: Formation.Four_Five_One, label: '4-5-1' }
+  ];
+
+  tacticMentalityOptions = [
+    { value: TacticMentality.ExtremelyDefending, label: 'Extremely Defending' },
+    { value: TacticMentality.Defending, label: 'Defending' },
+    { value: TacticMentality.Balanced, label: 'Balanced' },
+    { value: TacticMentality.Attacking, label: 'Attacking' },
+    { value: TacticMentality.ExtremelyAttacking, label: 'Extremely Attacking' }
+  ];
+
+  passingMentalityOptions = [
+    { value: PassingMentality.Short, label: 'Short' },
+    { value: PassingMentality.Balanced, label: 'Balanced' },
+    { value: PassingMentality.Long, label: 'Long' }
   ];
 
   /** Player tactic ids with a role update in flight. */
@@ -428,10 +452,14 @@ export class TacticsDetail implements OnInit, OnDestroy {
       name: tactic.name,
       isMain: tactic.isMain,
       formation: tactic.formation ?? Formation.Four_Four_Two,
+      tacticMentality: tactic.tacticMentality ?? TacticMentality.Balanced,
+      passingMentality: tactic.passingMentality ?? PassingMentality.Balanced,
       captainID: tactic.captainID ?? null,
       penaltyTakerID: tactic.penaltyTakerID ?? null,
       leftCornerTakerID: tactic.leftCornerTakerID ?? null,
-      rightCornerTakerID: tactic.rightCornerTakerID ?? null
+      rightCornerTakerID: tactic.rightCornerTakerID ?? null,
+      leftFreeKickTakerID: tactic.leftFreeKickTakerID ?? null,
+      rightFreeKickTakerID: tactic.rightFreeKickTakerID ?? null
     });
     this.editPopupOpen.set(true);
   }
@@ -464,10 +492,14 @@ export class TacticsDetail implements OnInit, OnDestroy {
       name,
       isMain: model.isMain,
       formation: Number(model.formation) as Formation,
+      tacticMentality: Number(model.tacticMentality) as TacticMentality,
+      passingMentality: Number(model.passingMentality) as PassingMentality,
       captainID: model.captainID || null,
       penaltyTakerID: model.penaltyTakerID || null,
       leftCornerTakerID: model.leftCornerTakerID || null,
-      rightCornerTakerID: model.rightCornerTakerID || null
+      rightCornerTakerID: model.rightCornerTakerID || null,
+      leftFreeKickTakerID: model.leftFreeKickTakerID || null,
+      rightFreeKickTakerID: model.rightFreeKickTakerID || null
     };
     const previousFormation = tactic.formation ?? Formation.Four_Four_Two;
 

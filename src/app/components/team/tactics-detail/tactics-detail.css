@@ -1,6 +1,24 @@
+:host {
+  display: block;
+  width: 100%;
+  min-height: 100%;
+}
+
 .tactics-detail-container {
-  max-width: 1400px;
+  width: 100%;
+  min-height: calc(100vh - 2rem);
   margin: 0;
+}
+
+.tactics-detail-page-card {
+  display: block;
+  width: 100%;
+  min-height: calc(100vh - 2rem);
+}
+
+.tactics-detail-page-card ::ng-deep .cardBorder,
+.tactics-detail-page-card ::ng-deep .app-card {
+  min-height: calc(100vh - 2rem);
 }
 
 .tactics-detail-layout {
@@ -471,7 +489,17 @@
 }
 
 .tactic-edit-popup {
-  width: min(520px, 100%);
+  width: min(760px, 100%);
+}
+
+.tactic-edit-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+  gap: 16px 28px;
+}
+
+.tactic-edit-column {
+  min-width: 0;
 }
 
 .tactic-edit-field {
@@ -484,30 +512,52 @@
   border: 1px solid rgba(148, 163, 184, 0.45);
   background-color: rgba(15, 23, 42, 0.72);
   color: #f8fafc;
-  padding: 6px 8px;
+  font-size: 0.85rem;
+  padding: 4px 8px;
 }
 
-.tactic-main-field {
+.tactic-name-field {
+  align-items: center;
+}
+
+.tactic-name-controls {
   display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 10px 0;
-  color: #f8fafc;
-  font-weight: 700;
-}
-
-.tactic-main-checkbox {
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
   width: 180px;
-  height: 18px;
-  margin: 0;
-  cursor: pointer;
-  vertical-align: baseline;
+  min-width: 0;
 }
 
-.tactic-main-checkbox:disabled {
-  cursor: default;
-  opacity: 0.6;
+.tactic-name-controls .tactic-edit-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  width: auto;
+}
+
+.tactic-main-button {
+  flex: 0 0 28px;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  color: #020617;
+  padding: 2px;
+  transform: translateY(-1px);
+}
+
+.tactic-main-button mat-icon {
+  font-size: 20px;
+  height: 20px;
+  width: 20px;
+  line-height: 20px;
+}
+
+.tactic-main-button.active {
+  color: #facc15;
+}
+
+.tactic-main-button:disabled {
+  opacity: 0.75;
 }
 
 .tactic-edit-actions {
@@ -522,6 +572,11 @@
 }
 
 @media (max-width: 480px) {
+  .tactic-edit-grid {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
   .tactic-edit-field {
     flex-direction: column;
     gap: 6px;
@@ -529,6 +584,10 @@
 
   .tactic-edit-input,
   .tactic-edit-field .player-popup-select {
+    width: 100%;
+  }
+
+  .tactic-name-controls {
     width: 100%;
   }
 }

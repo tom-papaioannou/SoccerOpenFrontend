@@ -9,14 +9,13 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatCheckboxModule } from '@angular/material/checkbox';
 import { Card } from '../../shared/cards/card/card';
 import { TacticsService } from '../../../services/tactics.service';
-import { Tactic, CreateTacticRequest, Formation } from '../../../models/tactic.model';
+import { Tactic, CreateTacticRequest, Formation, PassingMentality, TacticMentality } from '../../../models/tactic.model';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TeamsService } from '../../../services/teams.service';
 import { Kit } from '../../../models/competition.model';
-import { PlayerPosition } from '../../../models/player-enums.model';
+import { Person, PlayerPosition } from '../../../models/player-enums.model';
 import { getPositionPitchRow } from '../../../utils/position-utils';
 
 interface FormationPreviewRow {
@@ -31,8 +30,7 @@ interface FormationPreviewRow {
     ReactiveFormsModule,
     Card,
     MatButtonModule,
-    MatIconModule,
-    MatCheckboxModule
+    MatIconModule
   ],
   templateUrl: './tactics.html',
   styleUrl: './tactics.css',
@@ -49,6 +47,7 @@ export class Tactics implements OnInit {
   createMode = signal(false);
   deleteConfirmationTactic = signal<Tactic | null>(null);
   teamKit = signal<Kit | null>(null);
+  teamPlayers = signal<Person[]>([]);
 
   // Form
   tacticForm: FormGroup;
@@ -81,6 +80,20 @@ export class Tactics implements OnInit {
     // { value: Formation.Two_Three_Five, label: '2-3-5' }
   ];
 
+  tacticMentalityOptions = [
+    { value: TacticMentality.ExtremelyDefending, label: 'Extremely Defending' },
+    { value: TacticMentality.Defending, label: 'Defending' },
+    { value: TacticMentality.Balanced, label: 'Balanced' },
+    { value: TacticMentality.Attacking, label: 'Attacking' },
+    { value: TacticMentality.ExtremelyAttacking, label: 'Extremely Attacking' }
+  ];
+
+  passingMentalityOptions = [
+    { value: PassingMentality.Short, label: 'Short' },
+    { value: PassingMentality.Balanced, label: 'Balanced' },
+    { value: PassingMentality.Long, label: 'Long' }
+  ];
+
   // Computed values
   canCreateNewTactic = computed(() => this.tactics().length < this.MAX_TACTICS);
   tacticsRemaining = computed(() => this.MAX_TACTICS - this.tactics().length);
@@ -105,7 +118,15 @@ export class Tactics implements OnInit {
     this.tacticForm = this.fb.group({
       Name: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(30)]],
       isMain: [false],
-      Formation: [Formation.None, [Validators.required]]
+      Formation: [Formation.None, [Validators.required]],
+      TacticMentality: [TacticMentality.Balanced, [Validators.required]],
+      PassingMentality: [PassingMentality.Balanced, [Validators.required]],
+      CaptainID: [null],
+      PenaltyTakerID: [null],
+      LeftCornerTakerID: [null],
+      RightCornerTakerID: [null],
+      LeftFreeKickTakerID: [null],
+      RightFreeKickTakerID: [null]
     });
   }
 
@@ -119,8 +140,9 @@ export class Tactics implements OnInit {
         next: (team) => {
           this.teamKit.set(team.kit ?? null);
           // Only load tactics when we have a valid team
-          if (team) {
+          if (team?.teamID) {
             this.loadTactics();
+            this.loadTeamPlayers(team.teamID);
           }
         }
       });
@@ -153,7 +175,7 @@ export class Tactics implements OnInit {
     }
     
     this.createMode.set(true);
-    this.tacticForm.reset({ Name: `New Tactic (${this.tactics().length + 1})` , isMain: false, Formation: Formation.Four_Four_Two });
+    this.tacticForm.reset(this.getDefaultCreateFormValue(`New Tactic (${this.tactics().length + 1})`));
     this.cdr.markForCheck();
   }
 
@@ -179,7 +201,15 @@ export class Tactics implements OnInit {
       TeamID: this.teamsService.CurrentTeam?.teamID ?? "",
       Name: name,
       isMain: formValue.isMain ?? false,
-      Formation: formValue.Formation
+      Formation: formValue.Formation,
+      TacticMentality: formValue.TacticMentality,
+      PassingMentality: formValue.PassingMentality,
+      CaptainID: formValue.CaptainID || null,
+      PenaltyTakerID: formValue.PenaltyTakerID || null,
+      LeftCornerTakerID: formValue.LeftCornerTakerID || null,
+      RightCornerTakerID: formValue.RightCornerTakerID || null,
+      LeftFreeKickTakerID: formValue.LeftFreeKickTakerID || null,
+      RightFreeKickTakerID: formValue.RightFreeKickTakerID || null
     };
 
     this.tacticsService.createTeamTactic(createRequest)
@@ -207,8 +237,52 @@ export class Tactics implements OnInit {
     }
 
     this.createMode.set(false);
-    this.tacticForm.reset({ isMain: false, Formation: Formation.None });
+    this.tacticForm.reset(this.getDefaultCreateFormValue(''));
     this.cdr.markForCheck();
+  }
+
+  toggleCreateMain(): void {
+    if (this.loading()) {
+      return;
+    }
+
+    this.tacticForm.patchValue({ isMain: !this.tacticForm.get('isMain')?.value });
+  }
+
+  getPlayerFullName(player: Person): string {
+    const fullName = `${player.name ?? ''} ${player.surname ?? ''}`.trim();
+    return fullName || 'Unknown Player';
+  }
+
+  private loadTeamPlayers(teamID: string): void {
+    this.teamsService.getTeamSquad(teamID)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (players) => {
+          this.teamPlayers.set([...players].sort((a, b) => this.getPlayerFullName(a).localeCompare(this.getPlayerFullName(b))));
+          this.cdr.markForCheck();
+        },
+        error: (err) => {
+          this.error.set(err.message || 'Failed to load team players');
+          this.cdr.markForCheck();
+        }
+      });
+  }
+
+  private getDefaultCreateFormValue(name: string): Record<string, unknown> {
+    return {
+      Name: name,
+      isMain: false,
+      Formation: Formation.Four_Four_Two,
+      TacticMentality: TacticMentality.Balanced,
+      PassingMentality: PassingMentality.Balanced,
+      CaptainID: null,
+      PenaltyTakerID: null,
+      LeftCornerTakerID: null,
+      RightCornerTakerID: null,
+      LeftFreeKickTakerID: null,
+      RightFreeKickTakerID: null
+    };
   }
 
   openDeletePopup(tactic: Tactic, event: Event): void {
@@ -283,6 +357,38 @@ export class Tactics implements OnInit {
 
   getPreviewRowClass(row: FormationPreviewRow): string {
     return row.positions.length <= 2 ? 'formation-preview-row centered' : 'formation-preview-row spaced';
+  }
+
+  getFormationLabel(formation?: Formation): string {
+    return this.formationOptions.find(option => option.value === formation)?.label ?? '4-4-2';
+  }
+
+  getTacticMentalityLabel(tacticMentality?: TacticMentality): string {
+    switch (tacticMentality) {
+      case TacticMentality.ExtremelyDefending:
+        return 'Extra Defend';
+      case TacticMentality.Defending:
+        return 'Defend';
+      case TacticMentality.Attacking:
+        return 'Attack';
+      case TacticMentality.ExtremelyAttacking:
+        return 'Extra Attack';
+      case TacticMentality.Balanced:
+      default:
+        return 'Balance';
+    }
+  }
+
+  getPassingMentalityLabel(passingMentality?: PassingMentality): string {
+    switch (passingMentality) {
+      case PassingMentality.Short:
+        return 'Short';
+      case PassingMentality.Long:
+        return 'Long';
+      case PassingMentality.Balanced:
+      default:
+        return 'Balance';
+    }
   }
 
   getHomeShirtColor(): string {

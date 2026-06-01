@@ -41,6 +41,22 @@ export enum Formation {
   // Two_Three_Five = 901
 }
 
+export enum TacticMentality {
+  None = 0,
+  ExtremelyDefending = 1,
+  Defending = 2,
+  Balanced = 3,
+  Attacking = 4,
+  ExtremelyAttacking = 5
+}
+
+export enum PassingMentality {
+  None = 0,
+  Short = 1,
+  Balanced = 2,
+  Long = 3
+}
+
 /**
  * SquadUnit enum matching backend SquadUnit enum
  */
@@ -60,10 +76,14 @@ export interface Tactic {
   name: string;
   isMain: boolean;
   formation?: Formation;
+  tacticMentality?: TacticMentality;
+  passingMentality?: PassingMentality;
   captainID?: string | null;
   penaltyTakerID?: string | null;
   leftCornerTakerID?: string | null;
   rightCornerTakerID?: string | null;
+  leftFreeKickTakerID?: string | null;
+  rightFreeKickTakerID?: string | null;
 }
 
 /**
@@ -75,6 +95,14 @@ export interface CreateTacticRequest {
   Name: string;
   isMain: boolean;
   Formation?: Formation;
+  TacticMentality?: TacticMentality;
+  PassingMentality?: PassingMentality;
+  CaptainID?: string | null;
+  PenaltyTakerID?: string | null;
+  LeftCornerTakerID?: string | null;
+  RightCornerTakerID?: string | null;
+  LeftFreeKickTakerID?: string | null;
+  RightFreeKickTakerID?: string | null;
 }
 
 /**
@@ -84,10 +112,14 @@ export interface UpdateTacticRequest {
   name: string;
   isMain: boolean;
   formation: Formation;
+  tacticMentality: TacticMentality;
+  passingMentality: PassingMentality;
   captainID?: string | null;
   penaltyTakerID?: string | null;
   leftCornerTakerID?: string | null;
   rightCornerTakerID?: string | null;
+  leftFreeKickTakerID?: string | null;
+  rightFreeKickTakerID?: string | null;
 }
 
 /**

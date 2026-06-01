@@ -1,112 +1,224 @@
-<div class="tactics-container p-4">
-  <!-- Header -->
-  <div class="tactics-header mb-6">
-    <h2 class="text-2xl font-bold">Tactics</h2>
-  </div>
-
-  <!-- Error Message -->
-  @if (error()) {
-    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-      {{ error() }}
+<div class="tactics-container p-2">
+  <app-card class="tactics-page-card">
+    <!-- Header -->
+    <div class="tactics-header mb-6">
+      <h2 class="text-2xl font-bold">Tactics</h2>
     </div>
-  }
 
-  <!-- Loading Indicator -->
-  @if (loading()) {
-    <div class="flex justify-center items-center py-8">
-      <div class="text-lg">Loading...</div>
-    </div>
-  }
+    <!-- Error Message -->
+    @if (error()) {
+      <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+        {{ error() }}
+      </div>
+    }
 
-  <!-- Tactics Cards Grid -->
-  @if (!loading()) {
-    <div class="tactics-grid">
-      <!-- Existing Tactics Cards -->
-      @for (tactic of sortedTactics(); track tactic.tacticID) {
-        <app-card [class.main-tactic]="tactic.isMain" hoverable (click)="viewTacticDetails(tactic)">
-          @if (tactics().length > 1) {
-            <button 
-              mat-icon-button 
-              class="delete-button"
-              type="button"
-              (click)="openDeletePopup(tactic, $event)"
-              aria-label="Delete tactic">
-              <mat-icon>close</mat-icon>
-            </button>
-          }
-          <div class="tactic-card-content">
-            <div class="tactic-name">
-              <span>{{ tactic.name }}</span>
-              @if (tactic.isMain) {
-                <mat-icon class="main-tactic-star" aria-label="Main tactic">star</mat-icon>
-              }
-            </div>
-            <div class="formation-preview" aria-label="Tactics formation preview">
-              <img src="assets/images/tactics/SimpleBackground.png" alt="" class="formation-preview-image" />
-              <div class="formation-preview-overlay">
-                <div class="formation-preview-spacer"></div>
-                @for (row of getFormationPreviewRows(tactic.formation); track row.rowIndex) {
-                  <div [ngClass]="getPreviewRowClass(row)">
-                    @for (position of row.positions; track position) {
-                      <span class="formation-preview-node"
-                        [style.background-color]="getHomeShirtColor()"
-                        [style.border-color]="getHomeShortsColor()">
-                      </span>
-                    }
-                  </div>
+    <!-- Loading Indicator -->
+    @if (loading()) {
+      <div class="flex justify-center items-center py-8">
+        <div class="text-lg">Loading...</div>
+      </div>
+    }
+
+    <!-- Tactics Cards Grid -->
+    @if (!loading()) {
+      <div class="tactics-grid">
+        <!-- Existing Tactics Cards -->
+        @for (tactic of sortedTactics(); track tactic.tacticID) {
+          <app-card class="tactic-card" [class.main-tactic]="tactic.isMain" hoverable (click)="viewTacticDetails(tactic)">
+            @if (tactics().length > 1) {
+              <button
+                mat-icon-button
+                class="delete-button"
+                type="button"
+                (click)="openDeletePopup(tactic, $event)"
+                aria-label="Delete tactic">
+                <mat-icon>close</mat-icon>
+              </button>
+            }
+            <div class="tactic-card-content">
+              <div class="tactic-name">
+                <span>{{ tactic.name }}</span>
+                @if (tactic.isMain) {
+                  <mat-icon class="main-tactic-star" aria-label="Main tactic">star</mat-icon>
                 }
               </div>
+              <div class="formation-preview" aria-label="Tactics formation preview">
+                <img src="assets/images/tactics/SimpleBackground.png" alt="" class="formation-preview-image" />
+                <div class="formation-preview-overlay">
+                  <div class="formation-preview-spacer"></div>
+                  @for (row of getFormationPreviewRows(tactic.formation); track row.rowIndex) {
+                    <div [ngClass]="getPreviewRowClass(row)">
+                      @for (position of row.positions; track position) {
+                        <span class="formation-preview-node"
+                          [style.background-color]="getHomeShirtColor()"
+                          [style.border-color]="getHomeShortsColor()">
+                        </span>
+                      }
+                    </div>
+                  }
+                </div>
+              </div>
+              <div class="tactic-summary" aria-label="Tactic summary">
+                <div>{{ getFormationLabel(tactic.formation) }}</div>
+                <div>{{ getTacticMentalityLabel(tactic.tacticMentality) }}</div>
+                <div>{{ getPassingMentalityLabel(tactic.passingMentality) }}</div>
+              </div>
             </div>
+          </app-card>
+        }
+
+        <!-- Add New Tactic Card (shown when < 3 tactics) -->
+        @if (canCreateNewTactic()) {
+          <app-card class="tactic-card" hoverable (click)="createNew()">
+            <div class="tactic-card-content add-card-content">
+              <mat-icon class="add-icon">add</mat-icon>
+            </div>
+          </app-card>
+        }
+      </div>
+    }
+
+    @if (createMode()) {
+      <div class="tactic-popup-backdrop" (click)="closeCreatePopup()">
+        <section class="tactic-popup tactic-create-popup" role="dialog" aria-modal="true" aria-label="Create tactic" tabindex="-1" (click)="$event.stopPropagation()" (keydown.escape)="closeCreatePopup()">
+          <div class="tactic-popup-header">
+            <h3>New Tactic</h3>
+            <button mat-icon-button type="button" (click)="closeCreatePopup()" aria-label="Close create tactic dialog" [disabled]="loading()">
+              <mat-icon>close</mat-icon>
+            </button>
           </div>
-        </app-card>
-      }
 
-      <!-- Add New Tactic Card (shown when < 3 tactics) -->
-      @if (canCreateNewTactic()) {
-        <app-card hoverable (click)="createNew()">
-          <div class="tactic-card-content add-card-content">
-            <mat-icon class="add-icon">add</mat-icon>
-          </div>
-        </app-card>
-      }
-    </div>
-  }
+          <form [formGroup]="tacticForm">
+            <div class="tactic-edit-grid">
+              <div class="tactic-edit-column">
+                <div class="tactic-popup-field tactic-edit-field tactic-name-field">
+                  <span class="tactic-popup-label">Name</span>
+                  <div class="tactic-name-controls">
+                    <input class="tactic-edit-input"
+                      type="text"
+                      maxlength="30"
+                      formControlName="Name"
+                      aria-label="Tactic name" />
+                    <button class="tactic-main-button"
+                      mat-icon-button
+                      type="button"
+                      [class.active]="tacticForm.get('isMain')?.value"
+                      (click)="toggleCreateMain()"
+                      [disabled]="loading()"
+                      [attr.aria-label]="tacticForm.get('isMain')?.value ? 'Unset tactic as main' : 'Set tactic as main'"
+                      [attr.aria-pressed]="tacticForm.get('isMain')?.value">
+                      <mat-icon>star</mat-icon>
+                    </button>
+                  </div>
+                </div>
 
-  @if (createMode()) {
-    <div class="tactic-popup-backdrop" (click)="closeCreatePopup()">
-      <section class="tactic-popup tactic-create-popup" role="dialog" aria-modal="true" aria-label="Create tactic" tabindex="-1" (click)="$event.stopPropagation()" (keydown.escape)="closeCreatePopup()">
-        <div class="tactic-popup-header">
-          <h3>New Tactic</h3>
-          <button mat-icon-button type="button" (click)="closeCreatePopup()" aria-label="Close create tactic dialog" [disabled]="loading()">
-            <mat-icon>close</mat-icon>
-          </button>
-        </div>
+                <label class="tactic-popup-field tactic-edit-field">
+                  <span class="tactic-popup-label">Formation</span>
+                  <select class="role-select tactic-popup-select"
+                    formControlName="Formation"
+                    aria-label="Tactic formation">
+                    @for (formation of formationOptions; track formation.value) {
+                      <option [ngValue]="formation.value">{{ formation.label }}</option>
+                    }
+                  </select>
+                </label>
 
-        <form [formGroup]="tacticForm">
-          <label class="tactic-popup-field tactic-edit-field">
-            <span class="tactic-popup-label">Name</span>
-            <input class="tactic-edit-input"
-              type="text"
-              maxlength="30"
-              formControlName="Name"
-              aria-label="Tactic name" />
-          </label>
+                <label class="tactic-popup-field tactic-edit-field">
+                  <span class="tactic-popup-label">Mentality</span>
+                  <select class="role-select tactic-popup-select"
+                    formControlName="TacticMentality"
+                    aria-label="Tactic mentality">
+                    @for (mentality of tacticMentalityOptions; track mentality.value) {
+                      <option [ngValue]="mentality.value">{{ mentality.label }}</option>
+                    }
+                  </select>
+                </label>
 
-          <label class="tactic-popup-field tactic-edit-field">
-            <span class="tactic-popup-label">Formation</span>
-            <select class="role-select tactic-popup-select"
-              formControlName="Formation"
-              aria-label="Tactic formation">
-              @for (formation of formationOptions; track formation.value) {
-                <option [ngValue]="formation.value">{{ formation.label }}</option>
-              }
-            </select>
-          </label>
+                <label class="tactic-popup-field tactic-edit-field">
+                  <span class="tactic-popup-label">Passing</span>
+                  <select class="role-select tactic-popup-select"
+                    formControlName="PassingMentality"
+                    aria-label="Passing mentality">
+                    @for (passing of passingMentalityOptions; track passing.value) {
+                      <option [ngValue]="passing.value">{{ passing.label }}</option>
+                    }
+                  </select>
+                </label>
 
-          <div class="tactic-popup-field tactic-main-field">
-            <span class="tactic-popup-label">Main</span>
-            <mat-checkbox formControlName="isMain" color="primary" aria-label="Set tactic as main">
-            </mat-checkbox>
+                <label class="tactic-popup-field tactic-edit-field">
+                  <span class="tactic-popup-label">Captain</span>
+                  <select class="role-select tactic-popup-select"
+                    formControlName="CaptainID"
+                    aria-label="Captain">
+                    <option [ngValue]="null">None</option>
+                    @for (player of teamPlayers(); track player.personID) {
+                      <option [ngValue]="player.personID">{{ getPlayerFullName(player) }}</option>
+                    }
+                  </select>
+                </label>
+              </div>
+
+              <div class="tactic-edit-column">
+                <label class="tactic-popup-field tactic-edit-field">
+                  <span class="tactic-popup-label">Penalty taker</span>
+                  <select class="role-select tactic-popup-select"
+                    formControlName="PenaltyTakerID"
+                    aria-label="Penalty taker">
+                    <option [ngValue]="null">None</option>
+                    @for (player of teamPlayers(); track player.personID) {
+                      <option [ngValue]="player.personID">{{ getPlayerFullName(player) }}</option>
+                    }
+                  </select>
+                </label>
+
+              <label class="tactic-popup-field tactic-edit-field">
+                <span class="tactic-popup-label">Left corner</span>
+                <select class="role-select tactic-popup-select"
+                  formControlName="LeftCornerTakerID"
+                  aria-label="Left corner taker">
+                  <option [ngValue]="null">None</option>
+                  @for (player of teamPlayers(); track player.personID) {
+                    <option [ngValue]="player.personID">{{ getPlayerFullName(player) }}</option>
+                  }
+                </select>
+              </label>
+
+              <label class="tactic-popup-field tactic-edit-field">
+                <span class="tactic-popup-label">Right corner</span>
+                <select class="role-select tactic-popup-select"
+                  formControlName="RightCornerTakerID"
+                  aria-label="Right corner taker">
+                  <option [ngValue]="null">None</option>
+                  @for (player of teamPlayers(); track player.personID) {
+                    <option [ngValue]="player.personID">{{ getPlayerFullName(player) }}</option>
+                  }
+                </select>
+              </label>
+
+              <label class="tactic-popup-field tactic-edit-field">
+                <span class="tactic-popup-label">Left free kick</span>
+                <select class="role-select tactic-popup-select"
+                  formControlName="LeftFreeKickTakerID"
+                  aria-label="Left free kick taker">
+                  <option [ngValue]="null">None</option>
+                  @for (player of teamPlayers(); track player.personID) {
+                    <option [ngValue]="player.personID">{{ getPlayerFullName(player) }}</option>
+                  }
+                </select>
+              </label>
+
+              <label class="tactic-popup-field tactic-edit-field">
+                <span class="tactic-popup-label">Right free kick</span>
+                <select class="role-select tactic-popup-select"
+                  formControlName="RightFreeKickTakerID"
+                  aria-label="Right free kick taker">
+                  <option [ngValue]="null">None</option>
+                  @for (player of teamPlayers(); track player.personID) {
+                    <option [ngValue]="player.personID">{{ getPlayerFullName(player) }}</option>
+                  }
+                </select>
+              </label>
+            </div>
           </div>
 
           <div class="tactic-edit-actions">
@@ -143,4 +255,5 @@
       </section>
     </div>
   }
+  </app-card>
 </div>

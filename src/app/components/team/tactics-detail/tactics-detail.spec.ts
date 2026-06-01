@@ -9,7 +9,7 @@ import { of } from 'rxjs';
 import { TacticsDetail } from './tactics-detail';
 import { TacticsService } from '../../../services/tactics.service';
 import { TeamsService } from '../../../services/teams.service';
-import { Formation, SquadUnit, Tactic } from '../../../models/tactic.model';
+import { Formation, PassingMentality, SquadUnit, Tactic, TacticMentality } from '../../../models/tactic.model';
 import { PlayerPosition, PlayerRole } from '../../../models/player-enums.model';
 
 describe('TacticsDetail', () => {
@@ -96,10 +96,14 @@ describe('TacticsDetail', () => {
       name: 'Balanced',
       isMain: false,
       formation: Formation.Four_Three_Three,
+      tacticMentality: TacticMentality.Balanced,
+      passingMentality: PassingMentality.Balanced,
       captainID: null,
       penaltyTakerID: null,
       leftCornerTakerID: null,
-      rightCornerTakerID: null
+      rightCornerTakerID: null,
+      leftFreeKickTakerID: null,
+      rightFreeKickTakerID: null
     });
 
     spyOn(component, 'loadTacticDetails');
@@ -126,10 +130,14 @@ describe('TacticsDetail', () => {
       name: updatedTactic.name,
       isMain: updatedTactic.isMain,
       formation: updatedTactic.formation!,
+      tacticMentality: updatedTactic.tacticMentality ?? TacticMentality.Balanced,
+      passingMentality: updatedTactic.passingMentality ?? PassingMentality.Balanced,
       captainID: null,
       penaltyTakerID: null,
       leftCornerTakerID: null,
-      rightCornerTakerID: null
+      rightCornerTakerID: null,
+      leftFreeKickTakerID: null,
+      rightFreeKickTakerID: null
     });
 
     spyOn(component, 'loadTacticDetails');
