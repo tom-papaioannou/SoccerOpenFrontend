@@ -1,9 +1,27 @@
+:host {
+  display: block;
+  width: 100%;
+  min-height: 100%;
+}
+
 .tactics-container {
-  max-width: 1200px;
+  width: 100%;
+  min-height: calc(100vh - 1rem);
   margin: 0;
   --tactics-accent-color: #3b82f6;
   --tactics-card-hover-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   --tactics-add-card-hover-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.tactics-page-card {
+  display: block;
+  width: 100%;
+  min-height: calc(100vh - 1rem);
+}
+
+.tactics-page-card ::ng-deep .cardBorder,
+.tactics-page-card ::ng-deep .app-card {
+  min-height: calc(100vh - 1rem);
 }
 
 .space-y-4 > * + * {
@@ -12,10 +30,10 @@
 
 .tactic-card {
   --card-shell-bg: transparent;
-  --card-shell-hover-bg: transparent;
-  --card-bg: #ffffff;
+  --card-shell-hover-bg: rgba(255, 255, 255, 0.08);
+  --card-bg: rgba(0, 0, 0, 0.34);
   --card-color: inherit;
-  --card-outline-color: rgba(0, 0, 0, 0.12);
+  --card-outline-color: rgba(255, 255, 255, 0.22);
 }
 
 .tactics-header {
@@ -33,9 +51,16 @@
 
 /* Tactic Card Styles */
 .tactic-card {
-  min-height: 150px;
+  min-height: 360px;
+  max-height: 360px;
   position: relative;
   --card-hover-shadow: var(--tactics-card-hover-shadow);
+}
+
+.tactic-card ::ng-deep .cardBorder,
+.tactic-card ::ng-deep .app-card {
+  min-height: 360px;
+  max-height: 360px;
 }
 
 /* Main Tactic Card with Blue Border */
@@ -86,7 +111,8 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  min-height: 280px;
+  min-height: 328px;
+  max-height: 328px;
   padding: 1rem !important;
 }
 
@@ -111,7 +137,7 @@
 
 .formation-preview {
   position: relative;
-  width: min(180px, 100%);
+  width: min(150px, 100%);
   aspect-ratio: 3 / 4;
   margin-top: 0.75rem;
   overflow: hidden;
@@ -119,6 +145,20 @@
   border-radius: 8px;
   background-color: #254736;
   box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.2);
+}
+
+.tactic-summary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: min(180px, 100%);
+  margin-top: 0.75rem;
+  color: #ffffff;
+  font-size: 0.82rem;
+  font-weight: 700;
+  line-height: 1.35;
+  text-align: center;
 }
 
 .formation-preview-image {
@@ -168,7 +208,8 @@
 .add-card-content {
   justify-content: center;
   align-items: center;
-  min-height: 322px;
+  min-height: 328px;
+  max-height: 328px;
 }
 
 .add-icon {
@@ -262,30 +303,74 @@
 }
 
 .tactic-create-popup {
-  width: min(520px, 100%);
+  width: min(760px, 100%);
 }
 
 .tactic-delete-popup {
   width: min(420px, 100%);
 }
 
-.tactic-edit-field,
-.tactic-main-field {
+.tactic-edit-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+  gap: 16px 28px;
+}
+
+.tactic-edit-column {
+  min-width: 0;
+}
+
+.tactic-edit-field {
   align-items: baseline;
 }
 
 .tactic-edit-input {
-  padding: 6px 8px;
+  font-size: 0.85rem;
+  padding: 4px 8px;
 }
 
-.tactic-main-field {
-  color: #f8fafc;
-  font-weight: 700;
+.tactic-name-field {
+  align-items: center;
 }
 
-.tactic-main-field mat-checkbox {
+.tactic-name-controls {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
   width: 180px;
-  margin: 0;
+  min-width: 0;
+}
+
+.tactic-name-controls .tactic-edit-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  width: auto;
+}
+
+.tactic-main-button {
+  flex: 0 0 28px;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  color: #020617;
+  padding: 2px;
+  transform: translateY(-1px);
+}
+
+.tactic-main-button mat-icon {
+  font-size: 20px;
+  height: 20px;
+  width: 20px;
+  line-height: 20px;
+}
+
+.tactic-main-button.active {
+  color: #facc15;
+}
+
+.tactic-main-button:disabled {
+  opacity: 0.75;
 }
 
 .tactic-edit-actions {
@@ -306,15 +391,22 @@
 }
 
 @media (max-width: 480px) {
-  .tactic-edit-field,
-  .tactic-main-field {
+  .tactic-edit-grid {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .tactic-edit-field {
     flex-direction: column;
     gap: 6px;
   }
 
   .tactic-edit-input,
-  .tactic-popup-select,
-  .tactic-main-field mat-checkbox {
+  .tactic-popup-select {
+    width: 100%;
+  }
+
+  .tactic-name-controls {
     width: 100%;
   }
 }
