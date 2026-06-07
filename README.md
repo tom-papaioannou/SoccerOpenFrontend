@@ -41,20 +41,27 @@ Below are some screenshots showcasing the application UI and its main features.
 
 ### Dashboard
 
-![Team Configuration](screenshots/team-configuration.png)
+![Team Configuration](screenshots/dashboard.png)
 
 ### Squad
 
 ![Squad](screenshots/squad.png)
 
-![Player](screenshots/player.png)
+![Player](screenshots/player-card.png)
 
 ### Tactics
 
 ![Tactics Management](screenshots/tactics.png)
 
-![Formation Setup](screenshots/formation.png)
+![Formation Setup](screenshots/tactics-details.png)
 
+### Competitions
+
+![World Competitions](screenshots/competitions-1.png)
+
+![Continent Competitions](screenshots/competitions-2.png)
+
+![League Table](screenshots/competitions-3.png)
 
 ---
 
