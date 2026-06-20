@@ -14,14 +14,20 @@ export interface MappedNation extends INation {
 
 const nationCoordinates: Record<string, { latitude: number; longitude: number }> = {
   AR: { latitude: -38.42, longitude: -63.62 },
+  AU: { latitude: -25.27, longitude: 133.78 },
   BR: { latitude: -14.24, longitude: -51.93 },
   CA: { latitude: 56.13, longitude: -106.35 },
   DE: { latitude: 51.17, longitude: 10.45 },
+  ES: { latitude: 40.46, longitude: -3.75 },
   FR: { latitude: 46.23, longitude: 2.21 },
   GB: { latitude: 52.36, longitude: -1.17 },
   GR: { latitude: 39.07, longitude: 21.82 },
   IT: { latitude: 41.87, longitude: 12.57 },
+  JP: { latitude: 36.20, longitude: 138.25 },
+  MA: { latitude: 31.79, longitude: -7.09 },
   MX: { latitude: 23.63, longitude: -102.55 },
+  NL: { latitude: 52.13, longitude: 5.29 },
+  PT: { latitude: 39.40, longitude: -8.22 },
   US: { latitude: 37.09, longitude: -95.71 }
 };
 
