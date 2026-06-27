@@ -1,6 +1,6 @@
-# FootballOpenFrontend ⚽
+# SoccerOpenFrontend ⚽
 
-FootballOpenFrontend is a web application built with **Angular** that focuses on **football tactic and team management**.  
+SoccerOpenFrontend is a web application built with **Angular** that focuses on **soccer tactic and team management**.  
 It provides a visual and interactive interface for setting up formations, adjusting tactical approaches, and managing team-related data.
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.5.
@@ -9,29 +9,29 @@ This project was generated using [Angular CLI](https://github.com/angular/angula
 
 ## Project Overview
 
-FootballOpenFrontend represents the **frontend part** of the Football Open project.  
-Its main goal is to offer a clean and intuitive UI for managing football tactics and team configurations.
+SoccerOpenFrontend represents the **frontend part** of the Soccer Open Simulator (SoccerOS) project.  
+Its main goal is to offer a clean and intuitive UI for managing soccer tactics and team configurations.
 
 The application allows users to:
 - Configure team formations  
 - Adjust tactical setups  
 - Manage team-related information  
-- Interact with football data through a modern web interface  
+- Interact with soccer data through a modern web interface
 
 ---
 
 ## Backend Integration
 
-This frontend can be used in combination with the **FootballOpenServer** backend:
+This frontend can be used in combination with the **SoccerOpenServer** backend:
 
-🔗 https://github.com/tom-papaioannou/FootballOpenServer
+🔗 https://github.com/tom-papaioannou/SoccerOpenServer
 
 The backend is built with **.NET** and provides:
 - Data storage and retrieval  
 - Tactical and team-related business logic  
 - REST API endpoints consumed by this Angular application  
 
-Running both projects together allows you to explore the **full scope of the Football Open project**, with a clear separation between frontend UI and backend logic.
+Running both projects together allows you to explore the **full scope of the Soccer Open Simulator project**, with a clear separation between frontend UI and backend logic.
 
 ---
 
