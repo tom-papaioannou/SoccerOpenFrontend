@@ -17,6 +17,15 @@ export enum CompetitionType {
   Mixed = 3
 }
 
+export enum CupRoundType {
+  RoundOf64 = 1,
+  RoundOf32 = 2,
+  RoundOf16 = 3,
+  QuarterFinal = 4,
+  SemiFinal = 5,
+  Final = 6
+}
+
 // Competition model for managing competitions under nations or continents
 export interface Competition {
   competitionID?: string;
@@ -46,6 +55,40 @@ export interface CompetitionTableRow {
   yellowCards: number;
   redCards: number;
   matchesPlayed: number;
+}
+
+export interface CupBracket {
+  competitionID: string;
+  rounds: CupBracketRound[];
+}
+
+export interface CupBracketRound {
+  cupRoundID: string;
+  roundNumber: number;
+  teamCount: number;
+  roundType: CupRoundType;
+  ties: CupBracketTie[];
+}
+
+export interface CupBracketTie {
+  cupTieID: string;
+  cupRoundID: string;
+  tieNumber: number;
+  homeTeamID?: string | null;
+  awayTeamID?: string | null;
+  winnerTeamID?: string | null;
+  nextCupTieID?: string | null;
+  advancesAsHomeTeam: boolean;
+  isCompleted: boolean;
+  homeTeam?: CupBracketTeam | null;
+  awayTeam?: CupBracketTeam | null;
+  winnerTeam?: CupBracketTeam | null;
+}
+
+export interface CupBracketTeam {
+  teamID: string;
+  name?: string | null;
+  badgeColor?: string | null;
 }
 
 export interface TeamCompetitions {

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title">
+  <title>White trophy icon</title>
+  <g fill="none" stroke="#FFFFFF" stroke-width="14" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Cup bowl -->
+    <path d="M80 40h96v42c0 38-22 70-48 70s-48-32-48-70V40Z"/>
+    <!-- Left handle ending on outer frame of the bowl -->
+    <path d="M80 58H48v18c0 28 12 48 32 48"/>
+    <!-- Right handle ending on outer frame of the bowl -->
+    <path d="M176 58h32v18c0 28-12 48-32 48"/>
+    <!-- Stem and base -->
+    <path d="M128 152v28"/>
+    <path d="M108 180h40"/>
+    <path d="M108 180h40l8 28h-56l8-28Z"/>
+    <path d="M100 216h56"/>
+  </g>
+</svg>

@@ -10,6 +10,7 @@ import { environment } from '../../environments/environment.development';
 import {
   Competition,
   CompetitionPayload,
+  CupBracket,
   CompetitionTableRow,
   TeamCompetitions
 } from '../models/competition.model';
@@ -46,6 +47,10 @@ export class CompetitionService {
 
   getCompetitionTable(competitionId: string): Observable<CompetitionTableRow[]> {
     return this.http.get<CompetitionTableRow[]>(`${this.apiUrl}/${competitionId}/table`);
+  }
+
+  getCupBracket(competitionId: string): Observable<CupBracket> {
+    return this.http.get<CupBracket>(`${this.apiUrl}/${competitionId}/cup-bracket`);
   }
 
   create(payload: CompetitionPayload): Observable<Competition> {
