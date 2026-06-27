@@ -1,5 +1,5 @@
 .competition-details-container {
-  max-width: 1200px;
+  max-width: 1800px;
   margin: 0;
 }
 
@@ -55,6 +55,11 @@
 .competition-team-link:hover {
   color: #fff;
   text-decoration: underline;
+}
+
+.competition-team-link.user-owned-team-name,
+.competition-team-link.user-owned-team-name:hover {
+  color: #b8860b;
 }
 
 .card-header-icon {

@@ -5,6 +5,7 @@
         <button
           type="button"
           class="competition-team-link"
+          [class.user-owned-team-name]="isUserTeam(row.teamID)"
           (click)="openTeamSquad(row)">
           {{ row.teamName }}
         </button>
@@ -39,18 +40,28 @@
           }
         </div>
 
-        @if (tableRows().length > 0) {
-          <app-data-table
-            [data]="tableRows()"
-            [columns]="$any(displayedColumns)"
-            [initialSort]="{ active: 'position', direction: 'asc' }"
-            class="teams-theme">
-          </app-data-table>
+        @if (isCupCompetition()) {
+          @if (cupBracket()) {
+            <app-cup-bracket
+              [bracket]="cupBracket()!"
+              [userTeamID]="currentUserTeamID()"
+              (teamSelected)="openTeamSquadByID($event)">
+            </app-cup-bracket>
+          }
         } @else {
-          <div class="empty-teams py-8 text-gray-500">
-            <mat-icon class="text-4xl mb-2 opacity-50">sports_soccer</mat-icon>
-            <p>No teams in this competition yet</p>
-          </div>
+          @if (tableRows().length > 0) {
+            <app-data-table
+              [data]="tableRows()"
+              [columns]="$any(displayedColumns)"
+              [initialSort]="{ active: 'position', direction: 'asc' }"
+              class="teams-theme">
+            </app-data-table>
+          } @else {
+            <div class="empty-teams py-8 text-gray-500">
+              <mat-icon class="text-4xl mb-2 opacity-50">sports_soccer</mat-icon>
+              <p>No teams in this competition yet</p>
+            </div>
+          }
         }
       }
     </div>

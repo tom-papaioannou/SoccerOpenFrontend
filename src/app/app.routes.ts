@@ -12,15 +12,11 @@ import { Squad } from './components/team/squad/squad';
 import { Tactics } from './components/team/tactics/tactics';
 import { TacticsDetail } from './components/team/tactics-detail/tactics-detail';
 import { Fixtures } from './components/team/fixtures/fixtures';
-import { PlayerDetails } from './components/team/player-details/player-details';
 import { Information } from './components/team/information/information';
-import { CompetitionsManagement } from './components/competitions-management/competitions-management';
-import { CompetitionDetails } from './components/competition-details/competition-details';
 import { Register } from './components/register/register';
 import { Servers } from './components/servers/servers';
 import { ServerDetails } from './components/server-details/server-details';
 import { guestsGuard } from './guards/guests-guard';
-import { AdminPanel } from './components/admin-panel/admin-panel';
 import { defaultLandingGuard } from './guards/default-landing.guard';
 
 export const routes: Routes = [
@@ -31,10 +27,26 @@ export const routes: Routes = [
     { path: 'register', canActivate: [authenticationGuard], component: Register },
     { path: 'servers', canActivate: [authenticationGuard], component: Servers },
     { path: 'server/:id', canActivate: [authenticationGuard], component: ServerDetails },
-    { path: 'adminpanel', canActivate: [authenticationGuard], component: AdminPanel },
-    { path: 'competitions-management', canActivate: [authenticationGuard], component: CompetitionsManagement },
-    { path: 'competition/:id', canActivate: [authenticationGuard], component: CompetitionDetails },
-    { path: 'player/:id', canActivate: [authenticationGuard], component: PlayerDetails },
+    {
+        path: 'adminpanel',
+        canActivate: [authenticationGuard],
+        loadComponent: () => import('./components/admin-panel/admin-panel').then(m => m.AdminPanel)
+    },
+    {
+        path: 'competitions-management',
+        canActivate: [authenticationGuard],
+        loadComponent: () => import('./components/competitions-management/competitions-management').then(m => m.CompetitionsManagement)
+    },
+    {
+        path: 'competition/:id',
+        canActivate: [authenticationGuard],
+        loadComponent: () => import('./components/competition-details/competition-details').then(m => m.CompetitionDetails)
+    },
+    {
+        path: 'player/:id',
+        canActivate: [authenticationGuard],
+        loadComponent: () => import('./components/team/player-details/player-details').then(m => m.PlayerDetails)
+    },
     {
         path: 'competitions',
         canActivate: [authenticationGuard],

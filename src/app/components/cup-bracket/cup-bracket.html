@@ -1,0 +1,222 @@
+<div class="cup-bracket-shell" role="region" aria-label="Cup tournament bracket">
+  @if (orderedRounds.length > 0) {
+    <div class="bracket-scroll" tabindex="0">
+      <div class="bracket-grid">
+        <div class="bracket-wing bracket-wing-left">
+          @for (view of leftRounds; track view.round.cupRoundID) {
+            <section
+              class="round-column"
+              [style.--round-offset]="roundOffset(view.roundIndex)"
+              [style.--round-gap]="roundGap(view.roundIndex)">
+              <header class="round-header">
+                <span class="round-title">{{ roundLabel(view.round) }}</span>
+              </header>
+
+              <div class="round-ties">
+                @for (tie of view.ties; track tie.cupTieID) {
+                  <div
+                    class="tie-shell side-left"
+                    [class.has-previous]="hasPreviousRound(view.roundIndex)"
+                    [class.has-forward]="hasNextBracketRound(view.roundIndex)"
+                    [class.feed-home]="tie.advancesAsHomeTeam"
+                    [class.feed-away]="!tie.advancesAsHomeTeam">
+                    @if (hasNextSideRound(view.roundIndex)) {
+                      <span class="connector-vertical" aria-hidden="true"></span>
+                    }
+
+                    <article class="tie-card">
+                      <div class="tie-meta">
+                        @if (tie.isCompleted) {
+                          <span class="tie-status">FT</span>
+                        }
+                      </div>
+
+                      <button
+                        type="button"
+                        class="team-row"
+                        [class.team-row-winner]="isWinner(tie, tie.homeTeam)"
+                        [class.team-row-loser]="isLoser(tie, tie.homeTeam)"
+                        [class.team-row-user]="isUserTeam(tie.homeTeam)"
+                        [disabled]="!tie.homeTeam?.teamID"
+                        [attr.aria-label]="teamAriaLabel(tie.homeTeam)"
+                        (click)="selectTeam(tie.homeTeam)">
+                        <span
+                          class="team-badge"
+                          [style.--team-color]="teamBadgeColor(tie.homeTeam)"
+                          aria-hidden="true">
+                          {{ teamInitials(tie.homeTeam) }}
+                        </span>
+                        <span class="team-name">{{ teamName(tie.homeTeam) }}</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        class="team-row"
+                        [class.team-row-winner]="isWinner(tie, tie.awayTeam)"
+                        [class.team-row-loser]="isLoser(tie, tie.awayTeam)"
+                        [class.team-row-user]="isUserTeam(tie.awayTeam)"
+                        [disabled]="!tie.awayTeam?.teamID"
+                        [attr.aria-label]="teamAriaLabel(tie.awayTeam)"
+                        (click)="selectTeam(tie.awayTeam)">
+                        <span
+                          class="team-badge"
+                          [style.--team-color]="teamBadgeColor(tie.awayTeam)"
+                          aria-hidden="true">
+                          {{ teamInitials(tie.awayTeam) }}
+                        </span>
+                        <span class="team-name">{{ teamName(tie.awayTeam) }}</span>
+                      </button>
+                    </article>
+                  </div>
+                }
+              </div>
+            </section>
+          }
+        </div>
+
+        @if (finalRound; as round) {
+          @if (finalTie; as tie) {
+            <section
+              class="round-column final-column"
+              [style.--round-offset]="finalOffset()">
+              <header class="round-header final-header">
+                <span class="round-title">{{ roundLabel(round) }}</span>
+              </header>
+
+              <div class="round-ties final-ties">
+                <div class="tie-shell final-shell">
+                  <div class="cup-image-card" aria-label="Cup image">
+                    @if (cupImageUrl) {
+                      <img class="cup-image" [src]="cupImageUrl" alt="Cup" />
+                    }
+                  </div>
+
+                  <article class="tie-card final-tie">
+
+                    <div class="tie-meta">
+                      @if (tie.isCompleted) {
+                        <span class="tie-status">FT</span>
+                      }
+                    </div>
+
+                    <button
+                      type="button"
+                      class="team-row"
+                      [class.team-row-winner]="isWinner(tie, tie.homeTeam)"
+                      [class.team-row-loser]="isLoser(tie, tie.homeTeam)"
+                      [class.team-row-user]="isUserTeam(tie.homeTeam)"
+                      [disabled]="!tie.homeTeam?.teamID"
+                      [attr.aria-label]="teamAriaLabel(tie.homeTeam)"
+                      (click)="selectTeam(tie.homeTeam)">
+                      <span
+                        class="team-badge"
+                        [style.--team-color]="teamBadgeColor(tie.homeTeam)"
+                        aria-hidden="true">
+                        {{ teamInitials(tie.homeTeam) }}
+                      </span>
+                      <span class="team-name">{{ teamName(tie.homeTeam) }}</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      class="team-row"
+                      [class.team-row-winner]="isWinner(tie, tie.awayTeam)"
+                      [class.team-row-loser]="isLoser(tie, tie.awayTeam)"
+                      [class.team-row-user]="isUserTeam(tie.awayTeam)"
+                      [disabled]="!tie.awayTeam?.teamID"
+                      [attr.aria-label]="teamAriaLabel(tie.awayTeam)"
+                      (click)="selectTeam(tie.awayTeam)">
+                      <span
+                        class="team-badge"
+                        [style.--team-color]="teamBadgeColor(tie.awayTeam)"
+                        aria-hidden="true">
+                        {{ teamInitials(tie.awayTeam) }}
+                      </span>
+                      <span class="team-name">{{ teamName(tie.awayTeam) }}</span>
+                    </button>
+                  </article>
+                </div>
+              </div>
+            </section>
+          }
+        }
+
+        <div class="bracket-wing bracket-wing-right">
+          @for (view of rightRounds; track view.round.cupRoundID) {
+            <section
+              class="round-column"
+              [style.--round-offset]="roundOffset(view.roundIndex)"
+              [style.--round-gap]="roundGap(view.roundIndex)">
+              <header class="round-header right-header">
+                <span class="round-title">{{ roundLabel(view.round) }}</span>
+              </header>
+
+              <div class="round-ties">
+                @for (tie of view.ties; track tie.cupTieID) {
+                  <div
+                    class="tie-shell side-right"
+                    [class.has-previous]="hasPreviousRound(view.roundIndex)"
+                    [class.has-forward]="hasNextBracketRound(view.roundIndex)"
+                    [class.feed-home]="tie.advancesAsHomeTeam"
+                    [class.feed-away]="!tie.advancesAsHomeTeam">
+                    @if (hasNextSideRound(view.roundIndex)) {
+                      <span class="connector-vertical" aria-hidden="true"></span>
+                    }
+
+                    <article class="tie-card">
+                      <div class="tie-meta">
+                        @if (tie.isCompleted) {
+                          <span class="tie-status">FT</span>
+                        }
+                      </div>
+
+                      <button
+                        type="button"
+                        class="team-row"
+                        [class.team-row-winner]="isWinner(tie, tie.homeTeam)"
+                        [class.team-row-loser]="isLoser(tie, tie.homeTeam)"
+                        [class.team-row-user]="isUserTeam(tie.homeTeam)"
+                        [disabled]="!tie.homeTeam?.teamID"
+                        [attr.aria-label]="teamAriaLabel(tie.homeTeam)"
+                        (click)="selectTeam(tie.homeTeam)">
+                        <span
+                          class="team-badge"
+                          [style.--team-color]="teamBadgeColor(tie.homeTeam)"
+                          aria-hidden="true">
+                          {{ teamInitials(tie.homeTeam) }}
+                        </span>
+                        <span class="team-name">{{ teamName(tie.homeTeam) }}</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        class="team-row"
+                        [class.team-row-winner]="isWinner(tie, tie.awayTeam)"
+                        [class.team-row-loser]="isLoser(tie, tie.awayTeam)"
+                        [class.team-row-user]="isUserTeam(tie.awayTeam)"
+                        [disabled]="!tie.awayTeam?.teamID"
+                        [attr.aria-label]="teamAriaLabel(tie.awayTeam)"
+                        (click)="selectTeam(tie.awayTeam)">
+                        <span
+                          class="team-badge"
+                          [style.--team-color]="teamBadgeColor(tie.awayTeam)"
+                          aria-hidden="true">
+                          {{ teamInitials(tie.awayTeam) }}
+                        </span>
+                        <span class="team-name">{{ teamName(tie.awayTeam) }}</span>
+                      </button>
+                    </article>
+                  </div>
+                }
+              </div>
+            </section>
+          }
+        </div>
+      </div>
+    </div>
+  } @else {
+    <div class="empty-bracket">
+      <p>No cup bracket has been created for this competition yet.</p>
+    </div>
+  }
+</div>

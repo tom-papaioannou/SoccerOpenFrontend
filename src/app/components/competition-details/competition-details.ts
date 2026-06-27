@@ -3,16 +3,18 @@
  * Licensed under the MIT License
  */
 
-import { Component, OnInit, TemplateRef, ViewChild, signal } from '@angular/core';
+import { Component, OnDestroy, OnInit, TemplateRef, ViewChild, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
-import { forkJoin } from 'rxjs';
+import { Subject, map, switchMap, takeUntil } from 'rxjs';
 import { ColumnDef, DataTable } from '../shared/tables/data-table/data-table';
 import { CompetitionService } from '../../services/competition.service';
-import { Competition, CompetitionTableRow } from '../../models/competition.model';
+import { Competition, CompetitionTableRow, CompetitionType, CupBracket } from '../../models/competition.model';
 import { Card } from '../shared/cards/card/card';
+import { CupBracketComponent } from '../cup-bracket/cup-bracket';
+import { TeamsService } from '../../services/teams.service';
 
 @Component({
   selector: 'app-competition-details',
@@ -21,12 +23,13 @@ import { Card } from '../shared/cards/card/card';
     MatCardModule,
     MatIconModule,
     DataTable,
-    Card
+    Card,
+    CupBracketComponent
   ],
   templateUrl: './competition-details.html',
   styleUrl: './competition-details.css'
 })
-export class CompetitionDetails implements OnInit {
+export class CompetitionDetails implements OnInit, OnDestroy {
   @ViewChild('teamNameTemplate', { static: true }) teamNameTemplate!: TemplateRef<{ $implicit: CompetitionTableRow; value: string }>;
   @ViewChild('yellowCardHeaderTemplate', { static: true }) yellowCardHeaderTemplate!: TemplateRef<void>;
   @ViewChild('redCardHeaderTemplate', { static: true }) redCardHeaderTemplate!: TemplateRef<void>;
@@ -38,11 +41,15 @@ export class CompetitionDetails implements OnInit {
   displayedColumns: ColumnDef<CompetitionTableRow>[] = [];
 
   tableRows = signal<CompetitionTableRow[]>([]);
+  cupBracket = signal<CupBracket | null>(null);
+  currentUserTeamID = signal<string | null>(null);
+  private destroy$ = new Subject<void>();
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private competitionService: CompetitionService
+    private competitionService: CompetitionService,
+    private teamsService: TeamsService
   ) {}
 
   ngOnInit(): void {
@@ -65,18 +72,48 @@ export class CompetitionDetails implements OnInit {
       this.error.set('No competition ID provided');
       this.loading.set(false);
     }
+
+    this.currentUserTeamID.set(this.teamsService.CurrentTeam?.teamID ?? null);
+    this.teamsService.currentTeamObservable
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(team => this.currentUserTeamID.set(team.teamID ?? null));
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   loadCompetition(id: string): void {
     this.loading.set(true);
     this.error.set(null);
+    this.competition.set(null);
+    this.tableRows.set([]);
+    this.cupBracket.set(null);
 
-    forkJoin({
-      competition: this.competitionService.getById(id),
-      tableRows: this.competitionService.getCompetitionTable(id)
-    }).subscribe({
-      next: ({ competition, tableRows }) => {
+    this.competitionService.getById(id).pipe(
+      switchMap(competition => {
         this.competition.set(competition);
+
+        if (competition.competitionType === CompetitionType.Knockout) {
+          return this.competitionService.getCupBracket(id).pipe(
+            map(cupBracket => ({
+              cupBracket,
+              tableRows: [] as CompetitionTableRow[]
+            }))
+          );
+        }
+
+        return this.competitionService.getCompetitionTable(id).pipe(
+          map(tableRows => ({
+            cupBracket: null as CupBracket | null,
+            tableRows
+          }))
+        );
+      })
+    ).subscribe({
+      next: ({ cupBracket, tableRows }) => {
+        this.cupBracket.set(cupBracket);
         this.tableRows.set(tableRows);
         this.loading.set(false);
       },
@@ -98,5 +135,17 @@ export class CompetitionDetails implements OnInit {
     if (row.teamID) {
       this.router.navigate(['/team', row.teamID, 'squad']);
     }
+  }
+
+  openTeamSquadByID(teamID: string): void {
+    this.router.navigate(['/team', teamID, 'squad']);
+  }
+
+  isCupCompetition(): boolean {
+    return this.competition()?.competitionType === CompetitionType.Knockout;
+  }
+
+  isUserTeam(teamID?: string | null): boolean {
+    return !!teamID && teamID === this.currentUserTeamID();
   }
 }
