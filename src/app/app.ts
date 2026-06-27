@@ -33,7 +33,7 @@ import { TeamsService } from './services/teams.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class App {
-  protected readonly title = signal('FootballOpenFrontend');
+  protected readonly title = signal('SoccerOpenSimulator');
   isMobile = false;
   private destroy$ = new Subject<void>();
   role: string | null | undefined;
