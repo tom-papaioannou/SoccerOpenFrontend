@@ -29,9 +29,9 @@ describe('App Routes', () => {
     expect(loginRoute?.canActivate).toContain(guestsGuard);
   });
 
-  it('should have authenticationGuard on register route', () => {
+  it('should have guestsGuard on register route', () => {
     const registerRoute = routes.find(r => r.path === 'register');
-    expect(registerRoute?.canActivate).toContain(authenticationGuard);
+    expect(registerRoute?.canActivate).toContain(guestsGuard);
   });
 
   it('should have authenticationGuard on competitions-management route', () => {
@@ -86,10 +86,11 @@ describe('App Routes', () => {
     const routesWithComponents = routes.filter(r => 
       r.component !== undefined && 
       r.path !== '' &&
-      r.path !== 'login'
+      r.path !== 'login' &&
+      r.path !== 'register'
     );
     
-    // All routed screens except login use authenticated access.
+    // All routed screens except login/register use authenticated access.
     routesWithComponents.forEach(route => {
       expect(route.canActivate).toContain(authenticationGuard);
     });

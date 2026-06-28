@@ -1,56 +1,282 @@
-<div class="w-full h-full flex flex-row justify-center items-center">
-    <mat-card class="overlay" appearance="outlined">
-        <mat-card-header class="flex justify-center pb-4">
-            <mat-card-title class="text-2xl font-bold text-white">Registration Card</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-            <div class="py-8">
-                <form [formGroup]="registerForm" (ngSubmit)="register()">
-                    <div class="w-96 flex flex-col justify-center items-center" style="min-height: 450px;">
-                        <app-form-textfield class="w-full px-8" formControlName="username" labelText="Username" placeHolderText="Username"></app-form-textfield>
-                        @if (registerForm.get('username')?.invalid && registerForm.get('username')?.touched) {
-                            <div class="w-full px-8 text-red-600 text-sm -mt-2 mb-2">
-                                Username is required
-                            </div>
-                        }
-                        <app-form-textfield class="w-full px-8" formControlName="password" type="password" [showToggle]="true" labelText="Password" placeHolderText="Password"></app-form-textfield>
-                        @if (registerForm.get('password')?.invalid && registerForm.get('password')?.touched) {
-                            <div class="w-full px-8 text-red-600 text-sm -mt-2 mb-2">
-                                Password is required
-                            </div>
-                        }
-                        <app-form-textfield class="w-full px-8" formControlName="confirmPassword" type="password" [showToggle]="true" labelText="Confirm Password" placeHolderText="Confirm Password"></app-form-textfield>
-                        @if (registerForm.get('confirmPassword')?.invalid && registerForm.get('confirmPassword')?.touched) {
-                            <div class="w-full px-8 text-red-600 text-sm -mt-2 mb-2">
-                                Confirm Password is required
-                            </div>
-                        }
-                        @if (passwordMismatch) {
-                            <div class="w-full px-8 text-red-600 text-sm -mt-2 mb-2">
-                                Passwords do not match
-                            </div>
-                        }
-                        <app-form-dropdown class="w-full px-8" formControlName="role" labelText="Role" placeHolderText="Select Role" [options]="roleOptions"></app-form-dropdown>
-                        @if (registerForm.get('role')?.invalid && registerForm.get('role')?.touched) {
-                            <div class="w-full px-8 text-red-600 text-sm -mt-2 mb-2">
-                                Role is required
-                            </div>
-                        }
-                        <app-form-dropdown class="w-full px-8" formControlName="serverID" labelText="Server" placeHolderText="Select Server" [options]="serverOptions"></app-form-dropdown>
-                        @if (registerForm.get('serverID')?.invalid && registerForm.get('serverID')?.touched) {
-                            <div class="w-full px-8 text-red-600 text-sm -mt-2 mb-2">
-                                Server is required
-                            </div>
-                        }
-                    </div>
-                </form>
-            </div>
-            <div class="flex flex-col justify-center p-8">
-                <div class="py-4">
-                    <app-action-button (clicked)="register()" [buttonText]="'Register'"></app-action-button>
-                </div>
-            </div>
-        </mat-card-content>
-    </mat-card>
-</div>
+<div class="registration-page">
+  <app-card class="registration-shell" appearance="outlined">
+    <div class="registration-content">
+      <header class="registration-header">
+        <div>
+          <h1>Join SoccerOS</h1>
+          <p>{{ step === 1 ? 'Create account details' : 'Choose your club' }}</p>
+        </div>
 
+        <div class="step-indicator" aria-label="Registration steps">
+          <div class="step-pill" [class.active]="step === 1" [class.done]="step === 2">
+            <span>1</span>
+            Account details
+          </div>
+          <div class="step-line"></div>
+          <div class="step-pill" [class.active]="step === 2">
+            <span>2</span>
+            Choose your team
+          </div>
+        </div>
+      </header>
+
+      @if (step === 1) {
+        <section class="registration-step">
+          @if (accountError) {
+            <div class="registration-error">{{ accountError }}</div>
+          }
+
+          <form [formGroup]="accountForm" class="account-form">
+            <app-form-textfield
+              class="form-control"
+              formControlName="username"
+              labelText="Username"
+              placeHolderText="Username"
+              (focusout)="checkUsernameAvailability()">
+            </app-form-textfield>
+            @if (accountForm.get('username')?.hasError('required') && accountForm.get('username')?.touched) {
+              <div class="field-message error">Username is required.</div>
+            }
+            @if (accountForm.get('username')?.hasError('maxlength') && accountForm.get('username')?.touched) {
+              <div class="field-message error">Username must be 50 characters or fewer.</div>
+            }
+            @if (usernameMessage) {
+              <div class="field-message" [class.success]="usernameStatus === 'available'" [class.error]="usernameStatus !== 'available'">
+                {{ usernameMessage }}
+              </div>
+            }
+            @for (message of fieldApiErrors('username'); track message) {
+              <div class="field-message error">{{ message }}</div>
+            }
+
+            <app-form-textfield
+              class="form-control"
+              formControlName="email"
+              type="email"
+              labelText="Email"
+              placeHolderText="Email"
+              (focusout)="checkEmailAvailability()">
+            </app-form-textfield>
+            @if (accountForm.get('email')?.hasError('required') && accountForm.get('email')?.touched) {
+              <div class="field-message error">Email is required.</div>
+            }
+            @if (accountForm.get('email')?.hasError('email') && accountForm.get('email')?.touched) {
+              <div class="field-message error">Enter a valid email address.</div>
+            }
+            @if (emailMessage) {
+              <div class="field-message" [class.success]="emailStatus === 'available'" [class.error]="emailStatus !== 'available'">
+                {{ emailMessage }}
+              </div>
+            }
+            @for (message of fieldApiErrors('email'); track message) {
+              <div class="field-message error">{{ message }}</div>
+            }
+
+            <app-form-textfield
+              class="form-control"
+              formControlName="password"
+              type="password"
+              [showToggle]="true"
+              labelText="Password"
+              placeHolderText="Password">
+            </app-form-textfield>
+            @if (accountForm.get('password')?.hasError('required') && accountForm.get('password')?.touched) {
+              <div class="field-message error">Password is required.</div>
+            }
+            @if (accountForm.get('password')?.touched) {
+              @for (message of passwordRuleMessages; track message) {
+                <div class="field-message error">{{ message }}</div>
+              }
+            }
+            @for (message of fieldApiErrors('password'); track message) {
+              <div class="field-message error">{{ message }}</div>
+            }
+
+            <app-form-textfield
+              class="form-control"
+              formControlName="confirmPassword"
+              type="password"
+              [showToggle]="true"
+              labelText="Confirm password"
+              placeHolderText="Confirm password">
+            </app-form-textfield>
+            @if (accountForm.get('confirmPassword')?.hasError('required') && accountForm.get('confirmPassword')?.touched) {
+              <div class="field-message error">Confirm password is required.</div>
+            }
+            @if (passwordMismatch) {
+              <div class="field-message error">Passwords do not match.</div>
+            }
+            @for (message of fieldApiErrors('confirmPassword'); track message) {
+              <div class="field-message error">{{ message }}</div>
+            }
+
+            <app-form-dropdown
+              class="form-control"
+              formControlName="serverID"
+              labelText="Server"
+              placeHolderText="Select server"
+              [options]="serverOptions">
+            </app-form-dropdown>
+            @if (loadingServers) {
+              <div class="field-message info">Loading servers...</div>
+            }
+            @if (accountForm.get('serverID')?.hasError('required') && accountForm.get('serverID')?.touched) {
+              <div class="field-message error">Server is required.</div>
+            }
+            @for (message of fieldApiErrors('serverID'); track message) {
+              <div class="field-message error">{{ message }}</div>
+            }
+          </form>
+
+          <div class="registration-actions end">
+            <app-action-button
+              [buttonText]="checkingAccountOnContinue ? 'Checking...' : 'Continue'"
+              [disabled]="!canContinueAccount"
+              (clicked)="continueToTeamStep()">
+            </app-action-button>
+          </div>
+        </section>
+      } @else {
+        <section class="registration-step">
+          @if (teamError) {
+            <div class="registration-error">{{ teamError }}</div>
+          }
+
+          <form [formGroup]="teamForm" class="nation-form">
+            <app-form-dropdown
+              class="form-control"
+              formControlName="nationID"
+              labelText="Nation"
+              placeHolderText="Select nation"
+              [options]="nationOptions">
+            </app-form-dropdown>
+            @if (loadingNations) {
+              <div class="field-message info">Loading nations...</div>
+            }
+            @if (teamForm.get('nationID')?.hasError('required') && teamForm.get('nationID')?.touched) {
+              <div class="field-message error">Nation is required.</div>
+            }
+          </form>
+
+          <div class="team-selection-layout">
+            <section class="team-list-panel">
+              <div class="panel-heading">
+                <h2>Teams</h2>
+                @if (teams.length > 0) {
+                  <span>{{ availableTeamsCount }} available</span>
+                }
+              </div>
+
+              @if (!selectedNationID) {
+                <div class="empty-state">Select a nation to view teams.</div>
+              } @else if (loadingTeams) {
+                <div class="empty-state">Loading teams...</div>
+              } @else if (teams.length === 0) {
+                <div class="empty-state">No Priority 2 teams are available for this nation.</div>
+              } @else {
+                <div class="team-list">
+                  @for (team of teams; track team.teamID) {
+                    <button
+                      type="button"
+                      class="team-row"
+                      [class.selected]="selectedTeam?.teamID === team.teamID"
+                      [class.unavailable]="!team.isAvailable"
+                      [attr.aria-disabled]="!team.isAvailable"
+                      (click)="selectTeam(team)">
+                      <span class="team-main">
+                        <span class="team-name">{{ team.name ?? 'Unnamed team' }}</span>
+                        <span class="team-meta">{{ team.competitionName ?? 'Competition' }}</span>
+                      </span>
+                      @if (!team.isAvailable) {
+                        <span class="team-status unavailable-label">Already managed</span>
+                      } @else {
+                        <span class="team-status">Available</span>
+                      }
+                    </button>
+                  }
+                </div>
+              }
+            </section>
+
+            <section class="team-details-panel">
+              @if (selectedTeam) {
+                <div class="selected-team-header">
+                  <img
+                    [src]="selectedTeam.badgeUrl || 'assets/images/Blue_Team_Logo.png'"
+                    [alt]="(selectedTeam.name ?? 'Selected team') + ' badge'">
+                  <div>
+                    <h2>{{ selectedTeam.name }}</h2>
+                    <p>{{ selectedTeam.nationName }} · {{ selectedTeam.competitionName }}</p>
+                  </div>
+                </div>
+
+                <div class="team-info-grid">
+                  <div>
+                    <p class="info-label">Nation</p>
+                    <p>{{ selectedTeam.nationName }}</p>
+                  </div>
+                  <div>
+                    <p class="info-label">Competition</p>
+                    <p>{{ selectedTeam.competitionName ?? '-' }}</p>
+                  </div>
+                  <div>
+                    <p class="info-label">Stadium</p>
+                    <p>{{ selectedTeam.stadium?.name ?? '-' }}</p>
+                  </div>
+                  <div>
+                    <p class="info-label">Capacity</p>
+                    <p>{{ selectedTeam.stadium?.capacity ?? '-' }}</p>
+                  </div>
+                  <div>
+                    <p class="info-label">City</p>
+                    <p>{{ selectedTeam.stadium?.city ?? '-' }}</p>
+                  </div>
+                  <div>
+                    <p class="info-label">Code</p>
+                    <p>{{ selectedTeam.code || '-' }}</p>
+                  </div>
+                </div>
+
+                <section class="kit-section">
+                  <p class="info-label">Kits</p>
+                  <div class="kit-list">
+                    <div class="kit-preview">
+                      <span>Home</span>
+                      <app-team-kit [kit]="selectedTeam.kit" [isHome]="true"></app-team-kit>
+                    </div>
+                    <div class="kit-preview">
+                      <span>Away</span>
+                      <app-team-kit [kit]="selectedTeam.kit" [isHome]="false"></app-team-kit>
+                    </div>
+                    @if ($any(selectedTeam.kit)?.thirdShirtColor) {
+                      <div class="kit-preview">
+                        <span>Third</span>
+                        <div class="third-kit" [style.background-color]="$any(selectedTeam.kit)?.thirdShirtColor"></div>
+                      </div>
+                    }
+                  </div>
+                </section>
+              } @else {
+                <div class="empty-state details-empty">Select a team to continue.</div>
+              }
+            </section>
+          </div>
+
+          <div class="registration-actions split">
+            <app-action-button
+              buttonText="Back"
+              variant="secondary"
+              [disabled]="submitting"
+              (clicked)="goBackToAccountStep()">
+            </app-action-button>
+            <app-action-button
+              [buttonText]="submitting ? 'Creating...' : 'Create account'"
+              [disabled]="!canCreateAccount"
+              (clicked)="createAccount()">
+            </app-action-button>
+          </div>
+        </section>
+      }
+    </div>
+  </app-card>
+</div>

@@ -13,7 +13,6 @@ import { Tactics } from './components/team/tactics/tactics';
 import { TacticsDetail } from './components/team/tactics-detail/tactics-detail';
 import { Fixtures } from './components/team/fixtures/fixtures';
 import { Information } from './components/team/information/information';
-import { Register } from './components/register/register';
 import { Servers } from './components/servers/servers';
 import { ServerDetails } from './components/server-details/server-details';
 import { guestsGuard } from './guards/guests-guard';
@@ -24,7 +23,11 @@ export const routes: Routes = [
     { path: 'home', canActivate: [authenticationGuard], component: Home },
     // { path: 'error', component: Home },
     { path: 'login', canActivate: [guestsGuard], component: Login },
-    { path: 'register', canActivate: [authenticationGuard], component: Register },
+    {
+        path: 'register',
+        canActivate: [guestsGuard],
+        loadComponent: () => import('./components/register/register').then(m => m.Register)
+    },
     { path: 'servers', canActivate: [authenticationGuard], component: Servers },
     { path: 'server/:id', canActivate: [authenticationGuard], component: ServerDetails },
     {
