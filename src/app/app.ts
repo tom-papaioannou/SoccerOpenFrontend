@@ -56,7 +56,7 @@ export class App {
 
     this.authService.server$.subscribe((value) => {
       this.currentServerID = value ?? '';
-      this.cdr.detectChanges();
+      this.cdr.markForCheck();
     });
 
     this.signedIn = this.authService.isLoggedIn();
@@ -92,7 +92,7 @@ export class App {
             }
           });
         }
-        this.cdr.detectChanges();
+        this.cdr.markForCheck();
       }
     });
   }

@@ -16,7 +16,7 @@
                 <app-action-button (clicked)="login()" [buttonText]="'Sign In'"></app-action-button>
             </div>
             <div class="py-2">
-                <app-link-button [buttonText]="'Register'"></app-link-button>
+                <app-link-button [buttonText]="'Register'" (clicked)="openRegister()"></app-link-button>
             </div>
         </div>
     </app-card>

@@ -57,4 +57,8 @@ export class Login{
       }
     });
   }
+
+  openRegister(): void {
+    this.router.navigate(['/register']);
+  }
 }

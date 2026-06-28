@@ -9,6 +9,7 @@ import { BehaviorSubject, Observable, take, tap } from 'rxjs';
 import { environment } from '../../environments/environment.development';
 import { jwtDecode } from 'jwt-decode';
 import { ServerService } from './server.service';
+import { CompleteRegistrationResponse } from '../models/registration.model';
 
 type JwtPayload = { exp?: number; role?: string; };
 
@@ -133,6 +134,11 @@ export class AuthService {
   afterSuccessfulLogin(result: any){
     this.loggedIn = true;
     this.emitChange();
+  }
+
+  afterSuccessfulRegistration(result: CompleteRegistrationResponse): void {
+    this.setToken(result.token);
+    this.afterSuccessfulLogin(result);
   }
 
   logOut() {
