@@ -1,6 +1,6 @@
 {
-  "name": "football-open-frontend",
-  "version": "0.0.0",
+  "name": "soccer-open-frontend",
+  "version": "0.9.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
