@@ -4,7 +4,7 @@
  */
 
 import { CommonModule } from '@angular/common';
-import { Component, DestroyRef, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   AbstractControl,
@@ -45,7 +45,8 @@ type RegistrationStep = 1 | 2;
     TeamKit
   ],
   templateUrl: './register.html',
-  styleUrl: './register.css'
+  styleUrl: './register.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class Register implements OnInit {
   accountForm: FormGroup;
@@ -84,7 +85,8 @@ export class Register implements OnInit {
     private readonly router: Router,
     private readonly authService: AuthService,
     private readonly registrationService: RegistrationService,
-    private readonly snackBar: MatSnackBar
+    private readonly snackBar: MatSnackBar,
+    private readonly cdr: ChangeDetectorRef
   ) {
     this.accountForm = this.fb.group(
       {
@@ -326,6 +328,7 @@ export class Register implements OnInit {
 
           this.step = 2;
           this.loadNations();
+          this.cdr.detectChanges();
         },
         error: () => {
           this.checkingAccountOnContinue = false;
