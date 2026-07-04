@@ -1,0 +1,47 @@
+.admin-register-host {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.admin-register-host-header {
+  margin-bottom: 1.5rem;
+}
+
+.admin-register-host-form {
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 0.5rem;
+  display: grid;
+  gap: 1rem;
+  padding: 1.25rem;
+}
+
+.admin-register-host-actions {
+  justify-self: end;
+  width: min(100%, 12rem);
+}
+
+.admin-register-host-alert {
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+  padding: 0.85rem 1rem;
+}
+
+.admin-register-host-alert-error {
+  background: rgba(127, 29, 29, 0.38);
+  border: 1px solid rgba(252, 165, 165, 0.5);
+  color: #fecaca;
+}
+
+.admin-register-host-alert-success {
+  background: rgba(20, 83, 45, 0.38);
+  border: 1px solid rgba(134, 239, 172, 0.5);
+  color: #bbf7d0;
+}
+
+@media (max-width: 640px) {
+  .admin-register-host-actions {
+    justify-self: stretch;
+    width: 100%;
+  }
+}

@@ -24,6 +24,11 @@ describe('App Routes', () => {
     expect(route?.canActivate).toContain(authenticationGuard);
   });
 
+  it('should have authenticationGuard on admin host registration route', () => {
+    const route = routes.find(r => r.path === 'admin/register-host');
+    expect(route?.canActivate).toContain(authenticationGuard);
+  });
+
   it('should have guestsGuard on login route', () => {
     const loginRoute = routes.find(r => r.path === 'login');
     expect(loginRoute?.canActivate).toContain(guestsGuard);

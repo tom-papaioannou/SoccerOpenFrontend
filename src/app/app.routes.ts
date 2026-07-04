@@ -36,6 +36,11 @@ export const routes: Routes = [
         loadComponent: () => import('./components/admin-panel/admin-panel').then(m => m.AdminPanel)
     },
     {
+        path: 'admin/register-host',
+        canActivate: [authenticationGuard],
+        loadComponent: () => import('./components/admin-register-host/admin-register-host').then(m => m.AdminRegisterHost)
+    },
+    {
         path: 'competitions-management',
         canActivate: [authenticationGuard],
         loadComponent: () => import('./components/competitions-management/competitions-management').then(m => m.CompetitionsManagement)

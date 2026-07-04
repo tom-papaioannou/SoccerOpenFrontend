@@ -9,7 +9,11 @@ import { BehaviorSubject, Observable, take, tap } from 'rxjs';
 import { environment } from '../../environments/environment.development';
 import { jwtDecode } from 'jwt-decode';
 import { ServerService } from './server.service';
-import { CompleteRegistrationResponse } from '../models/registration.model';
+import {
+  AdminHostRegistrationRequest,
+  AuthRegistrationResponse,
+  CompleteRegistrationResponse
+} from '../models/registration.model';
 
 type JwtPayload = { exp?: number; role?: string; };
 
@@ -123,8 +127,12 @@ export class AuthService {
     );
   }
 
-  register(data: any): Observable<any>{
-    return this.http.post<{ token: string }>(`${environment.apiUrl}/api/auth/register`, data);
+  register(data: { username: string; password: string; serverID: string }): Observable<AuthRegistrationResponse>{
+    return this.http.post<AuthRegistrationResponse>(`${environment.apiUrl}/api/auth/register`, data);
+  }
+
+  registerHostByAdmin(data: AdminHostRegistrationRequest): Observable<AuthRegistrationResponse> {
+    return this.http.post<AuthRegistrationResponse>(`${environment.apiUrl}/api/auth/registerByAdmin`, data);
   }
 
   emitChange(){
