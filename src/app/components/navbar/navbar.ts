@@ -49,10 +49,10 @@ export class NavbarComponent {
   testConnection(){
     this.authService.testConnection().subscribe({
       next: (result) => {
-        debugger;
+        console.log("Connection test result:", result);
       },
       error: (error) => {
-        debugger
+        console.error("Connection test error:", error);
       }
     });
   }
