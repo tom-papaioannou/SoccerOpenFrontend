@@ -1,0 +1,48 @@
+<section class="admin-register-host p-4">
+  <header class="admin-register-host-header">
+    <h1 class="text-2xl font-bold">Register Host</h1>
+  </header>
+
+  @if (errorMessage) {
+    <div class="admin-register-host-alert admin-register-host-alert-error">
+      {{ errorMessage }}
+    </div>
+  }
+
+  @if (successMessage) {
+    <div class="admin-register-host-alert admin-register-host-alert-success">
+      {{ successMessage }}
+    </div>
+  }
+
+  <form class="admin-register-host-form" [formGroup]="hostForm">
+    <app-form-textfield
+      [labelText]="'Username'"
+      [placeHolderText]="'Enter username'"
+      [type]="'text'"
+      formControlName="username">
+    </app-form-textfield>
+
+    <app-form-textfield
+      [labelText]="'Password'"
+      [placeHolderText]="'Enter password'"
+      [type]="'password'"
+      formControlName="password">
+    </app-form-textfield>
+
+    <app-form-dropdown
+      [labelText]="'Server'"
+      [placeHolderText]="loadingServers ? 'Loading servers...' : 'Select server'"
+      [options]="serverOptions"
+      formControlName="serverID">
+    </app-form-dropdown>
+
+    <div class="admin-register-host-actions">
+      <app-action-button
+        [buttonText]="submitting ? 'Creating...' : 'Create Host'"
+        [disabled]="!canSubmit"
+        (clicked)="createHost()">
+      </app-action-button>
+    </div>
+  </form>
+</section>

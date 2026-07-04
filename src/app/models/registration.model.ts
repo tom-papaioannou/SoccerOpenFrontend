@@ -55,6 +55,17 @@ export interface CompleteRegistrationResponse {
   teamName?: string | null;
 }
 
+export interface AdminHostRegistrationRequest {
+  username: string;
+  password: string;
+  serverID: string;
+}
+
+export interface AuthRegistrationResponse {
+  token: string;
+  role: string;
+}
+
 export interface RegistrationApiError {
   code?: string;
   message?: string;
