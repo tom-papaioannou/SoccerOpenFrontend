@@ -69,7 +69,7 @@ export class App {
             this.teamsService.CurrentTeam = result;
           },
           error: (error) => {
-            debugger
+            console.error("Error fetching current team:", error);
           }
         });
       }
@@ -88,7 +88,7 @@ export class App {
               this.teamsService.CurrentTeam = result;
             },
             error: (error) => {
-              debugger
+              console.error("Error fetching current team:", error);
             }
           });
         }

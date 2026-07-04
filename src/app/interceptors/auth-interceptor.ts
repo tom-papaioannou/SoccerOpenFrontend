@@ -46,7 +46,6 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
       return auth.refresh().pipe(
         switchMap(res => {
-          debugger
           isRefreshing = false;
 
           const retry = req.clone({
