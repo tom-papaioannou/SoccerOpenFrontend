@@ -22,6 +22,15 @@ export interface RefreshResponse {
   role: string;
 }
 
+export interface CurrentUserSummary {
+  username: string;
+  role: string;
+  serverID?: string | null;
+  serverName?: string | null;
+  teamID?: string | null;
+  teamName?: string | null;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -30,9 +39,11 @@ export class AuthService {
   loggedIn = sessionStorage.getItem("token") !== null;
   private tokenSubject = new BehaviorSubject<string | null>(sessionStorage.getItem('token'));
   token$ = this.tokenSubject.asObservable();
-  currentServerID: string | null = null;
+  currentServerID: string | null = sessionStorage.getItem('serverID');
   private serverSubject = new BehaviorSubject<string | null>(sessionStorage.getItem('serverID'));
   server$ = this.serverSubject.asObservable();
+  private currentUserSubject = new BehaviorSubject<CurrentUserSummary | null>(null);
+  currentUser$ = this.currentUserSubject.asObservable();
 
   constructor(
     private readonly http: HttpClient,
@@ -102,6 +113,33 @@ export class AuthService {
     });
   }
 
+  getCurrentUserSummary(): Observable<CurrentUserSummary> {
+    return this.http.get<CurrentUserSummary>(`${environment.apiUrl}/api/auth/me`);
+  }
+
+  loadCurrentUserSummary(): void {
+    if (!this.isLoggedIn()) {
+      this.currentUserSubject.next(null);
+      return;
+    }
+
+    this.getCurrentUserSummary().pipe(take(1)).subscribe({
+      next: (summary) => {
+        this.currentUserSubject.next(summary);
+
+        if (summary.serverID) {
+          this.currentServerID = summary.serverID;
+          sessionStorage.setItem('serverID', summary.serverID);
+          this.serverSubject.next(summary.serverID);
+        }
+      },
+      error: (err) => {
+        console.error('Failed to fetch current user summary', err);
+        this.currentUserSubject.next(null);
+      }
+    });
+  }
+
   private isTokenExpired(token: string): boolean {
     const payload = jwtDecode<JwtPayload>(token);
     if (!payload.exp) return true;
@@ -165,6 +203,7 @@ export class AuthService {
     sessionStorage.removeItem('serverID');
     this.tokenSubject.next(null);
     this.serverSubject.next(null);
+    this.currentUserSubject.next(null);
     this.currentServerID = null;
     this.emitChange();
   }
