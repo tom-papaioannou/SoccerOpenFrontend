@@ -42,6 +42,11 @@ export interface Competition {
 
 export interface CompetitionParent {
   name?: string | null;
+  iso2?: string | null;
+  iSO2?: string | null;
+  isO2?: string | null;
+  code?: string | null;
+  flagUrl?: string | null;
 }
 
 export interface CompetitionTableRow {

@@ -35,7 +35,13 @@
               type="button"
               class="competition-parent-link"
               (click)="openNationCompetitions(competition()!)">
-              {{ competition()!.nation!.name }}
+              <span>{{ competition()!.nation!.name }}</span>
+              @if (nationFlagUrl(); as flagUrl) {
+                <img
+                  class="competition-parent-flag"
+                  [src]="flagUrl"
+                  alt="">
+              }
             </button>
           }
         </div>
