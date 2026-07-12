@@ -9,7 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { Router, RouterModule } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
+import { AuthService, CurrentUserSummary } from '../../services/auth.service';
 
 @Component({
   selector: 'app-navbar',
@@ -29,6 +29,7 @@ export class NavbarComponent {
   @Input() isMobile = false;
   role = '';
   loggedIn: boolean;
+  currentUser: CurrentUserSummary | null = null;
 
   constructor(
     private router: Router,
@@ -37,13 +38,48 @@ export class NavbarComponent {
   ){
     this.loggedIn = this.authService.isLoggedIn();
     this.role = this.authService.getRole();
+
+    this.authService.currentUser$.subscribe({
+      next: (currentUser) => {
+        this.currentUser = currentUser;
+        this.cdr.markForCheck();
+      }
+    });
+
+    if (this.loggedIn) {
+      this.authService.loadCurrentUserSummary();
+    }
+
     this.authService.authenticationChange?.subscribe({
       next:() => {
         this.role = this.authService.getRole();
         this.loggedIn = this.authService.isLoggedIn();
-        this.cdr.detectChanges();
+        if (this.loggedIn) {
+          this.authService.loadCurrentUserSummary();
+        } else {
+          this.currentUser = null;
+        }
+        this.cdr.markForCheck();
       }
     });
+  }
+
+  get profileSubtitle(): string {
+    const role = this.currentUser?.role || this.role;
+
+    if (role === 'Admin') {
+      return 'Admin';
+    }
+
+    if (role === 'Host') {
+      return `${this.currentUser?.serverName ?? 'Server'} - Host`;
+    }
+
+    if (role === 'User') {
+      return `${this.currentUser?.teamName ?? 'Team'} - Manager`;
+    }
+
+    return role;
   }
 
   testConnection(){

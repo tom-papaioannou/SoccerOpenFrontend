@@ -25,7 +25,7 @@ html, body { height: 100%; }
 
 body {
   padding: 0;
-  background-image: url('assets/images/stadium-bg-landscape.png');
+  background-image: url('assets/images/stadium-bg-landscape.webp');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

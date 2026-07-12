@@ -1,6 +1,6 @@
 .brand {
   font-weight: 500;
-  font-size: 20px;
+  font-size: 24px;
 }
 
 .spacer {
@@ -10,5 +10,63 @@
 mat-toolbar {
   display: flex;
   align-items: center;
+  position: relative;
   background-color: var(--color-blue-500);
+}
+
+.topbar-profile {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 360px;
+  max-width: min(360px, calc(100vw - 220px));
+  min-height: 44px;
+  padding: 6px 18px;
+  border-radius: 8px;
+  background: #d8f4ff;
+  color: #073144;
+  line-height: 1.1;
+  overflow: hidden;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.7);
+}
+
+.profile-username,
+.profile-role {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.profile-username {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.profile-role {
+  margin-top: 2px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+@media (max-width: 640px) {
+  .topbar-profile {
+    min-width: 132px;
+    max-width: calc(100vw - 176px);
+    padding-inline: 12px;
+  }
+
+  .profile-username {
+    font-size: 13px;
+  }
+
+  .profile-role {
+    font-size: 11px;
+  }
 }

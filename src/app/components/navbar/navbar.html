@@ -1,5 +1,15 @@
 <mat-toolbar>
-  <span class="brand">SoccerOS</span>
+  <div class="h-[50px] flex items-center justify-center">
+    <span class="brand hidden md:inline">SoccerOS</span>
+    <img src="assets/images/SoccerOS.webp" alt="SoccerOS Logo" class="h-[70%]" />
+  </div>
+
+  @if (loggedIn && currentUser) {
+    <div class="topbar-profile" aria-label="Current user">
+      <span class="profile-username">{{ currentUser.username }}</span>
+      <span class="profile-role">{{ profileSubtitle }}</span>
+    </div>
+  }
 
   <span class="spacer"></span>
   @if(isMobile){
