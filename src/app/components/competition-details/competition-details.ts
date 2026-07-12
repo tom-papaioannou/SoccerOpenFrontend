@@ -15,6 +15,7 @@ import { Competition, CompetitionTableRow, CompetitionType, CupBracket } from '.
 import { Card } from '../shared/cards/card/card';
 import { CupBracketComponent } from '../cup-bracket/cup-bracket';
 import { TeamsService } from '../../services/teams.service';
+import { getNationFlagUrl } from '../../utils/nation-map-utils';
 
 @Component({
   selector: 'app-competition-details',
@@ -129,6 +130,25 @@ export class CompetitionDetails implements OnInit, OnDestroy {
     if (competition.nationID) {
       this.router.navigate(['/nations', competition.nationID, 'competitions']);
     }
+  }
+
+  nationFlagUrl(): string | null {
+    const nation = this.competition()?.nation;
+
+    if (!nation?.name) {
+      return null;
+    }
+
+    return getNationFlagUrl({
+      nationID: '',
+      name: nation.name,
+      iso2: nation.iso2 ?? undefined,
+      iSO2: nation.iSO2 ?? undefined,
+      isO2: nation.isO2 ?? undefined,
+      code: nation.code ?? undefined,
+      flagUrl: nation.flagUrl ?? null,
+      continentID: ''
+    });
   }
 
   openTeamSquad(row: CompetitionTableRow): void {
