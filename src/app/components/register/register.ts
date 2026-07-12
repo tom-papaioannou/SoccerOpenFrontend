@@ -328,7 +328,7 @@ export class Register implements OnInit {
 
           this.step = 2;
           this.loadNations();
-          this.cdr.detectChanges();
+          this.cdr.markForCheck();
         },
         error: () => {
           this.checkingAccountOnContinue = false;
@@ -378,6 +378,7 @@ export class Register implements OnInit {
     };
 
     this.submitting = true;
+    this.cdr.markForCheck();
 
     this.registrationService
       .completeRegistration(request)
@@ -397,6 +398,7 @@ export class Register implements OnInit {
         error: error => {
           this.submitting = false;
           this.handleRegistrationError(error);
+          this.cdr.markForCheck();
         }
       });
   }
@@ -479,10 +481,13 @@ export class Register implements OnInit {
           if (this.serverOptions.length === 0) {
             this.accountError = 'No servers are currently open for new managers.';
           }
+
+          this.cdr.markForCheck();
         },
         error: () => {
           this.loadingServers = false;
           this.accountError = 'Failed to load servers. Please try again later.';
+          this.cdr.markForCheck();
         }
       });
   }
@@ -497,6 +502,7 @@ export class Register implements OnInit {
     this.teamError = null;
     this.nationOptions = [];
     this.resetTeamSelection(false);
+    this.cdr.markForCheck();
 
     this.nationsRequest = this.registrationService
       .getNations(this.selectedServerID)
@@ -508,10 +514,12 @@ export class Register implements OnInit {
             label: nation.name
           }));
           this.loadingNations = false;
+          this.cdr.markForCheck();
         },
         error: () => {
           this.loadingNations = false;
           this.teamError = 'Failed to load nations for this server.';
+          this.cdr.markForCheck();
         }
       });
   }
@@ -524,6 +532,7 @@ export class Register implements OnInit {
     this.teamsRequest?.unsubscribe();
     this.loadingTeams = true;
     this.teamError = null;
+    this.cdr.markForCheck();
 
     this.teamsRequest = this.registrationService
       .getRegistrationTeams(this.selectedServerID, nationID)
@@ -540,10 +549,13 @@ export class Register implements OnInit {
             this.selectedTeam = null;
             this.teamError = 'This team is no longer available. Please choose another team.';
           }
+
+          this.cdr.markForCheck();
         },
         error: () => {
           this.loadingTeams = false;
           this.teamError = 'Failed to load teams for this nation.';
+          this.cdr.markForCheck();
         }
       });
   }
@@ -637,10 +649,12 @@ export class Register implements OnInit {
   private setUsernameStatus(status: AvailabilityState, message: string): void {
     this.usernameStatus = status;
     this.usernameMessage = message;
+    this.cdr.markForCheck();
   }
 
   private setEmailStatus(status: AvailabilityState, message: string): void {
     this.emailStatus = status;
     this.emailMessage = message;
+    this.cdr.markForCheck();
   }
 }
