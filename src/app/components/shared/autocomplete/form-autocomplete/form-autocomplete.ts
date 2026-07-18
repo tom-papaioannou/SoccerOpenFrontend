@@ -11,6 +11,7 @@ import {
   Injector,
   Input,
   OnChanges,
+  OnDestroy,
   OnInit,
   SimpleChanges,
   ViewChild
@@ -49,7 +50,7 @@ export type FormAutocompleteOption = Record<string, unknown>;
     }
   ]
 })
-export class FormAutocomplete implements ControlValueAccessor, OnChanges, OnInit {
+export class FormAutocomplete implements ControlValueAccessor, OnChanges, OnDestroy, OnInit {
   @Input() labelText = '';
   @Input() placeHolderText = '';
   @Input() appearance: MatFormFieldAppearance = 'fill';
@@ -71,6 +72,8 @@ export class FormAutocomplete implements ControlValueAccessor, OnChanges, OnInit
   private onTouched: () => void = () => {};
   private userIsEditing = false;
   private skipNextFocusOpen = false;
+  private blurRestoreTimer?: ReturnType<typeof setTimeout>;
+  private selectionVersion = 0;
 
   constructor(private readonly injector: Injector) {}
 
@@ -92,6 +95,10 @@ export class FormAutocomplete implements ControlValueAccessor, OnChanges, OnInit
       }
       this.filterOptions();
     }
+  }
+
+  ngOnDestroy(): void {
+    this.clearBlurRestoreTimer();
   }
 
   get hasError(): boolean {
@@ -154,16 +161,24 @@ export class FormAutocomplete implements ControlValueAccessor, OnChanges, OnInit
 
   onBlur(): void {
     this.onTouched();
+    this.clearBlurRestoreTimer();
 
-    const exactMatch = this.findDisplayMatch(this.inputText);
-    if (exactMatch) {
-      this.selectOption(exactMatch);
-      return;
-    }
+    const selectionVersionAtBlur = this.selectionVersion;
+    this.blurRestoreTimer = setTimeout(() => {
+      if (selectionVersionAtBlur !== this.selectionVersion) {
+        return;
+      }
 
-    this.syncInputToSelectedValue();
-    this.userIsEditing = false;
-    this.filterOptions();
+      const exactMatch = this.findDisplayMatch(this.inputText);
+      if (exactMatch) {
+        this.selectOption(exactMatch);
+        return;
+      }
+
+      this.syncInputToSelectedValue();
+      this.userIsEditing = false;
+      this.filterOptions();
+    });
   }
 
   clearValue(event: MouseEvent): void {
@@ -194,6 +209,8 @@ export class FormAutocomplete implements ControlValueAccessor, OnChanges, OnInit
   }
 
   private selectOption(option: FormAutocompleteOption): void {
+    this.clearBlurRestoreTimer();
+    this.selectionVersion++;
     this.value = option?.[this.valueKey] ?? null;
     this.inputText = this.displayOption(option);
     this.userIsEditing = false;
@@ -202,6 +219,15 @@ export class FormAutocomplete implements ControlValueAccessor, OnChanges, OnInit
     this.onTouched();
     this.filterOptions();
     this.autocompleteTrigger?.closePanel();
+  }
+
+  private clearBlurRestoreTimer(): void {
+    if (!this.blurRestoreTimer) {
+      return;
+    }
+
+    clearTimeout(this.blurRestoreTimer);
+    this.blurRestoreTimer = undefined;
   }
 
   private syncInputToSelectedValue(): void {
