@@ -1,0 +1,33 @@
+.mat-mdc-form-field {
+  --mdc-filled-text-field-container-color: transparent;
+  --mdc-filled-text-field-disabled-container-color: transparent;
+  --mdc-filled-text-field-hover-state-layer-color: transparent;
+  --mdc-filled-text-field-hover-state-layer-opacity: 0;
+  --mdc-filled-text-field-focus-state-layer-color: transparent;
+  --mdc-filled-text-field-focus-state-layer-opacity: 0;
+  --mat-form-field-state-layer-color: transparent;
+  --mdc-filled-text-field-active-indicator-height: 0;
+  --mdc-filled-text-field-focus-active-indicator-height: 0;
+  --mdc-filled-text-field-hover-active-indicator-color: transparent;
+}
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+input.mat-mdc-input-element {
+  color: var(--color-blue-500) !important;
+}
+
+input.mat-mdc-input-element::placeholder {
+  color: rgba(30, 64, 175, 0.58);
+}
+
+button[mat-icon-button] {
+  color: rgba(30, 64, 175, 0.75);
+}
+
+button[mat-icon-button]:disabled {
+  color: rgba(30, 64, 175, 0.28);
+}

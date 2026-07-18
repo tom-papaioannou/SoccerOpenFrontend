@@ -1,0 +1,47 @@
+<mat-form-field class="form-autocomplete-field w-full" [appearance]="appearance">
+  <mat-label>{{ labelText }}</mat-label>
+
+  <input
+    #textInput
+    matInput
+    type="text"
+    [value]="inputText"
+    [placeholder]="placeHolderText"
+    [disabled]="disabled"
+    [matAutocomplete]="auto"
+    (input)="onInput($event)"
+    (focus)="onFocus()"
+    (blur)="onBlur()" />
+
+  @if (canClear) {
+    <button
+      mat-icon-button
+      matSuffix
+      type="button"
+      aria-label="Clear selection"
+      (mousedown)="clearValue($event)">
+      <mat-icon>close</mat-icon>
+    </button>
+  }
+
+  <mat-autocomplete
+    #auto="matAutocomplete"
+    class="form-autocomplete-panel"
+    (optionSelected)="onOptionSelected($event)">
+    @for (option of filteredOptions; track trackOption(option)) {
+      <mat-option [value]="option">
+        {{ displayOption(option) }}
+      </mat-option>
+    } @empty {
+      <mat-option disabled>No options found</mat-option>
+    }
+  </mat-autocomplete>
+
+  @if (hasError && errorMessage) {
+    <mat-error>{{ errorMessage }}</mat-error>
+  }
+
+  @if (hintText && !hasError) {
+    <mat-hint>{{ hintText }}</mat-hint>
+  }
+</mat-form-field>
