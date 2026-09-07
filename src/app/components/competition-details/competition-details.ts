@@ -4,7 +4,7 @@
  */
 
 import { Component, OnDestroy, OnInit, TemplateRef, ViewChild, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -20,13 +20,12 @@ import { getNationFlagUrl } from '../../utils/nation-map-utils';
 @Component({
   selector: 'app-competition-details',
   imports: [
-    CommonModule,
     MatCardModule,
     MatIconModule,
     DataTable,
     Card,
     CupBracketComponent
-  ],
+],
   templateUrl: './competition-details.html',
   styleUrl: './competition-details.css'
 })

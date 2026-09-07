@@ -3,7 +3,7 @@
  * Licensed under the MIT License
  */
 
-import { CommonModule } from '@angular/common';
+
 import { Component, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
@@ -12,11 +12,10 @@ import { filter, startWith } from 'rxjs';
 @Component({
   selector: 'app-team',
   imports: [
-    CommonModule,
     RouterLink,
     RouterLinkActive,
     RouterOutlet
-  ],
+],
   templateUrl: './team.html',
   styleUrl: './team.css'
 })

@@ -3,7 +3,7 @@
  * Licensed under the MIT License
  */
 
-import { CommonModule } from '@angular/common';
+
 import { Component, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
@@ -18,11 +18,10 @@ import { getCompetitionTypeLabel, getNationFlagUrl } from '../../utils/nation-ma
 @Component({
   selector: 'app-nation-competitions',
   imports: [
-    CommonModule,
     MatButtonModule,
     MatIconModule,
     DataTable
-  ],
+],
   templateUrl: './nation-competitions.html',
   styleUrl: './nation-competitions.css'
 })

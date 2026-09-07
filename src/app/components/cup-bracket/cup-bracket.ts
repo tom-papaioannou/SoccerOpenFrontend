@@ -3,7 +3,7 @@
  * Licensed under the MIT License
  */
 
-import { CommonModule } from '@angular/common';
+
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import {
   CupBracket,
@@ -23,7 +23,7 @@ interface BracketRoundView {
 
 @Component({
   selector: 'app-cup-bracket',
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './cup-bracket.html',
   styleUrl: './cup-bracket.css'
 })

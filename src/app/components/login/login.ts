@@ -3,7 +3,7 @@
  * Licensed under the MIT License
  */
 
-import { CommonModule } from '@angular/common';
+
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -22,11 +22,10 @@ import { FormTextfield } from '../shared/textfields/form-textfield/form-textfiel
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
-    CommonModule,
     ActionButton,
     LinkButton,
     FormTextfield
-  ],
+],
   templateUrl: './login.html',
   styleUrl: './login.css'
 })

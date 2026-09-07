@@ -3,7 +3,7 @@
  * Licensed under the MIT License
  */
 
-import { CommonModule } from '@angular/common';
+
 import { Component, forwardRef, Injector, Input, OnInit } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, NgControl, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule, MatLabel } from '@angular/material/form-field';
@@ -14,10 +14,9 @@ import { MatSelectModule } from '@angular/material/select';
   imports: [
     MatFormFieldModule,
     MatLabel,
-    CommonModule,
     ReactiveFormsModule,
     MatSelectModule
-  ],
+],
   templateUrl: './form-dropdown.html',
   styleUrl: './form-dropdown.css',
   providers: [

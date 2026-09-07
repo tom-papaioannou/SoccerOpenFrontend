@@ -4,7 +4,7 @@
  */
 
 import { Component, OnInit, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -18,12 +18,11 @@ import { calculateAge } from '../../utils/date-utils';
 @Component({
   selector: 'app-server-details',
   imports: [
-    CommonModule,
     MatButtonModule,
     MatIconModule,
     DataTable,
     Card
-  ],
+],
   templateUrl: './server-details.html',
   styleUrl: './server-details.css'
 })

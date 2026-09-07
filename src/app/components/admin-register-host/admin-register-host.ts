@@ -3,7 +3,7 @@
  * Licensed under the MIT License
  */
 
-import { CommonModule } from '@angular/common';
+
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -18,12 +18,11 @@ import { FormTextfield } from '../shared/textfields/form-textfield/form-textfiel
 @Component({
   selector: 'app-admin-register-host',
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     ActionButton,
     FormDropdown,
     FormTextfield
-  ],
+],
   templateUrl: './admin-register-host.html',
   styleUrl: './admin-register-host.css',
   changeDetection: ChangeDetectionStrategy.OnPush
