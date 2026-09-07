@@ -3,7 +3,7 @@
  * Licensed under the MIT License
  */
 
-import { CommonModule } from '@angular/common';
+
 import {
   ChangeDetectorRef,
   Component,
@@ -33,14 +33,13 @@ export type FormAutocompleteOption = Record<string, unknown>;
 @Component({
   selector: 'app-form-autocomplete',
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     MatAutocompleteModule,
     MatButtonModule,
     MatFormFieldModule,
     MatIconModule,
     MatInputModule
-  ],
+],
   templateUrl: './form-autocomplete.html',
   styleUrl: './form-autocomplete.css',
   providers: [

@@ -3,14 +3,12 @@
  * Licensed under the MIT License
  */
 
-import { CommonModule } from '@angular/common';
+
 import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-competitions',
-  imports: [
-    CommonModule
-  ],
+  imports: [],
   templateUrl: './competitions.html',
   styleUrl: './competitions.css'
 })

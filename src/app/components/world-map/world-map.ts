@@ -13,7 +13,7 @@ import {
   ViewChild,
   signal
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { Router } from '@angular/router';
 import { GeoProjection, geoGraticule10, geoNaturalEarth1, geoPath } from 'd3-geo';
 import { json } from 'd3-fetch';
@@ -92,7 +92,7 @@ function createBoundsFeature(west: number, south: number, east: number, north: n
 
 @Component({
   selector: 'app-world-map',
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './world-map.html',
   styleUrl: './world-map.css',
   changeDetection: ChangeDetectionStrategy.OnPush

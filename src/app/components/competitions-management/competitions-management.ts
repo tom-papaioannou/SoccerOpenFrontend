@@ -4,7 +4,7 @@
  */
 
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MatCardModule, MatCardContent } from '@angular/material/card';
@@ -28,7 +28,6 @@ import { AuthService } from '../../services/auth.service';
 @Component({
   selector: 'app-competitions-management',
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     MatCardModule,
     MatCardContent,
@@ -40,7 +39,7 @@ import { AuthService } from '../../services/auth.service';
     MatSidenavModule,
     FormTextfield,
     FormDropdown
-  ],
+],
   templateUrl: './competitions-management.html',
   styleUrl: './competitions-management.css',
   changeDetection: ChangeDetectionStrategy.OnPush

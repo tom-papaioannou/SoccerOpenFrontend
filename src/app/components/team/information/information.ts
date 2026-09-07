@@ -3,7 +3,7 @@
  * Licensed under the MIT License
  */
 
-import { CommonModule } from '@angular/common';
+
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 import { Team } from '../../../models/competition.model';
@@ -11,7 +11,7 @@ import { TeamsService } from '../../../services/teams.service';
 
 @Component({
   selector: 'app-information',
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './information.html',
   styleUrl: './information.css',
 })

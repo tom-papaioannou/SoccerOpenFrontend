@@ -3,7 +3,7 @@
  * Licensed under the MIT License
  */
 
-import { CommonModule } from '@angular/common';
+
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
@@ -37,14 +37,13 @@ type RegistrationStep = 1 | 2;
 @Component({
   selector: 'app-register',
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     ActionButton,
     Card,
     FormTextfield,
     FormDropdown,
     TeamKit
-  ],
+],
   templateUrl: './register.html',
   styleUrl: './register.css',
   changeDetection: ChangeDetectionStrategy.OnPush
