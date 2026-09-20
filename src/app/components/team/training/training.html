@@ -1,0 +1,195 @@
+<section class="training-page">
+  <header class="training-header">
+    <div>
+      <h1>Training</h1>
+      <p>Manage your team’s training schedules.</p>
+    </div>
+  </header>
+
+  @if (error()) {
+    <p class="training-error" role="alert">{{ error() }}</p>
+  }
+
+  <div class="training-layout">
+    <aside class="schedule-list-panel" aria-label="Training schedules">
+      <div class="schedule-list-header">
+        <h2>Schedules</h2>
+        <button mat-flat-button type="button" (click)="openCreate()" [disabled]="loading()">
+          <mat-icon>add</mat-icon>
+          New
+        </button>
+      </div>
+
+      @if (loading()) {
+        <p class="empty-message">Loading schedules…</p>
+      } @else if (schedules().length === 0) {
+        <p class="empty-message">No training schedules yet.</p>
+      } @else {
+        <div class="schedule-list">
+          @for (schedule of schedules(); track schedule.trainingScheduleID) {
+            <button
+              type="button"
+              class="schedule-list-item"
+              [class.selected]="selectedSchedule()?.trainingScheduleID === schedule.trainingScheduleID"
+              (click)="selectSchedule(schedule)">
+              <span>{{ schedule.scheduleName }}</span>
+              <small>{{ levelLabel(schedule.trainingScheduleLevel) }}</small>
+            </button>
+          }
+        </div>
+      }
+    </aside>
+
+    <main class="schedule-detail-panel">
+      @if (selectedSchedule(); as schedule) {
+        <header class="schedule-detail-header">
+          <div>
+            <h2>{{ schedule.scheduleName }}</h2>
+            <p>{{ levelLabel(schedule.trainingScheduleLevel) }} schedule</p>
+          </div>
+          <div class="allocation-summary" aria-label="Training points assigned">
+            <strong>{{ editTotalSliderPoints() }}</strong>
+            <span>of {{ maximumTotalPoints }} points assigned</span>
+          </div>
+        </header>
+
+        <form class="schedule-details" [formGroup]="editForm" (ngSubmit)="saveChanges()">
+          <div class="schedule-field">
+            <label for="selected-schedule-name">Schedule name</label>
+            <input id="selected-schedule-name" type="text" formControlName="ScheduleName" maxlength="100" />
+            @if (editForm.controls.ScheduleName.touched && editForm.controls.ScheduleName.invalid) {
+              <small class="field-error">A schedule name is required.</small>
+            }
+          </div>
+          <div class="schedule-form-row">
+            <div class="schedule-field">
+              <label for="selected-schedule-level">Training level</label>
+              <select id="selected-schedule-level" formControlName="TrainingScheduleLevel">
+                @for (option of levelOptions; track option.value) {
+                  <option [ngValue]="option.value">{{ option.label }}</option>
+                }
+              </select>
+            </div>
+            <div class="schedule-field">
+              <label for="selected-schedule-coach">Coach</label>
+              <select id="selected-schedule-coach" formControlName="CoachID">
+                @for (coach of coaches(); track coach.personID) {
+                  <option [value]="coach.personID">{{ coach.name }}</option>
+                }
+              </select>
+            </div>
+          </div>
+
+          <div class="points-budget edit-points-budget" aria-live="polite">
+            <span>Points available</span>
+            <strong>{{ editAvailablePoints() }}</strong>
+            <span>of {{ maximumTotalPoints }}</span>
+          </div>
+
+          <div class="slider-list">
+            @for (field of trainingPointFields; track field.control) {
+              <div class="slider-field">
+                <label [for]="'selected-' + field.control">{{ field.label }}</label>
+                <input
+                  [id]="'selected-' + field.control"
+                  type="range"
+                  min="0"
+                  max="5"
+                  [value]="editForm.controls[field.control].value"
+                  (input)="onEditSliderChanged(field.control, $event)" />
+                <output>{{ editForm.controls[field.control].value }}</output>
+              </div>
+            }
+          </div>
+          <footer class="schedule-save-actions">
+            <button mat-flat-button type="submit" [disabled]="!editDirty() || savingChanges()">
+              {{ savingChanges() ? 'Saving…' : 'Save' }}
+            </button>
+          </footer>
+        </form>
+      } @else {
+        <div class="detail-empty-state">
+          <mat-icon>fitness_center</mat-icon>
+          <h2>Select a training schedule</h2>
+          <p>Choose one from the list to view its allocation.</p>
+        </div>
+      }
+    </main>
+  </div>
+</section>
+
+@if (createOpen()) {
+  <div class="training-popup-backdrop" role="presentation" (click)="cancelCreate()">
+    <section
+      class="training-popup"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="new-training-title"
+      (click)="$event.stopPropagation()">
+      <header class="training-popup-header">
+        <h2 id="new-training-title">New training schedule</h2>
+        <button mat-icon-button type="button" aria-label="Close" (click)="cancelCreate()" [disabled]="saving()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </header>
+
+      <form [formGroup]="createForm" (ngSubmit)="save()">
+        <div class="schedule-field">
+          <label for="schedule-name">Schedule name</label>
+          <input id="schedule-name" type="text" formControlName="ScheduleName" maxlength="100" autofocus />
+          @if (createForm.controls.ScheduleName.touched && createForm.controls.ScheduleName.invalid) {
+            <small class="field-error">A schedule name is required.</small>
+          }
+        </div>
+
+        <div class="schedule-form-row">
+          <div class="schedule-field">
+            <label for="schedule-level">Training level</label>
+            <select id="schedule-level" formControlName="TrainingScheduleLevel">
+              @for (option of levelOptions; track option.value) {
+                <option [ngValue]="option.value">{{ option.label }}</option>
+              }
+            </select>
+          </div>
+          <div class="schedule-field">
+            <label for="schedule-coach">Coach</label>
+            <select id="schedule-coach" formControlName="CoachID">
+              @for (coach of coaches(); track coach.personID) {
+                <option [value]="coach.personID">{{ coach.name }}</option>
+              }
+            </select>
+          </div>
+        </div>
+
+        <div class="points-budget" aria-live="polite">
+          <span>Points available</span>
+          <strong>{{ availablePoints() }}</strong>
+          <span>of {{ maximumTotalPoints }}</span>
+        </div>
+
+        <div class="slider-list create-slider-list">
+          @for (field of trainingPointFields; track field.control) {
+            <div class="slider-field">
+              <label [for]="field.control">{{ field.label }}</label>
+              <input
+                [id]="field.control"
+                type="range"
+                min="0"
+                max="5"
+                [value]="createForm.controls[field.control].value"
+                (input)="onSliderChanged(field.control, $event)" />
+              <output>{{ createForm.controls[field.control].value }}</output>
+            </div>
+          }
+        </div>
+
+        <footer class="training-popup-actions">
+          <button mat-button type="button" (click)="cancelCreate()" [disabled]="saving()">Cancel</button>
+          <button mat-flat-button type="submit" [disabled]="saving()">
+            {{ saving() ? 'Saving…' : 'Save' }}
+          </button>
+        </footer>
+      </form>
+    </section>
+  </div>
+}

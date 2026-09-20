@@ -1,0 +1,304 @@
+.training-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.25rem;
+  color: #f8fafc;
+}
+
+.training-header h1,
+.training-header p,
+.schedule-list-header h2,
+.schedule-detail-header h2,
+.detail-empty-state h2 {
+  margin: 0;
+}
+
+.training-header p,
+.schedule-detail-header p,
+.detail-empty-state p,
+.empty-message {
+  color: #cbd5e1;
+}
+
+.training-header p {
+  margin-top: 0.35rem;
+}
+
+.training-error {
+  margin: 1rem 0 0;
+  padding: 0.75rem 1rem;
+  border: 1px solid #f87171;
+  border-radius: 6px;
+  background: rgba(127, 29, 29, 0.45);
+  color: #fecaca;
+}
+
+.training-layout {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.6fr) minmax(0, 1.4fr);
+  gap: 1rem;
+  margin-top: 1.25rem;
+}
+
+.schedule-list-panel,
+.schedule-detail-panel {
+  min-height: 480px;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  border-radius: 10px;
+  background: rgba(15, 23, 42, 0.88);
+  padding: 1rem;
+}
+
+.schedule-list-header,
+.schedule-detail-header,
+.training-popup-header,
+.slider-field,
+.points-budget,
+.training-popup-actions {
+  display: flex;
+  align-items: center;
+}
+
+.schedule-list-header,
+.schedule-detail-header,
+.training-popup-header {
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.schedule-list-item {
+  display: grid;
+  gap: 0.2rem;
+  width: 100%;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  padding: 0.75rem;
+  background: rgba(30, 41, 59, 0.72);
+  color: #f8fafc;
+  text-align: left;
+  cursor: pointer;
+}
+
+.schedule-list-item:hover,
+.schedule-list-item:focus-visible,
+.schedule-list-item.selected {
+  border-color: #38bdf8;
+  background: rgba(14, 116, 144, 0.42);
+}
+
+.schedule-list-item small {
+  color: #bae6fd;
+}
+
+.empty-message {
+  margin: 2rem 0;
+  text-align: center;
+}
+
+.schedule-detail-header {
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.25);
+}
+
+.schedule-detail-header p {
+  margin: 0.3rem 0 0;
+}
+
+.allocation-summary,
+.points-budget {
+  gap: 0.35rem;
+}
+
+.allocation-summary {
+  display: grid;
+  justify-items: end;
+  color: #bae6fd;
+  text-align: right;
+}
+
+.allocation-summary strong,
+.points-budget strong {
+  color: #f8fafc;
+  font-size: 1.25rem;
+}
+
+.schedule-details {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.25rem;
+}
+
+.schedule-field {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.schedule-form-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.schedule-field label,
+.slider-field label {
+  color: #cbd5e1;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.schedule-field input,
+.schedule-field select {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid rgba(148, 163, 184, 0.5);
+  border-radius: 6px;
+  padding: 0.6rem 0.7rem;
+  background: rgba(15, 23, 42, 0.9);
+  color: #f8fafc;
+}
+
+.schedule-field input:disabled,
+.schedule-field select:disabled {
+  cursor: default;
+  opacity: 0.7;
+}
+
+.slider-list {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.slider-field {
+  gap: 0.8rem;
+}
+
+.slider-field label {
+  width: 95px;
+}
+
+.slider-field input[type='range'] {
+  flex: 1;
+  accent-color: #38bdf8;
+}
+
+.slider-field output {
+  width: 38px;
+  color: #e0f2fe;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.detail-empty-state {
+  display: grid;
+  place-items: center;
+  min-height: 448px;
+  color: #94a3b8;
+  text-align: center;
+}
+
+.detail-empty-state mat-icon {
+  width: 3rem;
+  height: 3rem;
+  font-size: 3rem;
+}
+
+.detail-empty-state p {
+  margin: 0.35rem 0 0;
+}
+
+.training-popup-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.62);
+}
+
+.training-popup {
+  width: min(560px, 100%);
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+  border: 1px solid rgba(148, 163, 184, 0.45);
+  border-radius: 10px;
+  padding: 1.25rem;
+  background: #0f172a;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.45);
+}
+
+.training-popup h2 {
+  margin: 0;
+}
+
+.training-popup form {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.points-budget {
+  justify-content: center;
+  padding: 0.75rem;
+  border-radius: 6px;
+  background: rgba(14, 116, 144, 0.3);
+  color: #bae6fd;
+}
+
+.create-slider-list {
+  padding-top: 0.25rem;
+}
+
+.training-popup-actions {
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.field-error {
+  color: #fca5a5;
+}
+
+@media (max-width: 700px) {
+  .training-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .schedule-list-panel,
+  .schedule-detail-panel {
+    min-height: auto;
+  }
+
+  .detail-empty-state {
+    min-height: 240px;
+  }
+
+  .schedule-form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 460px) {
+  .training-page {
+    padding: 0.75rem;
+  }
+
+  .schedule-detail-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .allocation-summary {
+    justify-items: start;
+    text-align: left;
+  }
+
+  .slider-field {
+    display: grid;
+    grid-template-columns: 1fr auto;
+  }
+
+  .slider-field label {
+    width: auto;
+    grid-column: 1 / -1;
+  }
+}

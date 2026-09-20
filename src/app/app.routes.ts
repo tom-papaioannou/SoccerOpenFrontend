@@ -77,6 +77,11 @@ export const routes: Routes = [
         loadComponent: () => import('./components/world-map/world-map').then(m => m.WorldMap)
     },
     {
+        path: 'training',
+        canActivate: [authenticationGuard],
+        loadComponent: () => import('./components/team/training/training').then(m => m.Training)
+    },
+    {
         path: 'nations/:nationId/competitions',
         canActivate: [authenticationGuard],
         loadComponent: () => import('./components/nation-competitions/nation-competitions').then(m => m.NationCompetitions)
