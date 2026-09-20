@@ -90,6 +90,12 @@
                   </span>
                 </div>
                 <div class="stats-row flex items-center justify-between">
+                  <span class="text-sm">Fitness</span>
+                  <span class="text-sm font-semibold" [ngClass]="getStatValueClass(playerDetails.healthAndFitness?.fitnessCondition ?? 0)">
+                    {{ playerDetails.healthAndFitness?.fitnessCondition ?? '-' }}
+                  </span>
+                </div>
+                <div class="stats-row flex items-center justify-between">
                   <span class="text-sm">Mental</span>
                   <span class="text-sm font-semibold" [ngClass]="getStatValueClass(playerDetails.healthAndFitness?.mentalCondition ?? 0)">
                     {{ playerDetails.healthAndFitness?.mentalCondition ?? '-' }}
