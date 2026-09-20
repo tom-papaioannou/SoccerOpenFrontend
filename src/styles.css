@@ -173,3 +173,103 @@ body {
 .form-autocomplete-panel.mat-mdc-autocomplete-panel .mat-mdc-option.mat-mdc-option-active .mdc-list-item__primary-text {
   background-color: #2563eb !important;
 }
+
+/* The application theme uses a white primary surface. Override its Material
+   button tokens for the dark Training page to keep button labels readable. */
+.training-page .mat-mdc-unelevated-button,
+.training-popup .mat-mdc-unelevated-button {
+  --mat-button-filled-container-color: #38bdf8;
+  --mat-button-filled-label-text-color: #082f49;
+  --mat-button-filled-state-layer-color: #082f49;
+  --mat-button-filled-ripple-color: rgba(8, 47, 73, 0.24);
+}
+
+.training-page .mat-mdc-unelevated-button:not(:disabled),
+.training-popup .mat-mdc-unelevated-button:not(:disabled) {
+  background-color: #38bdf8 !important;
+  color: #082f49 !important;
+}
+
+.training-page .mat-mdc-unelevated-button:hover:not(:disabled),
+.training-popup .mat-mdc-unelevated-button:hover:not(:disabled) {
+  --mat-button-filled-container-color: #7dd3fc;
+  --mat-button-filled-label-text-color: #ffffff;
+  background-color: #7dd3fc !important;
+  color: #ffffff !important;
+}
+
+.training-popup .mat-mdc-button {
+  --mat-button-text-label-text-color: #e2e8f0;
+  --mat-button-text-state-layer-color: #38bdf8;
+  --mat-button-text-ripple-color: rgba(56, 189, 248, 0.2);
+}
+
+.training-popup .mat-mdc-button:not(:disabled) {
+  background-color: transparent !important;
+  color: #e2e8f0 !important;
+}
+
+.training-popup .mat-mdc-icon-button {
+  --mdc-icon-button-icon-color: #f8fafc;
+  color: #f8fafc;
+}
+
+.training-page .schedule-list-panel {
+  display: flex;
+  flex-direction: column;
+  height: clamp(640px, calc(100vh - 100px), 760px);
+  box-sizing: border-box;
+}
+
+.training-page .schedule-detail-panel {
+  height: clamp(640px, calc(100vh - 100px), 760px);
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+.training-page .schedule-list {
+  display: grid;
+  flex: 1 1 auto;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 0.25rem;
+  scrollbar-color: rgba(125, 211, 252, 0.75) rgba(30, 41, 59, 0.72);
+}
+
+.training-page .schedule-list::-webkit-scrollbar {
+  width: 0.55rem;
+}
+
+.training-page .schedule-list::-webkit-scrollbar-track {
+  border-radius: 999px;
+  background: rgba(30, 41, 59, 0.72);
+}
+
+.training-page .schedule-list::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(125, 211, 252, 0.75);
+}
+
+.training-page .schedule-save-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 0.25rem;
+}
+
+.training-page .edit-points-budget {
+  justify-self: stretch;
+}
+
+@media (max-width: 700px) {
+  .training-page .schedule-list-panel {
+    height: auto;
+    max-height: 360px;
+  }
+
+  .training-page .schedule-detail-panel {
+    height: auto;
+    max-height: none;
+  }
+}
