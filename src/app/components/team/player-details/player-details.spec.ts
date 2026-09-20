@@ -61,7 +61,8 @@ describe('PlayerDetails', () => {
         healthAndFitness: {
           healthStatus: 1,
           physicalCondition: 91,
-          mentalCondition: 87
+          mentalCondition: 87,
+          fitnessCondition: 89
         },
         playerTrainedPositions: [
           { playerPosition: PlayerPosition.CentralStriker, playerTrainedPositionAdaptation: 88 },

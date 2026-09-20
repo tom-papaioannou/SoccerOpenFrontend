@@ -142,6 +142,7 @@ export interface PersonHealthAndFitness {
   personID?: string;
   physicalCondition: number;
   mentalCondition: number;
+  fitnessCondition: number;
   healthStatus: HealthStatus;
 }
 
