@@ -71,6 +71,7 @@ h2 {
 .personal-card,
 .health-card,
 .history-card,
+.preferred-moves-card,
 .player-stats-card {
   min-width: 0;
 }
@@ -91,10 +92,6 @@ h2 {
 
   .health-card {
     grid-area: health;
-  }
-
-  .history-card {
-    grid-area: history;
   }
 
   .history-card app-data-table {
@@ -265,5 +262,10 @@ h2 {
   .stats-category:nth-child(3n),
   .stats-category:last-child {
     padding-right: 0;
+  }
+
+  .history-card {
+    border-left: 1px solid rgb(170, 170, 170);
+    padding-left: 1rem;
   }
 }

@@ -141,10 +141,10 @@ describe('PlayerDetails', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should render separate app-card containers for personal, health, stats, history, and positions sections', () => {
+  it('should render the player sections inside the existing profile cards', () => {
     const cards = fixture.debugElement.queryAll(By.css('app-card'));
 
-    expect(cards.length).toBe(6);
+    expect(cards.length).toBe(4);
     expect(fixture.nativeElement.querySelector('mat-card')).toBeNull();
   });
 
@@ -219,10 +219,11 @@ describe('PlayerDetails', () => {
     expect(firstRow.nativeElement.classList.contains('stats-row-hovered')).toBeFalse();
   });
 
-  it('should render personal details separately from the history card', () => {
+  it('should render history after preferred moves in the stats grid', () => {
     const element = fixture.nativeElement as HTMLElement;
     const summaryCard = fixture.debugElement.queryAll(By.css('app-card'))[0];
-    const historyCard = fixture.debugElement.queryAll(By.css('app-card'))[3];
+    const historyCard = fixture.debugElement.query(By.css('.history-card'));
+    const preferredMoves = fixture.debugElement.query(By.css('.preferred-moves-card'));
     const playerOverviewGrid = fixture.debugElement.query(By.css('.player-overview-grid'));
     const summaryTitles = summaryCard.queryAll(By.css('h3'));
     const personalTitle = summaryTitles[0].nativeElement as HTMLElement;
@@ -236,6 +237,9 @@ describe('PlayerDetails', () => {
     expect(historyCard.query(By.css('app-data-table'))).not.toBeNull();
     expect(playerOverviewGrid.query(By.css('.personal-card'))).toBe(summaryCard);
     expect(playerOverviewGrid.query(By.css('.history-card'))).toBe(historyCard);
+    expect(preferredMoves).not.toBeNull();
+    expect(preferredMoves.nativeElement.compareDocumentPosition(historyCard.nativeElement)
+      & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(summaryCard.query(By.css('.player-portrait-placeholder'))).not.toBeNull();
     expect(summaryCard.query(By.css('.player-team-name')).nativeElement.textContent.trim()).toBe('Test FC');
     expect(summaryCard.query(By.css('.player-team-name')).nativeElement.tagName).toBe('STRONG');
