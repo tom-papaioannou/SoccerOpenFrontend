@@ -81,7 +81,7 @@ h2 {
     grid-template-columns: 18rem minmax(0, 1fr);
     grid-template-areas:
       "personal stats"
-      "health history";
+      "health stats";
     align-items: stretch;
     max-width: calc(18rem + 894px + 1.5rem);
   }
@@ -94,13 +94,36 @@ h2 {
     grid-area: health;
   }
 
+  .player-content-column {
+    grid-area: stats;
+    display: grid;
+    gap: 1.5rem;
+    min-width: 0;
+  }
+
   .history-card app-data-table {
     --dt-table-min-width: 0;
   }
 
   .player-stats-card {
-    grid-area: stats;
     max-width: 894px;
+  }
+
+  .preferred-history-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.5rem;
+    min-width: 0;
+  }
+
+  .preferred-moves-card {
+    grid-column: span 1;
+    min-width: 0;
+  }
+
+  .history-card {
+    grid-column: span 2;
+    min-width: 0;
   }
 
   .personal-card ::ng-deep .cardBorder,
@@ -264,8 +287,4 @@ h2 {
     padding-right: 0;
   }
 
-  .history-card {
-    border-left: 1px solid rgb(170, 170, 170);
-    padding-left: 1rem;
-  }
 }

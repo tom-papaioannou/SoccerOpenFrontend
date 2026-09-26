@@ -141,10 +141,10 @@ describe('PlayerDetails', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should render the player sections inside the existing profile cards', () => {
+  it('should render separate app-card containers for player sections', () => {
     const cards = fixture.debugElement.queryAll(By.css('app-card'));
 
-    expect(cards.length).toBe(4);
+    expect(cards.length).toBe(6);
     expect(fixture.nativeElement.querySelector('mat-card')).toBeNull();
   });
 
@@ -219,7 +219,7 @@ describe('PlayerDetails', () => {
     expect(firstRow.nativeElement.classList.contains('stats-row-hovered')).toBeFalse();
   });
 
-  it('should render history after preferred moves in the stats grid', () => {
+  it('should render separate preferred moves and history cards in the lower grid', () => {
     const element = fixture.nativeElement as HTMLElement;
     const summaryCard = fixture.debugElement.queryAll(By.css('app-card'))[0];
     const historyCard = fixture.debugElement.query(By.css('.history-card'));
@@ -238,6 +238,8 @@ describe('PlayerDetails', () => {
     expect(playerOverviewGrid.query(By.css('.personal-card'))).toBe(summaryCard);
     expect(playerOverviewGrid.query(By.css('.history-card'))).toBe(historyCard);
     expect(preferredMoves).not.toBeNull();
+    expect(preferredMoves.query(By.css('app-card'))).toBeNull();
+    expect(historyCard.query(By.css('app-card'))).toBeNull();
     expect(preferredMoves.nativeElement.compareDocumentPosition(historyCard.nativeElement)
       & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(summaryCard.query(By.css('.player-portrait-placeholder'))).not.toBeNull();
