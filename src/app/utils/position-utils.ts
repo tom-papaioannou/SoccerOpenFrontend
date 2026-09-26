@@ -3,7 +3,7 @@
  * Licensed under the MIT License
  */
 
-import { PlayerPosition, PlayerRole } from '../models/player-enums.model';
+import { PlayerPosition, PlayerRole, PreferredMove } from '../models/player-enums.model';
 
 /**
  * Utility functions for converting player positions and roles to display labels
@@ -255,6 +255,29 @@ export function getPlayerRoleLabel(role?: PlayerRole): string {
     case PlayerRole.TrequartistaForward:
       return 'T';
 
+    default:
+      return '-';
+  }
+}
+
+export function getPreferredMoveLabel(move?: PreferredMove): string {
+  switch (move) {
+    case PreferredMove.CutsInside:
+      return 'Cuts Inside';
+    case PreferredMove.RunsWithBall:
+      return 'Runs With Ball';
+    case PreferredMove.TriesThroughBalls:
+      return 'Tries Through Balls';
+    case PreferredMove.ShootsFromDistance:
+      return 'Shoots From Distance';
+    case PreferredMove.GetsForward:
+      return 'Gets Forward';
+    case PreferredMove.LikesToSwitchBall:
+      return 'Likes To Switch Ball';
+    case PreferredMove.ComesDeepToGetBall:
+      return 'Comes Deep To Get Ball';
+    case PreferredMove.StaysBack:
+      return 'Stays Back';
     default:
       return '-';
   }

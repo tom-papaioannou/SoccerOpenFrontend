@@ -28,11 +28,12 @@ import {
   getGroupedPlayerPositionLabel,
   getPlayerPositionLabel,
   getPlayerRoleLabel,
+  getPreferredMoveLabel,
   getPositionPitchRow
 } from '../../../utils/position-utils';
 import { getNationFlagUrl } from '../../../utils/nation-map-utils';
 import { calculateAge } from '../../../utils/date-utils';
-import { HealthStatus, PersonHealthAndFitness, PlayerPosition, PlayerStats } from '../../../models/player-enums.model';
+import { HealthStatus, PersonHealthAndFitness, PlayerPosition, PlayerStats, PreferredMove } from '../../../models/player-enums.model';
 import { INation } from '../../../models/nation.model';
 
 interface PlayerDetailsResponse {
@@ -54,6 +55,7 @@ interface PlayerDetailsResponse {
     playerRole: number;
     playerTrainedRoleAdaptation: number;
   }>;
+  playerPreferredMoves: PreferredMove[];
   contracts: Array<{
     startDate: string;
     endDate?: string | null;
@@ -84,6 +86,11 @@ interface TransformedRole {
 interface TransformedContract {
   team: string;
   period: string;
+}
+
+interface TransformedPreferredMove {
+  move: string;
+  value: PreferredMove;
 }
 
 interface StatValue {
@@ -145,6 +152,7 @@ export class PlayerDetails implements OnInit, OnDestroy, AfterViewChecked {
   transformedRoles: TransformedRole[] = [];
   transformedContracts: TransformedContract[] = [];
   transformedStats: TransformedStat[] = [];
+  transformedPreferredMoves: TransformedPreferredMove[] = [];
   hoveredStatKey: string | null = null;
   hoveredRoleKey: string | null = null;
   selectedPositionValue: PlayerPosition | null = null;
@@ -229,6 +237,7 @@ export class PlayerDetails implements OnInit, OnDestroy, AfterViewChecked {
           this.transformRoles();
           this.transformContracts();
           this.transformStats();
+          this.transformPreferredMoves();
           this.loading = false;
           this.cdr.detectChanges();
         },
@@ -387,6 +396,11 @@ export class PlayerDetails implements OnInit, OnDestroy, AfterViewChecked {
     } else {
       this.transformedStats = [];
     }
+  }
+
+  private transformPreferredMoves(): void {
+    this.transformedPreferredMoves = (this.playerDetails?.playerPreferredMoves ?? [])
+      .map(move => ({ move: getPreferredMoveLabel(move), value: move }));
   }
 
   private formatDate(dateString: string): string {

@@ -108,6 +108,20 @@ export enum PlayerRole {
 }
 
 /**
+ * Preferred moves matching the backend.
+ */
+export enum PreferredMove {
+  CutsInside = 1,
+  RunsWithBall = 2,
+  TriesThroughBalls = 3,
+  ShootsFromDistance = 4,
+  GetsForward = 5,
+  LikesToSwitchBall = 6,
+  ComesDeepToGetBall = 7,
+  StaysBack = 8
+}
+
+/**
  * Person model representing a person's basic information
  */
 export interface Person {
@@ -123,6 +137,7 @@ export interface Person {
   endDate?: string | null;
   playerTrainedPositions?: PlayerTrainedPosition[];
   playerTrainedRoles?: PlayerTrainedRole[];
+  playerPreferredMoves?: PreferredMove[];
   playerStats?: PlayerStats;
   healthAndFitness?: PersonHealthAndFitness | null;
 }

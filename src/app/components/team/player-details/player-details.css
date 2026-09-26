@@ -71,6 +71,7 @@ h2 {
 .personal-card,
 .health-card,
 .history-card,
+.preferred-moves-card,
 .player-stats-card {
   min-width: 0;
 }
@@ -80,7 +81,7 @@ h2 {
     grid-template-columns: 18rem minmax(0, 1fr);
     grid-template-areas:
       "personal stats"
-      "health history";
+      "health stats";
     align-items: stretch;
     max-width: calc(18rem + 894px + 1.5rem);
   }
@@ -93,8 +94,11 @@ h2 {
     grid-area: health;
   }
 
-  .history-card {
-    grid-area: history;
+  .player-content-column {
+    grid-area: stats;
+    display: grid;
+    gap: 1.5rem;
+    min-width: 0;
   }
 
   .history-card app-data-table {
@@ -102,8 +106,32 @@ h2 {
   }
 
   .player-stats-card {
-    grid-area: stats;
     max-width: 894px;
+  }
+
+  .preferred-history-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.5rem;
+    align-items: stretch;
+    min-width: 0;
+  }
+
+  .preferred-moves-card {
+    grid-column: span 1;
+    min-width: 0;
+  }
+
+  .history-card {
+    grid-column: span 2;
+    min-width: 0;
+  }
+
+  .preferred-moves-card ::ng-deep .cardBorder,
+  .preferred-moves-card ::ng-deep .app-card,
+  .history-card ::ng-deep .cardBorder,
+  .history-card ::ng-deep .app-card {
+    height: 100%;
   }
 
   .personal-card ::ng-deep .cardBorder,
@@ -266,4 +294,5 @@ h2 {
   .stats-category:last-child {
     padding-right: 0;
   }
+
 }
