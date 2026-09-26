@@ -181,4 +181,6 @@ export interface PlayerStats {
   strength: number;
   jumping: number;
   stamina: number;
+  rightLegRating: number;
+  leftLegRating: number;
 }

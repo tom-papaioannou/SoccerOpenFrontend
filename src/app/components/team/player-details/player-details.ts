@@ -359,6 +359,8 @@ export class PlayerDetails implements OnInit, OnDestroy, AfterViewChecked {
             { name: 'Control', value: stats.control },
             { name: 'Kicking', value: stats.kicking },
             { name: 'Tackling', value: stats.tackling },
+            { name: 'Right Foot', value: stats.rightLegRating },
+            { name: 'Left Foot', value: stats.leftLegRating },
             { name: 'Goalkeeping', value: stats.goalkeeping }
           ]
         },
