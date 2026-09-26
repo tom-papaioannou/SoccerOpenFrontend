@@ -359,8 +359,6 @@ export class PlayerDetails implements OnInit, OnDestroy, AfterViewChecked {
             { name: 'Control', value: stats.control },
             { name: 'Kicking', value: stats.kicking },
             { name: 'Tackling', value: stats.tackling },
-            { name: 'Right Foot', value: stats.rightLegRating },
-            { name: 'Left Foot', value: stats.leftLegRating },
             { name: 'Goalkeeping', value: stats.goalkeeping }
           ]
         },
@@ -371,7 +369,9 @@ export class PlayerDetails implements OnInit, OnDestroy, AfterViewChecked {
             { name: 'Acceleration', value: stats.acceleration },
             { name: 'Strength', value: stats.strength },
             { name: 'Jumping', value: stats.jumping },
-            { name: 'Stamina', value: stats.stamina }
+            { name: 'Stamina', value: stats.stamina },
+            { name: 'Right Foot', value: stats.rightLegRating },
+            { name: 'Left Foot', value: stats.leftLegRating }
           ]
         },
         {
