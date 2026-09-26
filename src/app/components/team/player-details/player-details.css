@@ -113,6 +113,7 @@ h2 {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 1.5rem;
+    align-items: stretch;
     min-width: 0;
   }
 
@@ -124,6 +125,13 @@ h2 {
   .history-card {
     grid-column: span 2;
     min-width: 0;
+  }
+
+  .preferred-moves-card ::ng-deep .cardBorder,
+  .preferred-moves-card ::ng-deep .app-card,
+  .history-card ::ng-deep .cardBorder,
+  .history-card ::ng-deep .app-card {
+    height: 100%;
   }
 
   .personal-card ::ng-deep .cardBorder,
