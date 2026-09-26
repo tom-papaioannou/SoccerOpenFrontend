@@ -12,16 +12,25 @@
   </div>
 
   @if (loading()) {
-    <div class="nation-competitions-state">Loading competitions...</div>
+    <div class="nation-competitions-state">Loading nation details...</div>
   } @else if (error()) {
     <div class="nation-competitions-error">{{ error() }}</div>
-  } @else if (competitions().length === 0) {
-    <div class="nation-competitions-state">No competitions found for this nation.</div>
   } @else {
-    <app-data-table
-      [data]="competitions()"
-      [columns]="$any(columns)"
-      (rowClick)="openCompetition($event)">
-    </app-data-table>
+    <nav class="nation-tabs" aria-label="Nation sections">
+      <button type="button" [class.active]="activeTab() === 'squad'" (click)="activeTab.set('squad')">Squad</button>
+      <button type="button" [class.active]="activeTab() === 'competitions'" (click)="activeTab.set('competitions')">Competitions</button>
+    </nav>
+
+    @if (activeTab() === 'squad') {
+      @if (squad().length === 0) {
+        <div class="nation-competitions-state">No national squad found for this nation.</div>
+      } @else {
+        <app-data-table [data]="squad()" [columns]="$any(squadColumns)" (rowClick)="openPlayer($event)"></app-data-table>
+      }
+    } @else if (competitions().length === 0) {
+      <div class="nation-competitions-state">No competitions found for this nation.</div>
+    } @else {
+      <app-data-table [data]="competitions()" [columns]="$any(competitionColumns)" (rowClick)="openCompetition($event)"></app-data-table>
+    }
   }
 </div>

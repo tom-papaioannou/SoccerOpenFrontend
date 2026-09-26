@@ -7,7 +7,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment.development';
-import { INation } from '../models/nation.model';
+import { INation, NationDetails } from '../models/nation.model';
 
 @Injectable({ providedIn: 'root' })
 export class NationService {
@@ -24,5 +24,9 @@ export class NationService {
 
   getByContinent(continentId: string): Observable<INation[]> {
     return this.http.get<INation[]>(this.buildUrl(`getNationsByContinent/${continentId}`));
+  }
+
+  getDetails(nationId: string): Observable<NationDetails> {
+    return this.http.get<NationDetails>(this.buildUrl(`${nationId}/details`));
   }
 }
