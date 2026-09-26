@@ -3,13 +3,14 @@
  * Licensed under the MIT License
  */
 
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-link-button',
   imports: [MatButtonModule],
   templateUrl: './link-button.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './link-button.css'
 })
 export class LinkButton {

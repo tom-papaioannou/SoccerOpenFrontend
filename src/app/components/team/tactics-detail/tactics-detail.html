@@ -155,7 +155,7 @@
             viewBox="0 0 100 100"
             preserveAspectRatio="none"
             aria-hidden="true">
-            @let arrow = getAttackArrowGeometry(tactic()?.passingMentality);
+            @let arrow = getAttackArrowGeometry($safeNavigationMigration(tactic()?.passingMentality));
             @if (tactic()?.attackLeft ?? true) {
               <rect x="11.5" [attr.y]="arrow.headBase" width="7" [attr.height]="arrow.shaftHeight" fill="rgba(0, 0, 0, 0.45)" />
               <path [attr.d]="'M 15 ' + arrow.tip + ' L 7 ' + arrow.headBase + ' L 23 ' + arrow.headBase + ' Z'" fill="rgba(0, 0, 0, 0.45)" />

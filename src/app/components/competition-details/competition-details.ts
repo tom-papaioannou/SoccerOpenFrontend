@@ -3,7 +3,7 @@
  * Licensed under the MIT License
  */
 
-import { Component, OnDestroy, OnInit, TemplateRef, ViewChild, signal } from '@angular/core';
+import { Component, OnDestroy, OnInit, TemplateRef, ViewChild, signal, ChangeDetectionStrategy } from '@angular/core';
 
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
@@ -27,6 +27,7 @@ import { getNationFlagUrl } from '../../utils/nation-map-utils';
     CupBracketComponent
 ],
   templateUrl: './competition-details.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './competition-details.css'
 })
 export class CompetitionDetails implements OnInit, OnDestroy {

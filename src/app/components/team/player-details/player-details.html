@@ -80,7 +80,7 @@
                 <div class="stats-row flex items-center justify-between">
                   <span class="text-sm">Health Status</span>
                   <span class="text-sm font-semibold">
-                    {{ getHealthStatusLabel(playerDetails.healthAndFitness?.healthStatus) }}
+                    {{ getHealthStatusLabel($safeNavigationMigration(playerDetails.healthAndFitness?.healthStatus)) }}
                   </span>
                 </div>
                 <div class="stats-row flex items-center justify-between">

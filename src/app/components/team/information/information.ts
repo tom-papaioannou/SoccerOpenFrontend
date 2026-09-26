@@ -4,7 +4,7 @@
  */
 
 
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 import { Team } from '../../../models/competition.model';
 import { TeamsService } from '../../../services/teams.service';
@@ -13,6 +13,7 @@ import { TeamsService } from '../../../services/teams.service';
   selector: 'app-information',
   imports: [],
   templateUrl: './information.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './information.css',
 })
 export class Information implements OnInit, OnDestroy {

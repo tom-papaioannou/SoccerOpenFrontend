@@ -3,13 +3,14 @@
  * Licensed under the MIT License
  */
 
-import { booleanAttribute, Component, Input } from '@angular/core';
+import { booleanAttribute, Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { MatCard } from '@angular/material/card';
 
 @Component({
   selector: 'app-card',
   imports: [MatCard],
   templateUrl: './card.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './card.css'
 })
 export class Card {
