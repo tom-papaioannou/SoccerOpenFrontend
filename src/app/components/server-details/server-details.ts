@@ -3,7 +3,7 @@
  * Licensed under the MIT License
  */
 
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
@@ -24,6 +24,7 @@ import { calculateAge } from '../../utils/date-utils';
     Card
 ],
   templateUrl: './server-details.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './server-details.css'
 })
 export class ServerDetails implements OnInit {

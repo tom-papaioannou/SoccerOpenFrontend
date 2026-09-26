@@ -4,7 +4,7 @@
  */
 
 
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core';
 import {
   CupBracket,
   CupBracketRound,
@@ -25,6 +25,7 @@ interface BracketRoundView {
   selector: 'app-cup-bracket',
   imports: [],
   templateUrl: './cup-bracket.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './cup-bracket.css'
 })
 export class CupBracketComponent {

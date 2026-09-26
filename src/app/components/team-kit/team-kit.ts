@@ -4,7 +4,7 @@
  */
 
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { Kit, KitShape } from '../../models/competition.model';
 
 @Component({
@@ -14,6 +14,7 @@ import { Kit, KitShape } from '../../models/competition.model';
   ],
   templateUrl: './team-kit.html',
   styleUrl: './team-kit.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: true
 })
 export class TeamKit {

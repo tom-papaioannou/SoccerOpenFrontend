@@ -4,7 +4,7 @@
  */
 
 
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -23,6 +23,7 @@ import { getCompetitionTypeLabel, getNationFlagUrl } from '../../utils/nation-ma
     DataTable
 ],
   templateUrl: './nation-competitions.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './nation-competitions.css'
 })
 export class NationCompetitions implements OnInit {

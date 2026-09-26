@@ -4,7 +4,7 @@
  */
 
 
-import { Component, DestroyRef, inject } from '@angular/core';
+import { Component, DestroyRef, inject, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { filter, startWith } from 'rxjs';
@@ -17,6 +17,7 @@ import { filter, startWith } from 'rxjs';
     RouterOutlet
 ],
   templateUrl: './team.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './team.css'
 })
 export class Team {

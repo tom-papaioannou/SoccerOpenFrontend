@@ -3,12 +3,13 @@
  * Licensed under the MIT License
  */
 
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   selector: 'app-fixtures',
   imports: [],
   templateUrl: './fixtures.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './fixtures.css'
 })
 export class Fixtures {

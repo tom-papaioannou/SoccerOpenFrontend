@@ -3,7 +3,7 @@
  * Licensed under the MIT License
  */
 
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
@@ -15,6 +15,7 @@ import { Card } from './card';
       <span class="projected-content">Shared card</span>
     </app-card>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [Card]
 })
 class TestHostComponent {

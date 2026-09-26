@@ -15,7 +15,8 @@ import {
   OnDestroy,
   OnInit,
   SimpleChanges,
-  ViewChild
+  ViewChild,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, NgControl, ReactiveFormsModule } from '@angular/forms';
 import {
@@ -42,6 +43,7 @@ export type FormAutocompleteOption = Record<string, unknown>;
 ],
   templateUrl: './form-autocomplete.html',
   styleUrl: './form-autocomplete.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,

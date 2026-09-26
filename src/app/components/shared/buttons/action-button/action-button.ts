@@ -3,7 +3,7 @@
  * Licensed under the MIT License
  */
 
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { NgClass } from '@angular/common';
 
@@ -11,6 +11,7 @@ import { NgClass } from '@angular/common';
   selector: 'app-action-button',
   imports: [MatButtonModule, NgClass],
   templateUrl: './action-button.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './action-button.css'
 })
 export class ActionButton {

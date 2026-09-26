@@ -4,7 +4,7 @@
  */
 
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnChanges, SimpleChanges, TemplateRef, Output, EventEmitter } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges, TemplateRef, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { MatSortModule, Sort } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
@@ -18,6 +18,7 @@ import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
     MatPaginatorModule
   ],
   templateUrl: './data-table.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './data-table.css'
 })
 export class DataTable<T> implements OnChanges{
