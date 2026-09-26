@@ -157,6 +157,16 @@ describe('PlayerDetails', () => {
     expect(preferredMovesCard.textContent).not.toContain('CutsInside');
   });
 
+  it('renders None in the preferred moves card when a player has no moves', () => {
+    component.transformedPreferredMoves = [];
+    fixture.detectChanges();
+
+    const preferredMovesCard = fixture.nativeElement.querySelector('.preferred-moves-card') as HTMLElement;
+
+    expect(preferredMovesCard).not.toBeNull();
+    expect(preferredMovesCard.textContent).toContain('None');
+  });
+
   it('should render stat labels and values without progress bars', () => {
     const element = fixture.nativeElement as HTMLElement;
     const statsCardText = fixture.debugElement.queryAll(By.css('app-card'))[2].nativeElement.textContent;

@@ -134,9 +134,9 @@
           }
 
           <div class="preferred-history-grid">
-            @if (transformedPreferredMoves.length > 0) {
-              <app-card class="preferred-moves-card" appearance="outlined">
+            <app-card class="preferred-moves-card" appearance="outlined">
                 <h3 class="stats-category-title text-lg font-medium mb-3 text-left text-white">Preferred Moves</h3>
+                @if (transformedPreferredMoves.length > 0) {
                 <div class="space-y-2">
                   @for (move of transformedPreferredMoves; track move.value) {
                     <div class="stats-row flex items-center">
@@ -144,8 +144,12 @@
                     </div>
                   }
                 </div>
-              </app-card>
-            }
+              } @else {
+                <div class="stats-row flex items-center">
+                  <span class="text-sm">None</span>
+                </div>
+              }
+            </app-card>
 
             @if (transformedContracts.length > 0) {
               <app-card class="history-card" appearance="outlined">
