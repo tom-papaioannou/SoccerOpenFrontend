@@ -11,7 +11,7 @@ import { of } from 'rxjs';
 import { PlayerDetails } from './player-details';
 import { TeamsService } from '../../../services/teams.service';
 import { NationService } from '../../../services/nation.service';
-import { PlayerPosition, PlayerRole } from '../../../models/player-enums.model';
+import { PlayerPosition, PlayerRole, PreferredMove } from '../../../models/player-enums.model';
 
 describe('PlayerDetails', () => {
   let component: PlayerDetails;
@@ -98,6 +98,7 @@ describe('PlayerDetails', () => {
             playerTrainedRoleAdaptation: 78
           }
         ],
+        playerPreferredMoves: [PreferredMove.CutsInside, PreferredMove.TriesThroughBalls],
         contracts: [
           {
             startDate: '2025-07-01T00:00:00Z',
@@ -143,8 +144,17 @@ describe('PlayerDetails', () => {
   it('should render separate app-card containers for personal, health, stats, history, and positions sections', () => {
     const cards = fixture.debugElement.queryAll(By.css('app-card'));
 
-    expect(cards.length).toBe(5);
+    expect(cards.length).toBe(6);
     expect(fixture.nativeElement.querySelector('mat-card')).toBeNull();
+  });
+
+  it('renders readable preferred move labels', () => {
+    const element = fixture.nativeElement as HTMLElement;
+    const preferredMovesCard = element.querySelector('.preferred-moves-card') as HTMLElement;
+
+    expect(preferredMovesCard.textContent).toContain('Cuts Inside');
+    expect(preferredMovesCard.textContent).toContain('Tries Through Balls');
+    expect(preferredMovesCard.textContent).not.toContain('CutsInside');
   });
 
   it('should render stat labels and values without progress bars', () => {
