@@ -82,6 +82,17 @@
           </select>
         </label>
 
+        <label class="player-popup-field tactic-edit-field">
+          <span class="player-popup-label">Crosses</span>
+          <select class="role-select player-popup-select"
+            [(ngModel)]="editModel().crossingMentality"
+            aria-label="Crossing mentality">
+            @for (crossing of crossingMentalityOptions; track crossing.value) {
+              <option [ngValue]="crossing.value">{{ crossing.label }}</option>
+            }
+          </select>
+        </label>
+
         <fieldset class="mt-2 border-0 p-0">
           <legend class="player-popup-label mb-1.5 block text-left">Attack From</legend>
           <div class="flex gap-2">
