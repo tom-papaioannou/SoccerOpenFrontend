@@ -180,6 +180,7 @@ export interface PlayerStats {
   playerStatsID?: string;
   playerID?: string;
   shooting: number;
+  heading: number;
   passing: number;
   crossing: number;
   tackling: number;

@@ -362,6 +362,7 @@ export class PlayerDetails implements OnInit, OnDestroy, AfterViewChecked {
           category: 'Technical',
           stats: [
             { name: 'Shooting', value: stats.shooting },
+            { name: 'Heading', value: stats.heading },
             { name: 'Passing', value: stats.passing },
             { name: 'Crossing', value: stats.crossing },
             { name: 'Dribbling', value: stats.dribbling },
