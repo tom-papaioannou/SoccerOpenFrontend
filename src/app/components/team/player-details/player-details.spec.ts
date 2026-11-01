@@ -41,6 +41,7 @@ describe('PlayerDetails', () => {
         height: 184,
         playerStats: {
           shooting: 70,
+          heading: 61,
           passing: 68,
           crossing: 65,
           tackling: 55,
@@ -174,11 +175,22 @@ describe('PlayerDetails', () => {
 
     expect(statsCardHeading).toBeNull();
     expect(statsCardText).toContain('Shooting');
+    expect(statsCardText).toContain('Heading');
     expect(statsCardText).toContain('Tackling');
     expect(statsCardText).toContain('Goalkeeping');
     expect(statsCardText).toContain('70');
     expect(element.querySelector('.bg-gray-700')).toBeNull();
     expect(element.querySelector('.bg-gradient-to-r')).toBeNull();
+  });
+
+  it('should render heading between shooting and passing', () => {
+    const statsCard = fixture.debugElement.queryAll(By.css('app-card'))[2];
+    const technicalSection = statsCard.queryAll(By.css('.stats-category'))[0].nativeElement as HTMLElement;
+    const statNames = Array.from(technicalSection.querySelectorAll('.stats-row span:first-child'))
+      .map((stat) => stat.textContent?.trim());
+
+    expect(statNames.indexOf('Heading')).toBe(statNames.indexOf('Shooting') + 1);
+    expect(statNames.indexOf('Passing')).toBe(statNames.indexOf('Heading') + 1);
   });
 
   it('should group tackling and goalkeeping under the technical stats column', () => {
