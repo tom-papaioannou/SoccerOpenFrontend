@@ -12,7 +12,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { forkJoin } from 'rxjs';
 import { CdkDrag, CdkDragStart, CdkDragMove, CdkDragEnd, CdkDropList, CdkDragPlaceholder } from '@angular/cdk/drag-drop';
 import { TacticsService } from '../../../services/tactics.service';
-import { Tactic, Formation, PassingMentality, PlayerTactic, SquadUnit, TacticMentality, UpdateTacticRequest } from '../../../models/tactic.model';
+import { Tactic, CrossingMentality, Formation, PassingMentality, PlayerTactic, SquadUnit, TacticMentality, UpdateTacticRequest } from '../../../models/tactic.model';
 import { TeamsService } from '../../../services/teams.service';
 import { Kit } from '../../../models/competition.model';
 import { Person, PlayerPosition, PlayerRole } from '../../../models/player-enums.model';
@@ -171,6 +171,7 @@ interface TacticEditModel {
   formation: Formation;
   tacticMentality: TacticMentality;
   passingMentality: PassingMentality;
+  crossingMentality: CrossingMentality;
   attackLeft: boolean;
   attackMiddle: boolean;
   attackRight: boolean;
@@ -254,7 +255,8 @@ export class TacticsDetail implements OnInit, OnDestroy {
     isMain: false,
     formation: Formation.Four_Four_Two,
     tacticMentality: TacticMentality.Balanced,
-    passingMentality: PassingMentality.Balanced,
+    passingMentality: PassingMentality.Mixed,
+    crossingMentality: CrossingMentality.Mixed,
     attackLeft: true,
     attackMiddle: true,
     attackRight: true,
@@ -288,8 +290,14 @@ export class TacticsDetail implements OnInit, OnDestroy {
 
   passingMentalityOptions = [
     { value: PassingMentality.Short, label: 'Short' },
-    { value: PassingMentality.Balanced, label: 'Balanced' },
+    { value: PassingMentality.Mixed, label: 'Mixed' },
     { value: PassingMentality.Long, label: 'Long' }
+  ];
+
+  crossingMentalityOptions = [
+    { value: CrossingMentality.Low, label: 'Low' },
+    { value: CrossingMentality.Mixed, label: 'Mixed' },
+    { value: CrossingMentality.High, label: 'High' }
   ];
 
   /** Player tactic ids with a role update in flight. */
@@ -496,6 +504,7 @@ export class TacticsDetail implements OnInit, OnDestroy {
       formation: Number(model.formation) as Formation,
       tacticMentality: Number(model.tacticMentality) as TacticMentality,
       passingMentality: Number(model.passingMentality) as PassingMentality,
+      crossingMentality: Number(model.crossingMentality) as CrossingMentality,
       attackLeft: model.attackLeft,
       attackMiddle: model.attackMiddle,
       attackRight: model.attackRight,
@@ -539,7 +548,8 @@ export class TacticsDetail implements OnInit, OnDestroy {
       isMain: tactic.isMain,
       formation: tactic.formation ?? Formation.Four_Four_Two,
       tacticMentality: tactic.tacticMentality ?? TacticMentality.Balanced,
-      passingMentality: tactic.passingMentality ?? PassingMentality.Balanced,
+      passingMentality: tactic.passingMentality ?? PassingMentality.Mixed,
+      crossingMentality: tactic.crossingMentality ?? CrossingMentality.Mixed,
       attackLeft: tactic.attackLeft ?? true,
       attackMiddle: tactic.attackMiddle ?? true,
       attackRight: tactic.attackRight ?? true,
@@ -573,10 +583,10 @@ export class TacticsDetail implements OnInit, OnDestroy {
   }
 
   getAttackArrowGeometry(passingMentality: PassingMentality | undefined): AttackArrowGeometry {
-    switch (passingMentality ?? PassingMentality.Balanced) {
+    switch (passingMentality ?? PassingMentality.Mixed) {
       case PassingMentality.Short:
         return { tip: 36, headBase: 51, shaftHeight: 25 };
-      case PassingMentality.Balanced:
+      case PassingMentality.Mixed:
         return { tip: 28, headBase: 43, shaftHeight: 33 };
       default:
         return { tip: 20, headBase: 35, shaftHeight: 41 };

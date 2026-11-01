@@ -9,7 +9,7 @@ import { of } from 'rxjs';
 import { TacticsDetail } from './tactics-detail';
 import { TacticsService } from '../../../services/tactics.service';
 import { TeamsService } from '../../../services/teams.service';
-import { Formation, PassingMentality, SquadUnit, Tactic, TacticMentality } from '../../../models/tactic.model';
+import { CrossingMentality, Formation, PassingMentality, SquadUnit, Tactic, TacticMentality } from '../../../models/tactic.model';
 import { PlayerPosition, PlayerRole } from '../../../models/player-enums.model';
 
 describe('TacticsDetail', () => {
@@ -104,6 +104,14 @@ describe('TacticsDetail', () => {
     const sortedLabels = [...labels].sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
 
     expect(labels).toEqual(sortedLabels);
+  });
+
+  it('should expose the crossing mentality options for the edit dropdown', () => {
+    expect(component.crossingMentalityOptions).toEqual([
+      { value: CrossingMentality.Low, label: 'Low' },
+      { value: CrossingMentality.Mixed, label: 'Mixed' },
+      { value: CrossingMentality.High, label: 'High' }
+    ]);
   });
 
   it('should keep RM and LM wide when they are the only players in a pitch row', () => {
@@ -210,7 +218,8 @@ describe('TacticsDetail', () => {
       isMain: false,
       formation: Formation.Four_Three_Three,
       tacticMentality: TacticMentality.Balanced,
-      passingMentality: PassingMentality.Balanced,
+      passingMentality: PassingMentality.Mixed,
+      crossingMentality: CrossingMentality.Mixed,
       attackLeft: true,
       attackMiddle: true,
       attackRight: true,
@@ -242,7 +251,8 @@ describe('TacticsDetail', () => {
       isMain: updatedTactic.isMain,
       formation: updatedTactic.formation!,
       tacticMentality: updatedTactic.tacticMentality ?? TacticMentality.Balanced,
-      passingMentality: updatedTactic.passingMentality ?? PassingMentality.Balanced,
+      passingMentality: updatedTactic.passingMentality ?? PassingMentality.Mixed,
+      crossingMentality: updatedTactic.crossingMentality ?? CrossingMentality.Mixed,
       attackLeft: true,
       attackMiddle: true,
       attackRight: true,
@@ -264,7 +274,8 @@ describe('TacticsDetail', () => {
       isMain: false,
       formation: Formation.Four_Four_Two,
       tacticMentality: TacticMentality.Balanced,
-      passingMentality: PassingMentality.Balanced,
+      passingMentality: PassingMentality.Mixed,
+      crossingMentality: CrossingMentality.Mixed,
       attackLeft: true,
       attackMiddle: false,
       attackRight: false,
@@ -283,7 +294,8 @@ describe('TacticsDetail', () => {
       isMain: false,
       formation: Formation.Four_Four_Two,
       tacticMentality: TacticMentality.Balanced,
-      passingMentality: PassingMentality.Balanced,
+      passingMentality: PassingMentality.Mixed,
+      crossingMentality: CrossingMentality.Mixed,
       attackLeft: true,
       attackMiddle: true,
       attackRight: true,

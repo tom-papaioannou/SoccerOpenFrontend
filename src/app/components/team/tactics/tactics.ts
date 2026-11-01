@@ -12,7 +12,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Card } from '../../shared/cards/card/card';
 import { TacticsService } from '../../../services/tactics.service';
-import { Tactic, CreateTacticRequest, Formation, PassingMentality, TacticMentality } from '../../../models/tactic.model';
+import { Tactic, CreateTacticRequest, CrossingMentality, Formation, PassingMentality, TacticMentality } from '../../../models/tactic.model';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TeamsService } from '../../../services/teams.service';
 import { Kit } from '../../../models/competition.model';
@@ -98,7 +98,7 @@ export class Tactics implements OnInit {
 
   passingMentalityOptions = [
     { value: PassingMentality.Short, label: 'Short' },
-    { value: PassingMentality.Balanced, label: 'Balanced' },
+    { value: PassingMentality.Mixed, label: 'Mixed' },
     { value: PassingMentality.Long, label: 'Long' }
   ];
 
@@ -157,7 +157,7 @@ export class Tactics implements OnInit {
       isMain: [false],
       Formation: [Formation.None, [Validators.required]],
       TacticMentality: [TacticMentality.Balanced, [Validators.required]],
-      PassingMentality: [PassingMentality.Balanced, [Validators.required]],
+      PassingMentality: [PassingMentality.Mixed, [Validators.required]],
       AttackLeft: [true],
       AttackMiddle: [true],
       AttackRight: [true],
@@ -380,7 +380,7 @@ export class Tactics implements OnInit {
       isMain: false,
       Formation: Formation.Four_Four_Two,
       TacticMentality: TacticMentality.Balanced,
-      PassingMentality: PassingMentality.Balanced,
+      PassingMentality: PassingMentality.Mixed,
       AttackLeft: true,
       AttackMiddle: true,
       AttackRight: true,
@@ -567,9 +567,21 @@ export class Tactics implements OnInit {
         return 'Short';
       case PassingMentality.Long:
         return 'Long';
-      case PassingMentality.Balanced:
+      case PassingMentality.Mixed:
       default:
-        return 'Balance';
+        return 'Mixed';
+    }
+  }
+
+  getCrossingMentalityLabel(crossingMentality?: CrossingMentality): string {
+    switch (crossingMentality) {
+      case CrossingMentality.Low:
+        return 'Low';
+      case CrossingMentality.High:
+        return 'High';
+      case CrossingMentality.Mixed:
+      default:
+        return 'Mixed';
     }
   }
 

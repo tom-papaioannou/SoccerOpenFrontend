@@ -10,7 +10,7 @@ import { By } from '@angular/platform-browser';
 import { of } from 'rxjs';
 
 import { Tactics } from './tactics';
-import { Tactic, Formation } from '../../../models/tactic.model';
+import { CrossingMentality, Tactic, Formation, PassingMentality } from '../../../models/tactic.model';
 import { TeamsService } from '../../../services/teams.service';
 import { TacticsService } from '../../../services/tactics.service';
 import { Team } from '../../../models/competition.model';
@@ -63,6 +63,24 @@ describe('Tactics', () => {
       '3-3-2-2',
       '3-2-3-2'
     ]));
+  });
+
+  it('should show mixed passing and crossing mentalities in tactic summaries', () => {
+    component.tactics.set([{
+      tacticID: '1',
+      teamID: 'test-team',
+      name: 'Mixed Tactic',
+      isMain: true,
+      formation: Formation.Four_Four_Two,
+      passingMentality: PassingMentality.Mixed,
+      crossingMentality: CrossingMentality.High
+    }]);
+
+    fixture.detectChanges();
+
+    const summary = fixture.debugElement.query(By.css('.tactic-summary')).nativeElement.textContent;
+    expect(summary).toContain('Mixed');
+    expect(summary).toContain('High');
   });
 
   describe('Delete button visibility', () => {

@@ -60,8 +60,15 @@ export enum TacticMentality {
 export enum PassingMentality {
   None = 0,
   Short = 1,
-  Balanced = 2,
+  Mixed = 2,
   Long = 3
+}
+
+export enum CrossingMentality {
+  None = 0,
+  Low = 1,
+  Mixed = 2,
+  High = 3
 }
 
 /**
@@ -85,6 +92,7 @@ export interface Tactic {
   formation?: Formation;
   tacticMentality?: TacticMentality;
   passingMentality?: PassingMentality;
+  crossingMentality?: CrossingMentality;
   attackLeft?: boolean;
   attackMiddle?: boolean;
   attackRight?: boolean;
@@ -119,6 +127,7 @@ export interface UpdateTacticRequest {
   formation: Formation;
   tacticMentality: TacticMentality;
   passingMentality: PassingMentality;
+  crossingMentality: CrossingMentality;
   attackLeft: boolean;
   attackMiddle: boolean;
   attackRight: boolean;
